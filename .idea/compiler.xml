@@ -10,7 +10,6 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="articodingserver" target="1.8" />
       <module name="spring-boot-jwt" target="1.8" />
     </bytecodeTargetLevel>
   </component>
