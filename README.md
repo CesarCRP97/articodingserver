@@ -38,7 +38,6 @@ El proyecto Maven esta sobre Spring Boot, para su despliegue:
     <img src="https://github.com/CesarCRP97/articodingserver/blob/master/imagesReadme/Imagen3Heidi.png">
   
   
-- Si da error al ejecutar el jar, crear base de datos con nombre "articoding" dentro del esquema anterior.
 
 
 
