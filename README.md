@@ -19,15 +19,23 @@ El proyecto Maven esta sobre Spring Boot, para su despliegue:
 
 3. Crea una base de datos vacía, usando HeidiSQL:
     1. Para la conexión con la base de datos la contraseña por defecto: *123456*
-    [](https://github.com/CesarCRP97/articodingserver/Imagen1Heidi.png) 
+    <p align="center">
+   <img src="https://github.com/CesarCRP97/articodingserver/blob/master/imagesReadme/Imagen1Heidi.png">
+
+
+
     *Recuerda cambiar la contraseña en el fichero \src\main\resources\application.properties  en caso de introducir una contraseña distinta a la por defecto*
+    
     2. Crea una base de datos con el nombre "articoding" (imágenes 2 y 3)
         - Clic derecho en la raiz -> *crear nuevo*  -> *base de datos*
 
-        [](https://github.com/CesarCRP97/articodingserver/Imagen2Heidi.png) 
-    
-        [](https://github.com/CesarCRP97/articodingserver/Imagen3Heidi.png) 
-
+<p align="center">
+  <img src="https://github.com/CesarCRP97/articodingserver/blob/master/imagesReadme/Imagen2Heidi.png">
+</p>
+<p align="center">
+  <img src="https://github.com/CesarCRP97/articodingserver/blob/master/imagesReadme/Imagen3Heidi.png">
+  
+  
 - Si da error al ejecutar el jar, crear base de datos con nombre "articoding" dentro del esquema anterior.
 
 
