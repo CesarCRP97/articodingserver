@@ -26,7 +26,7 @@ El proyecto Maven esta sobre Spring Boot, para su despliegue:
 
     1. Para la conexión con la base de datos la contraseña por defecto: *123456*
 
-    *Recuerda cambiar la contraseña en el fichero \src\main\resources\application.properties  en caso de introducir una contraseña distinta a la por defecto*
+        **Recuerda cambiar la contraseña en el fichero \src\main\resources\application.properties  en caso de introducir una contraseña distinta a la por defecto**
     
     2. Crea una base de datos con el nombre "articoding" (imágenes 2 y 3)
         - Clic derecho en la raiz -> *crear nuevo*  -> *base de datos*
