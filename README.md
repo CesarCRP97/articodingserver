@@ -19,8 +19,8 @@ El proyecto Maven esta sobre Spring Boot, para su despliegue:
 
 3. Crea una base de datos vacía, usando HeidiSQL:
     1. Para la conexión con la base de datos la contraseña por defecto: *123456*
-    <p align="center">
-   <img src="https://github.com/CesarCRP97/articodingserver/blob/master/imagesReadme/Imagen1Heidi.png">
+<p align="center">
+<img src="https://github.com/CesarCRP97/articodingserver/blob/master/imagesReadme/Imagen1Heidi.png">
 
 
 
