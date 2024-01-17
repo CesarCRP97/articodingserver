@@ -14,6 +14,8 @@ public interface IUser {
     @JsonIgnore
     public Role getRole();
 
+
+    //TODO-Aclarar si hace algo, getRol->getRole
     @JsonProperty("role")
     default String getRol() {
         return getRole().getName();

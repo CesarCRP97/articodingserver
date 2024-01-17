@@ -42,16 +42,16 @@ public class RoleHelper {
     public boolean isAdmin(User user) {
         return user.getRole().getName().equals("ROLE_ADMIN");
     }
-    public boolean can(Role roles, String necesaryRoot) {
+    public boolean can(Role roles, String necessaryRoot) {
 
-        if (necesaryRoot.equals("ROLE_ADMIN")) {
+        if (necessaryRoot.equals("ROLE_ADMIN")) {
             return roles.getName().equals("ROLE_ADMIN");
         }
-        if (necesaryRoot.equals("ROLE_TEACHER")) {
+        if (necessaryRoot.equals("ROLE_TEACHER")) {
             return roles.getName().equals("ROLE_ADMIN") ||
                     roles.getName().equals("ROLE_TEACHER");
         }
-        if (necesaryRoot.equals("ROLE_USER")) {
+        if (necessaryRoot.equals("ROLE_USER")) {
             return roles.getName().equals("ROLE_ADMIN") ||
                     roles.getName().equals("ROLE_TEACHER") ||
                     roles.getName().equals("ROLE_USER") ;

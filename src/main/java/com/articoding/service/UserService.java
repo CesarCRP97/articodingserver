@@ -44,7 +44,7 @@ public class UserService {
     }
 
     public Long save(UserForm user) {
-        /** Comprobamos que sea, mínimo profesor */
+        /** Verifies user is at least ROLE_TEACHER */
         User actualUser = this.getActualUser();
         if(!roleHelper.can(actualUser.getRole(),"ROLE_TEACHER")) {
             throw new  NotAuthorization("crear usuarios");

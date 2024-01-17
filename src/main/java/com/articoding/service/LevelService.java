@@ -39,24 +39,22 @@ public class LevelService {
     public Long createLevel(User actualUser, LevelForm levelForm) throws ErrorNotFound, NotAuthorization, JsonProcessingException {
 
         Level level = new Level();
-        /**
-         * Si el nivel pertenece a una clase, debe ser profesor de todas
-         */
+        /** If the level needs to be added to Classrooms, we need to verify actualUser is teacher in every classroom */
         if (!levelForm.getClasses().isEmpty()) {
             List<ClassRoom> classRoomList = new ArrayList<>();
-            /** Comprobamos si es profesor */
+            /** Verifies if the user is teacher or more*/
             if (!roleHelper.can(actualUser.getRole(), "ROLE_TEACHER")) {
                 throw new NotAuthorization(actualUser.getRole(),
                         "crear un nivel en una clase");
             }
 
-            /** Comprobamos que las clases sean válidas */
+            /** Verifies the validity of the classes */
             for (Long idClass : levelForm.getClasses()) {
-                /** Controlamos que la clase exista */
+                /** Class exists */
                 ClassRoom classRoom = classRepository.findById(idClass)
                         .orElseThrow(() -> new ErrorNotFound("Clase", idClass));
 
-                /** Controlamos que sea profesor */
+                /** actualUser is Teacher of the class */
                 if (! classRoom.getTeachers().contains(actualUser)) {
                     throw new NotAuthorization(" crear un nivel en la clase " + idClass);
                 }
@@ -71,7 +69,7 @@ public class LevelService {
         level.setPublicLevel(levelForm.isPublicLevel());
 
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-        level.setSerializaArticodeingLevel(ow.writeValueAsString(levelForm.getArticodingLevel()));
+        level.setSerializaArticodingLevel(ow.writeValueAsString(levelForm.getArticodingLevel()));
 
         level.setOwner(actualUser);
         Level newLevel = levelRepository.save(level);
@@ -80,7 +78,7 @@ public class LevelService {
     }
 
     public ILevel getLevel(User actualUser, Long levelId) {
-        /** Comprobamos si existe la clase */
+        /** Verifies if the classroom exists */
         Level level = levelRepository.findById(levelId, Level.class);
         if(level == null) {
             throw new ErrorNotFound("nivel", levelId);
@@ -90,23 +88,23 @@ public class LevelService {
             throw new NotAuthorization("nivel desactivado");
         }
         boolean canShow = false;
-        /** Comprobamos si tiene permisos para verlo*/
+        /** Check permission */
         if(level.isPublicLevel()) {
             if (level.getOwner().getId() != actualUser.getId() && !roleHelper.isAdmin(actualUser)) {
                 for (ClassRoom classRoom : level.getClassRooms()) {
                     if (!classRoom.getTeachers().stream().anyMatch(teacher -> teacher.getId() == actualUser.getId())) {
                         if(classRoom.getStudents().stream().anyMatch(studend -> studend.getId() == actualUser.getId())) {
-                           /** Es alumno de alguna de las clases*/
+                           /** Is student of a classroom that includes the level */
                            canShow= true;
                         }
-                    } else {/** Es profesor de alguna de las clases en las que está incluido el nivel */
+                    } else {/** Is teacher in any of the classrooms that includes the level */
                         canShow = true;
                     }
                 }
-            } else {/** es el dueño o ROOT*/
+            } else {/** Is the owner of the level or ROOT*/
                 canShow = true;
             }
-        } else {/** es publico */
+        } else {/** Is public */
             canShow = true;
         }
         if(!canShow) {
@@ -116,16 +114,17 @@ public class LevelService {
 
     }
 
+    //Todo- refactor, too many lanes, this code has to be in private methods.
     public Page<ILevel> getLevels(PageRequest pageRequest, Optional<Long> classId,
                                   Optional<Long> userId, Optional<Boolean> publicLevels, Optional<String> title) {
         User actualUser = userService.getActualUser();
-        /** Si quiere todos los niveles de una clase*/
+        /** If there is a classId then returns levels from the classroom */
         if(classId.isPresent()) {
-            /** Comrpobamos que exista la clase*/
+            /** Checks if the classroom exists */
             ClassRoom classRoom = classRepository.findById(classId.get())
                     .orElseThrow(() -> new ErrorNotFound("clase", classId.get()));
 
-            /**comprobamos que es su alumno/profesor o tiene role admin*/
+            /** Checks if it is student/teacher or admin */
             if(!roleHelper.isAdmin(actualUser)) {
                 if (!classRoom.getStudents().stream().anyMatch(s -> s.getId() == actualUser.getId()) &&
                         !classRoom.getTeachers().stream().anyMatch(s -> s.getId() == actualUser.getId())) {
@@ -139,7 +138,7 @@ public class LevelService {
 
             }
         } else if (userId.isPresent()) {
-            /** Si quiere todos los niveles de un usuario, comprobamos que sea ADMIN */
+            /** If there is a userId it checks if the user is ADMIN. */
             if(!roleHelper.isAdmin(actualUser)) {
                 throw new NotAuthorization("ver niveles del usuario " + userId.get());
             } else {
@@ -147,23 +146,22 @@ public class LevelService {
             }
         } else {
             if(publicLevels.isPresent()) {
-                /** Si quiere todos los niveles publicos*/
+                /** If publicLevels is true, returns all public levels. */
                 if (title.isPresent()) {
                     return levelRepository.findByPublicLevelTrueAndTitleContains(pageRequest, ILevel.class, title.get());
                 } else {
                     return levelRepository.findByPublicLevelTrue(pageRequest, ILevel.class);
                 }
             } else {
-                /** Si quiere todos los niveles*/
+                /** If it's ADMIN then it returns every level */
                 if(roleHelper.isAdmin(actualUser)) {
-                    /** Si es admin devuelve todos*/
                     if (title.isPresent()) {
                         return levelRepository.findByTitleContains(pageRequest, title.get(), ILevel.class);
                     } else {
                         return levelRepository.findBy(pageRequest, ILevel.class);
                     }
                 } else {
-                    /**Si no, devuelve los creados por el usuario*/
+                    /** Otherwise, returns only the levels created by the user */
                     if (title.isPresent()) {
                         return levelRepository.findByOwnerAndActiveTrueAndTitleContains(actualUser,  title.get(), pageRequest, ILevel.class);
                     } else {
@@ -176,17 +174,17 @@ public class LevelService {
      }
 
     public long updateLevel(UpdateLevelForm newLevel, Long levelId) {
-        /** Comprobamos que existe el nivel */
+        /** Checks if the level exists */
         Level levelOld = levelRepository.findById(levelId)
                 .orElseThrow(() -> new ErrorNotFound("level", levelId));
 
         User actualUser = userService.getActualUser();
-        /** Comprobamos que sea el dueñó del nivel o usuario ADMIN */
+        /** Checks if actualUser is the owner or ADMIN */
         if (!actualUser.getCreatedLevels().stream().anyMatch(x -> x.getId() == levelId) &&
                 !roleHelper.isAdmin(actualUser)) {
             throw new NotAuthorization("modificar el nivel " + levelId);
         } else {
-            /** Podemos modificar */
+            /** It's editable */
             if (newLevel.getTitle() != null ) {
                 levelOld.setTitle(newLevel.getTitle());
             }

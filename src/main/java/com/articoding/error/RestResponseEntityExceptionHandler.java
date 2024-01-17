@@ -17,7 +17,7 @@ public class RestResponseEntityExceptionHandler
     protected ResponseEntity<Object> authorizationError(
             RuntimeException ex, WebRequest request) {
         RestError restError = (RestError)ex;
-        return new ResponseEntity<>(new ErrorMessage(restError.getRestMesssage(), 1), HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>(new ErrorMessage(restError.getRestMessage(), 1), HttpStatus.FORBIDDEN);
     }
 
 
@@ -26,7 +26,7 @@ public class RestResponseEntityExceptionHandler
     protected ResponseEntity<Object> notFountError(
             RuntimeException ex, WebRequest request) {
         RestError restError = (RestError)ex;
-        return new ResponseEntity<>(new ErrorMessage(restError.getRestMesssage(), 1), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(new ErrorMessage(restError.getRestMessage(), 1), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(value
@@ -34,14 +34,14 @@ public class RestResponseEntityExceptionHandler
     protected ResponseEntity<Object> disableEntity(
             RuntimeException ex, WebRequest request) {
         RestError restError = (RestError)ex;
-        return new ResponseEntity<>(new ErrorMessage(restError.getRestMesssage(), 1), HttpStatus.UNPROCESSABLE_ENTITY);
+        return new ResponseEntity<>(new ErrorMessage(restError.getRestMessage(), 1), HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
     @ExceptionHandler(value
             = { RestError.class })
-    protected ResponseEntity<Object> generyc(
+    protected ResponseEntity<Object> generic(
             RuntimeException ex, WebRequest request) {
         RestError restError = (RestError)ex;
-        return new ResponseEntity<>(new ErrorMessage(restError.getRestMesssage(), 1), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(new ErrorMessage(restError.getRestMessage(), 1), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

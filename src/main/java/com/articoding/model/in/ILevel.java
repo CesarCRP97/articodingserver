@@ -24,11 +24,11 @@ public interface ILevel {
 
     IUser getOwner();
     @JsonIgnore
-    String getSerializaArticodeingLevel();
+    String getSerializaArticodingLevel();
 
     default ACLevel getArticodingLevel() throws IOException {
         ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(getSerializaArticodeingLevel(), ACLevel.class);
+        return mapper.readValue(getSerializaArticodingLevel(), ACLevel.class);
       }
 
 }

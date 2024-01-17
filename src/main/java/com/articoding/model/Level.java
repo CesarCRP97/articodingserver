@@ -28,7 +28,7 @@ public class Level {
     private List<ClassRoom> classRooms;
 
     @Column(columnDefinition="TEXT")
-    private String serializaArticodeingLevel;
+    private String serializaArticodingLevel;
 
     private boolean publicLevel;
 
@@ -101,12 +101,12 @@ public class Level {
         this.publicLevel = publicLevel;
     }
 
-    public String getSerializaArticodeingLevel() {
-        return serializaArticodeingLevel;
+    public String getSerializaArticodingLevel() {
+        return serializaArticodingLevel;
     }
 
-    public void setSerializaArticodeingLevel(String serializaArticodeingLevel) {
-        this.serializaArticodeingLevel = serializaArticodeingLevel;
+    public void setSerializaArticodingLevel(String serializaArticodingLevel) {
+        this.serializaArticodingLevel = serializaArticodingLevel;
     }
 
     public boolean isActive() {
