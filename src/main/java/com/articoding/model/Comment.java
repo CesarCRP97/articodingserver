@@ -6,7 +6,7 @@ import java.util.Date;
 @Entity
 @Table(name = "comment")
 
-//TODO - Probablemente desaparezca
+//TODO - Eliminar
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

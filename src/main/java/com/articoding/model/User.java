@@ -20,11 +20,18 @@ public class User {
 	@Column
 	private boolean enabled = true;
 
+	/** TODO - Eliminar
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Valoration> valorationList;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Comment> commentList;
+	*/
+	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "levels_liked", cascade = CascadeType.ALL)
+	private List<Level> likedLevels;
+
+	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "levels_downloaded", cascade = CascadeType.ALL)
+	private List<Level> downloadedLevels;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Level> createdLevels;
@@ -46,20 +53,21 @@ public class User {
 		this.id = id;
 	}
 
-	public List<Valoration> getValorationList() {
-		return valorationList;
+
+	public List<Level> getLikedLevels() {
+		return likedLevels;
 	}
 
-	public void setValorationList(List<Valoration> valorationList) {
-		this.valorationList = valorationList;
+	public void setLikedLevels(List<Level> likedLevels) {
+		this.likedLevels = likedLevels;
 	}
 
-	public List<Comment> getCommentList() {
-		return commentList;
+	public List<Level> getDownloadedLevels() {
+		return downloadedLevels;
 	}
 
-	public void setCommentList(List<Comment> commentList) {
-		this.commentList = commentList;
+	public void setDownloadedLevels(List<Level> downloadedLevels) {
+		this.downloadedLevels = downloadedLevels;
 	}
 
 	public List<Level> getCreatedLevels() {

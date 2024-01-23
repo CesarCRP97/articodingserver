@@ -29,7 +29,7 @@ public class SwaggerConfig {
                 .apiInfo(getApiInfo());
     }
 
-    //TODO - Actulizar info
+    //TODO - Actualizar info
     private ApiInfo getApiInfo() {
         return new ApiInfo(
                 "ArticodingServer API",
