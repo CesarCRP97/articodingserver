@@ -27,6 +27,8 @@ public class User {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Comment> commentList;
 	*/
+
+	// TODO - createdPlaylists??
 	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "levels_liked", cascade = CascadeType.ALL)
 	private List<Level> likedLevels;
 
@@ -44,6 +46,9 @@ public class User {
 
 	@ManyToMany(mappedBy = "teachers")
 	private List<ClassRoom> ownerClassRooms;
+
+	//TODO - OneToMany list of students of a teacher.
+	/** */
 
 	public long getId() {
 		return id;
