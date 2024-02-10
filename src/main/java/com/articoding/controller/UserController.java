@@ -47,6 +47,11 @@ public class UserController {
 
     }
 
+    @PutMapping("/students")
+    public ResponseEntity<CreatedRef> registerStudent(@RequestBody UserForm user) {
+        return ResponseEntity.ok(new CreatedRef("users/" + userService.registerStudent(user)));
+    }
+
     @PostMapping
     public ResponseEntity<CreatedRef> saveUser(@RequestBody UserForm user) {
         return ResponseEntity.ok(new CreatedRef("users/" + userService.save(user)));

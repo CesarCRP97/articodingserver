@@ -3,6 +3,7 @@ package com.articoding.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -66,6 +67,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .expressionHandler(webCustomSecurityExpressionHandler())
 
                 .antMatchers("/login").permitAll()
+                .antMatchers(HttpMethod.PUT, "/users/students").permitAll()
                 .antMatchers("/swagger-ui.html").permitAll()
                 // all other requests need to be authenticated and ADMIN
 

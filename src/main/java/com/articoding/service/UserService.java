@@ -60,6 +60,32 @@ public class UserService {
         return createdUser.getId();
     }
 
+    public Long registerStudent(UserForm userForm) {
+        User newUser = prepareUser(userForm);
+
+        User createdUser = userRepository.save(newUser);
+
+        return createdUser.getId();
+    }
+
+    private User prepareUser(UserForm userForm) {
+        User newUser = new User();
+        newUser.setUsername(userForm.getUsername());
+        newUser.setRole(roleHelper.getUser());
+        newUser.setPassword(bcryptEncoder.encode(userForm.getPassword()));
+        newUser.setEnabled(true);
+
+        if (!userForm.getUsername().matches("^[a-zA-Z0-9-_]+$")) {
+            throw new RestError("Username can only contain alphanumerics and '_'.");
+        }
+
+        if (userRepository.findByUsername(userForm.getUsername()) != null) {
+            throw new RestError("Username '" + userForm.getUsername() + "' already exists.");
+        }
+
+        return newUser;
+    }
+
     private User prepareUser(UserForm user, User actualUser) {
         User newUser = new User();
         newUser.setUsername(user.getUsername());
