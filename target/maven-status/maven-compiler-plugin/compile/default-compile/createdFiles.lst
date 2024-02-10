@@ -5,6 +5,8 @@ com\articoding\service\UserService.class
 com\articoding\model\JwtRequest.class
 com\articoding\error\NotAuthorization.class
 com\articoding\model\UserForm.class
+com\articoding\model\Tag.class
+com\articoding\model\Playlist.class
 com\articoding\RoleHelper.class
 com\articoding\config\JwtRequestFilter.class
 com\articoding\model\articodingLevel\ACBoardHintState.class

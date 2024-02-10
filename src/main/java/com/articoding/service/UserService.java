@@ -57,14 +57,14 @@ public class UserService {
         return createdUser.getId();
     }
 
-    private User prepareUser(UserForm user, User actualUser) {
-        User newUser = new User();
-        newUser.setUsername(user.getUsername());
-        newUser.setPassword(bcryptEncoder.encode(user.getPassword()));
-        newUser.setEnabled(true);
+        private User prepareUser(UserForm user, User actualUser) {
+            User newUser = new User();
+            newUser.setUsername(user.getUsername());
+            newUser.setPassword(bcryptEncoder.encode(user.getPassword()));
+            newUser.setEnabled(true);
 
-        /** Comprobamos que no exista un usuario con ese username */
-        if (userRepository.findByUsername(user.getUsername()) != null) {
+            /** Comprobamos que no exista un usuario con ese username */
+            if (userRepository.findByUsername(user.getUsername()) != null) {
             throw new RestError("El usuario con nombre " + user.getUsername() + " ya existe.");
         }
 

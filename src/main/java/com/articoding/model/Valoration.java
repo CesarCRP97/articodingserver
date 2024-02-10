@@ -2,6 +2,8 @@ package com.articoding.model;
 
 import javax.persistence.*;
 
+
+//TODO - Eliminar
 @Entity
 @Table(name = "valoration")
 public class Valoration {

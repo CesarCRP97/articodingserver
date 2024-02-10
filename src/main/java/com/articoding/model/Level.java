@@ -18,13 +18,13 @@ public class Level {
 
     private String description;
 
-    /** TODO-Eliminar
+    /** TODO-Eliminar */
     @OneToMany(mappedBy = "level", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Valoration> valorationList;
 
     @OneToMany(mappedBy = "level", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> commentList;
-     */
+     /** */
 
 
 
@@ -72,7 +72,7 @@ public class Level {
     public void setDescription(String description) {
         this.description = description;
     }
-/** TODO - Eliminar
+/** TODO - Eliminar */
     public List<Valoration> getValorationList() {
         return valorationList;
     }
@@ -88,7 +88,7 @@ public class Level {
     public void setCommentList(List<Comment> commentList) {
         this.commentList = commentList;
     }
- */
+ /**/
 
     public List<ClassRoom> getClassRooms() {
         return classRooms;
