@@ -33,10 +33,25 @@ public class User {
 
 	// TODO - createdPlaylists??
 	//Nuevas listas likedLevels y downloadedLevels + getters/setters
-	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "levels_liked", cascade = CascadeType.ALL)
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(
+			name = "levels_liked",
+			joinColumns = @JoinColumn(
+					name = "user_id", referencedColumnName = "id"),
+			inverseJoinColumns = @JoinColumn(
+					name = "level_id", referencedColumnName = "id")
+	)
 	private List<Level> likedLevels;
 
-	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "levels_downloaded", cascade = CascadeType.ALL)
+
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(
+			name = "levels_downloaded",
+			joinColumns = @JoinColumn(
+					name = "user_id", referencedColumnName = "id"),
+			inverseJoinColumns = @JoinColumn(
+					name = "level_id", referencedColumnName = "id")
+	)
 	private List<Level> downloadedLevels;
 	// Hasta aqui
 

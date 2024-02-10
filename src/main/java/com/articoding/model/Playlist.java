@@ -24,6 +24,7 @@ public class Playlist {
     private Long id;
 
     //TODO - Tabla de relación autor - playlist??
+    @ManyToOne
     private User owner;
     @Column
     private boolean enabled = true;
