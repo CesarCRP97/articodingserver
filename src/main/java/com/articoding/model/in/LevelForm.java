@@ -6,17 +6,12 @@ import java.util.List;
 
 public class LevelForm {
 
-    private String title;
-
-    private String description;
-
-    private List<Long> classes;
-
-    private ACLevel articodingLevel;
-
-    private boolean publicLevel;
-
     public boolean active;
+    private String title;
+    private String description;
+    private List<Long> classes;
+    private ACLevel articodingLevel;
+    private boolean publicLevel;
 
     public LevelForm() {
     }

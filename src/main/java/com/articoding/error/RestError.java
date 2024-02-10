@@ -1,6 +1,6 @@
 package com.articoding.error;
 
-public class RestError extends RuntimeException  {
+public class RestError extends RuntimeException {
 
     private final String restMessage;
 

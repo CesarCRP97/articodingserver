@@ -1,8 +1,6 @@
 package com.articoding.model.articodingLevel;
 
 
-import com.articoding.model.articodingLevel.initialState.ACInitialState;
-
 import javax.persistence.Column;
 
 public class ACLevel {
@@ -10,7 +8,7 @@ public class ACLevel {
     private ACActiveBlock activeblocks;
     private ACBoardState boardstate;
 
-    @Column(columnDefinition="TEXT")
+    @Column(columnDefinition = "TEXT")
     private String initialState;
 
     public ACLevel() {

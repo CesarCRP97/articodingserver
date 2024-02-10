@@ -13,35 +13,35 @@ public class RestResponseEntityExceptionHandler
         extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value
-            = { NotAuthorization.class })
+            = {NotAuthorization.class})
     protected ResponseEntity<Object> authorizationError(
             RuntimeException ex, WebRequest request) {
-        RestError restError = (RestError)ex;
+        RestError restError = (RestError) ex;
         return new ResponseEntity<>(new ErrorMessage(restError.getRestMessage(), 1), HttpStatus.FORBIDDEN);
     }
 
 
     @ExceptionHandler(value
-            = { ErrorNotFound.class })
+            = {ErrorNotFound.class})
     protected ResponseEntity<Object> notFountError(
             RuntimeException ex, WebRequest request) {
-        RestError restError = (RestError)ex;
+        RestError restError = (RestError) ex;
         return new ResponseEntity<>(new ErrorMessage(restError.getRestMessage(), 1), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(value
-            = { DisabledEntity.class })
+            = {DisabledEntity.class})
     protected ResponseEntity<Object> disableEntity(
             RuntimeException ex, WebRequest request) {
-        RestError restError = (RestError)ex;
+        RestError restError = (RestError) ex;
         return new ResponseEntity<>(new ErrorMessage(restError.getRestMessage(), 1), HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
     @ExceptionHandler(value
-            = { RestError.class })
+            = {RestError.class})
     protected ResponseEntity<Object> generic(
             RuntimeException ex, WebRequest request) {
-        RestError restError = (RestError)ex;
+        RestError restError = (RestError) ex;
         return new ResponseEntity<>(new ErrorMessage(restError.getRestMessage(), 1), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

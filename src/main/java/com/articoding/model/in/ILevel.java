@@ -9,7 +9,7 @@ import java.io.IOException;
 
 public interface ILevel {
 
-    public Integer getId();
+    Integer getId();
 
     String getTitle();
 
@@ -20,15 +20,16 @@ public interface ILevel {
     @Value("#{target.classRooms.size()}")
     int getClassRooms();
 
-    public boolean isActive();
+    boolean isActive();
 
     IUser getOwner();
+
     @JsonIgnore
     String getSerializaArticodingLevel();
 
     default ACLevel getArticodingLevel() throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         return mapper.readValue(getSerializaArticodingLevel(), ACLevel.class);
-      }
+    }
 
 }

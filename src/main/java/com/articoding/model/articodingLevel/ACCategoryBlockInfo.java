@@ -4,8 +4,8 @@ import java.util.List;
 
 public class ACCategoryBlockInfo {
 
-     private boolean activate;
-     private List<ACBlockInfo> activeBlocks;
+    private boolean activate;
+    private List<ACBlockInfo> activeBlocks;
 
     public ACCategoryBlockInfo() {
     }

@@ -1,9 +1,9 @@
 package com.articoding.config;
 
-import com.articoding.repository.RoleRepository;
-import com.articoding.repository.UserRepository;
 import com.articoding.model.Role;
 import com.articoding.model.User;
+import com.articoding.repository.RoleRepository;
+import com.articoding.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -28,7 +28,6 @@ public class SetupDataLoader implements
     private RoleRepository roleRepository;
 
 
-
     @Override
     @Transactional
     public void onApplicationEvent(ContextRefreshedEvent event) {
@@ -50,7 +49,6 @@ public class SetupDataLoader implements
             user.setRole(adminRole);
             userRepository.save(user);
         }
-
 
 
         alreadySetup = true;

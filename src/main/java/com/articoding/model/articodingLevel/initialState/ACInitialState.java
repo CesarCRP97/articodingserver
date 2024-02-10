@@ -1,7 +1,5 @@
 package com.articoding.model.articodingLevel.initialState;
 
-import java.util.List;
-
 public class ACInitialState {
     private BlocklyBaseVariable variables;
     private ACBlocklyBlock block;

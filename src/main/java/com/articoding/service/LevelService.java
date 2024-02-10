@@ -55,7 +55,7 @@ public class LevelService {
                         .orElseThrow(() -> new ErrorNotFound("Clase", idClass));
 
                 /** actualUser is Teacher of the class */
-                if (! classRoom.getTeachers().contains(actualUser)) {
+                if (!classRoom.getTeachers().contains(actualUser)) {
                     throw new NotAuthorization(" crear un nivel en la clase " + idClass);
                 }
                 classRoomList.add(classRoom);
@@ -80,22 +80,22 @@ public class LevelService {
     public ILevel getLevel(User actualUser, Long levelId) {
         /** Verifies if the classroom exists */
         Level level = levelRepository.findById(levelId, Level.class);
-        if(level == null) {
+        if (level == null) {
             throw new ErrorNotFound("nivel", levelId);
         }
 
-        if(!level.isActive() && !roleHelper.isAdmin(actualUser) && !(roleHelper.isTeacher(actualUser) && level.getOwner().getId() == actualUser.getId() )) {
+        if (!level.isActive() && !roleHelper.isAdmin(actualUser) && !(roleHelper.isTeacher(actualUser) && level.getOwner().getId() == actualUser.getId())) {
             throw new NotAuthorization("nivel desactivado");
         }
         boolean canShow = false;
         /** Check permission */
-        if(level.isPublicLevel()) {
+        if (level.isPublicLevel()) {
             if (level.getOwner().getId() != actualUser.getId() && !roleHelper.isAdmin(actualUser)) {
                 for (ClassRoom classRoom : level.getClassRooms()) {
                     if (!classRoom.getTeachers().stream().anyMatch(teacher -> teacher.getId() == actualUser.getId())) {
-                        if(classRoom.getStudents().stream().anyMatch(studend -> studend.getId() == actualUser.getId())) {
-                           /** Is student of a classroom that includes the level */
-                           canShow= true;
+                        if (classRoom.getStudents().stream().anyMatch(studend -> studend.getId() == actualUser.getId())) {
+                            /** Is student of a classroom that includes the level */
+                            canShow = true;
                         }
                     } else {/** Is teacher in any of the classrooms that includes the level */
                         canShow = true;
@@ -107,7 +107,7 @@ public class LevelService {
         } else {/** Is public */
             canShow = true;
         }
-        if(!canShow) {
+        if (!canShow) {
             throw new NotAuthorization(String.format("ver la clase %s", level.getId()));
         }
         return levelRepository.findById(levelId, ILevel.class);
@@ -119,19 +119,19 @@ public class LevelService {
                                   Optional<Long> userId, Optional<Boolean> publicLevels, Optional<String> title) {
         User actualUser = userService.getActualUser();
         /** If there is a classId then returns levels from the classroom */
-        if(classId.isPresent()) {
+        if (classId.isPresent()) {
             /** Checks if the classroom exists */
             ClassRoom classRoom = classRepository.findById(classId.get())
                     .orElseThrow(() -> new ErrorNotFound("clase", classId.get()));
 
             /** Checks if it is student/teacher or admin */
-            if(!roleHelper.isAdmin(actualUser)) {
+            if (!roleHelper.isAdmin(actualUser)) {
                 if (!classRoom.getStudents().stream().anyMatch(s -> s.getId() == actualUser.getId()) &&
                         !classRoom.getTeachers().stream().anyMatch(s -> s.getId() == actualUser.getId())) {
                     throw new NotAuthorization("ver niveles de la clase " + classId.get());
                 }
             }
-            if(title.isPresent()) {
+            if (title.isPresent()) {
                 return levelRepository.findByClassRoomsAndActiveTrueAndTitleContains(classRoom, title.get(), pageRequest, ILevel.class);
             } else {
                 return levelRepository.findByClassRoomsAndActiveTrue(classRoom, pageRequest, ILevel.class);
@@ -139,13 +139,13 @@ public class LevelService {
             }
         } else if (userId.isPresent()) {
             /** If there is a userId it checks if the user is ADMIN. */
-            if(!roleHelper.isAdmin(actualUser)) {
+            if (!roleHelper.isAdmin(actualUser)) {
                 throw new NotAuthorization("ver niveles del usuario " + userId.get());
             } else {
                 return levelRepository.findByOwnerAndActiveTrue(actualUser, pageRequest, ILevel.class);
             }
         } else {
-            if(publicLevels.isPresent()) {
+            if (publicLevels.isPresent()) {
                 /** If publicLevels is true, returns all public levels. */
                 if (title.isPresent()) {
                     return levelRepository.findByPublicLevelTrueAndTitleContains(pageRequest, ILevel.class, title.get());
@@ -154,7 +154,7 @@ public class LevelService {
                 }
             } else {
                 /** If it's ADMIN then it returns every level */
-                if(roleHelper.isAdmin(actualUser)) {
+                if (roleHelper.isAdmin(actualUser)) {
                     if (title.isPresent()) {
                         return levelRepository.findByTitleContains(pageRequest, title.get(), ILevel.class);
                     } else {
@@ -163,7 +163,7 @@ public class LevelService {
                 } else {
                     /** Otherwise, returns only the levels created by the user */
                     if (title.isPresent()) {
-                        return levelRepository.findByOwnerAndActiveTrueAndTitleContains(actualUser,  title.get(), pageRequest, ILevel.class);
+                        return levelRepository.findByOwnerAndActiveTrueAndTitleContains(actualUser, title.get(), pageRequest, ILevel.class);
                     } else {
                         return levelRepository.findByOwnerAndActiveTrue(actualUser, pageRequest, ILevel.class);
                     }
@@ -171,7 +171,7 @@ public class LevelService {
             }
 
         }
-     }
+    }
 
     public long updateLevel(UpdateLevelForm newLevel, Long levelId) {
         /** Checks if the level exists */
@@ -185,16 +185,16 @@ public class LevelService {
             throw new NotAuthorization("modificar el nivel " + levelId);
         } else {
             /** It's editable */
-            if (newLevel.getTitle() != null ) {
+            if (newLevel.getTitle() != null) {
                 levelOld.setTitle(newLevel.getTitle());
             }
-            if (newLevel.getDescription() != null ) {
+            if (newLevel.getDescription() != null) {
                 levelOld.setDescription(newLevel.getDescription());
             }
-            if (newLevel.isPublicLevel() != null ) {
+            if (newLevel.isPublicLevel() != null) {
                 levelOld.setPublicLevel(newLevel.isPublicLevel());
             }
-            if (newLevel.isActive() != null ) {
+            if (newLevel.isActive() != null) {
                 levelOld.setActive(newLevel.isActive());
             }
 

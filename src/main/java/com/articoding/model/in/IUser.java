@@ -6,13 +6,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public interface IUser {
 
-    public Integer getId();
+    Integer getId();
 
-    public String getUsername();
+    String getUsername();
 
-    public boolean isEnabled();
+    boolean isEnabled();
+
     @JsonIgnore
-    public Role getRole();
+    Role getRole();
 
 
     //TODO-Aclarar si hace algo, getRol->getRole

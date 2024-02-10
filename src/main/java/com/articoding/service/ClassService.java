@@ -7,7 +7,11 @@ import com.articoding.error.RestError;
 import com.articoding.model.ClassRoom;
 import com.articoding.model.Level;
 import com.articoding.model.User;
-import com.articoding.model.in.*;
+import com.articoding.model.in.ClassForm;
+import com.articoding.model.in.IClassRoom;
+import com.articoding.model.in.IClassRoomDetail;
+import com.articoding.model.in.IUid;
+import com.articoding.model.in.UpdateClassRoomForm;
 import com.articoding.repository.ClassRepository;
 import com.articoding.repository.LevelRepository;
 import com.articoding.repository.UserRepository;
@@ -42,7 +46,7 @@ public class ClassService {
         User actualUser = userService.getActualUser();
 
         /** Checks if is teacher or admin */
-        if(!roleHelper.isTeacher(actualUser) && !roleHelper.isAdmin(actualUser)) {
+        if (!roleHelper.isTeacher(actualUser) && !roleHelper.isAdmin(actualUser)) {
             throw new NotAuthorization("You can't create classes if you don't have teacher role");
         }
 
@@ -64,7 +68,7 @@ public class ClassService {
         classForm.getTeachersId().forEach(studentId -> {
             Optional<User> userOptional = userRepository.findById(studentId);
             if (userOptional.isPresent()) {
-                if( roleHelper.isTeacher(userOptional.get())) {
+                if (roleHelper.isTeacher(userOptional.get())) {
                     teachers.add(userOptional.get());
                 } else {
                     throw new NotAuthorization("One of the teacher from the class is not authorized");
@@ -87,10 +91,10 @@ public class ClassService {
         User actualUser = userService.getActualUser();
         /** Checks if class exists */
         ClassRoom classRoom = classRepository.findById(classId)
-                .orElseThrow(()-> new ErrorNotFound("class", classId));
+                .orElseThrow(() -> new ErrorNotFound("class", classId));
         /** Checks if it's ADMIN, student or teacher from the class */
         if (!roleHelper.isAdmin(actualUser) && !classRoom.getStudents().stream().anyMatch(s -> s.getId() == actualUser.getId()) &&
-                !classRoom.getTeachers().stream().anyMatch(t-> t.getId() == actualUser.getId())) {
+                !classRoom.getTeachers().stream().anyMatch(t -> t.getId() == actualUser.getId())) {
             throw new NotAuthorization("access to the class with id " + classId);
         }
         return classRepository.findById(classId, IClassRoomDetail.class);
@@ -99,73 +103,73 @@ public class ClassService {
     public Page<IClassRoom> getClasses(PageRequest pageRequest, Optional<Long> userId, Optional<Long> teachId, Optional<Long> levelId, Optional<String> title) {
         /** To know the classes of a level or user, it needs to at least be teacher */
         User actualUser = userService.getActualUser();
-        if(userId.isPresent() || teachId.isPresent() || levelId.isPresent()) {
-            if(!roleHelper.can(actualUser.getRole(), "ROLE_TEACHER")) {
+        if (userId.isPresent() || teachId.isPresent() || levelId.isPresent()) {
+            if (!roleHelper.can(actualUser.getRole(), "ROLE_TEACHER")) {
                 throw new NotAuthorization("get class of user ");
             } else {/** Returns the classes where the user or teacher is */
-                if(userId.isPresent()) {
+                if (userId.isPresent()) {
                     if (title.isPresent()) {
                         if (roleHelper.isAdmin(actualUser)) {
-                            return classRepository.findByStudentsIdAndNameContains( userId.get(), title.get(), pageRequest, IClassRoom.class);
+                            return classRepository.findByStudentsIdAndNameContains(userId.get(), title.get(), pageRequest, IClassRoom.class);
                         } else {
-                            return classRepository.findByStudentsIdAndNameContainsAndEnabledTrue( userId.get(), title.get(), pageRequest, IClassRoom.class);
+                            return classRepository.findByStudentsIdAndNameContainsAndEnabledTrue(userId.get(), title.get(), pageRequest, IClassRoom.class);
                         }
                     } else {
                         if (roleHelper.isAdmin(actualUser)) {
-                            return classRepository.findByStudentsId( userId.get(), pageRequest, IClassRoom.class);
+                            return classRepository.findByStudentsId(userId.get(), pageRequest, IClassRoom.class);
                         } else {
-                            return classRepository.findByStudentsIdAndEnabledTrue( userId.get(), pageRequest, IClassRoom.class);
+                            return classRepository.findByStudentsIdAndEnabledTrue(userId.get(), pageRequest, IClassRoom.class);
                         }
                     }
-                } else if (teachId.isPresent()){
+                } else if (teachId.isPresent()) {
                     if (title.isPresent()) {
                         if (roleHelper.isAdmin(actualUser)) {
-                            return classRepository.findByTeachersIdAndNameContains( teachId.get(), title.get(), pageRequest, IClassRoom.class);
+                            return classRepository.findByTeachersIdAndNameContains(teachId.get(), title.get(), pageRequest, IClassRoom.class);
                         } else {
-                            return classRepository.findByTeachersIdAndNameContainsAndEnabledTrue( teachId.get(), title.get(), pageRequest, IClassRoom.class);
+                            return classRepository.findByTeachersIdAndNameContainsAndEnabledTrue(teachId.get(), title.get(), pageRequest, IClassRoom.class);
                         }
 
                     } else {
                         if (roleHelper.isAdmin(actualUser)) {
-                            return classRepository.findByTeachersIdAndEnabledTrue( teachId.get(), pageRequest, IClassRoom.class);
+                            return classRepository.findByTeachersIdAndEnabledTrue(teachId.get(), pageRequest, IClassRoom.class);
                         } else {
-                            return classRepository.findByTeachersId( teachId.get(), pageRequest, IClassRoom.class);
+                            return classRepository.findByTeachersId(teachId.get(), pageRequest, IClassRoom.class);
                         }
                     }
                 } else {
-                    if(title.isPresent()) {
+                    if (title.isPresent()) {
                         if (roleHelper.isAdmin(actualUser)) {
-                            return classRepository.findByLevelsIdAndNameContains( levelId.get(), title.get(), pageRequest, IClassRoom.class);
+                            return classRepository.findByLevelsIdAndNameContains(levelId.get(), title.get(), pageRequest, IClassRoom.class);
                         } else {
-                            return classRepository.findByLevelsIdAndNameContainsAndEnabledTrue( levelId.get(), title.get(), pageRequest, IClassRoom.class);
+                            return classRepository.findByLevelsIdAndNameContainsAndEnabledTrue(levelId.get(), title.get(), pageRequest, IClassRoom.class);
                         }
                     } else {
                         if (roleHelper.isAdmin(actualUser)) {
-                            return classRepository.findByLevelsId( levelId.get(),pageRequest, IClassRoom.class);
+                            return classRepository.findByLevelsId(levelId.get(), pageRequest, IClassRoom.class);
                         } else {
-                            return classRepository.findByLevelsIdAndEnabledTrue( levelId.get(),pageRequest, IClassRoom.class);
+                            return classRepository.findByLevelsIdAndEnabledTrue(levelId.get(), pageRequest, IClassRoom.class);
                         }
                     }
                 }
             }
         } else {
-            if(roleHelper.isAdmin(actualUser)) {
+            if (roleHelper.isAdmin(actualUser)) {
                 /** If ADMIN, returns every class*/
-                if(title.isPresent()) {
+                if (title.isPresent()) {
                     return classRepository.findByAndNameContains(pageRequest, title.get(), IClassRoom.class);
                 } else {
                     return classRepository.findBy(pageRequest, IClassRoom.class);
                 }
             } else if (roleHelper.isTeacher(actualUser)) {
                 /** If TEACHER, returns every class the teacher has created or is in */
-                if(title.isPresent()) {
-                    return classRepository.findByTeachersIdAndNameContainsAndEnabledTrue( actualUser.getId(), title.get(), pageRequest, IClassRoom.class);
+                if (title.isPresent()) {
+                    return classRepository.findByTeachersIdAndNameContainsAndEnabledTrue(actualUser.getId(), title.get(), pageRequest, IClassRoom.class);
                 } else {
-                    return classRepository.findByTeachersIdAndEnabledTrue( actualUser.getId(),pageRequest, IClassRoom.class);
+                    return classRepository.findByTeachersIdAndEnabledTrue(actualUser.getId(), pageRequest, IClassRoom.class);
                 }
             } else {
                 /** If STUDENT, returns every class the user is enrolled in */
-                if(title.isPresent()) {
+                if (title.isPresent()) {
                     return classRepository.findByStudentsIdAndNameContainsAndEnabledTrue(actualUser.getId(), title.get(), pageRequest, IClassRoom.class);
                 } else {
                     return classRepository.findByStudentsIdAndEnabledTrue(actualUser.getId(), pageRequest, IClassRoom.class);
@@ -192,17 +196,17 @@ public class ClassService {
         }
 
         classRepository.save(classRoom);
-        return  classRoom.getId();
+        return classRoom.getId();
     }
 
     public Long addLevel(Long classId, List<IUid> levelsId) {
         ClassRoom classRoom = canEdit(classId);
 
-        for(IUid levelId : levelsId ){
+        for (IUid levelId : levelsId) {
             Level level = levelRepository.findById(levelId.getId()).
                     orElseThrow(() -> new ErrorNotFound("Nivel", levelId.getId()));
             /** If a level is already included does nothing */
-            if(classRoom.getLevels().stream().anyMatch(level1 -> level1.getId() == level.getId())) {
+            if (classRoom.getLevels().stream().anyMatch(level1 -> level1.getId() == level.getId())) {
                 return classId;
             }
 
@@ -221,7 +225,7 @@ public class ClassService {
         Level level = levelRepository.findById(levelId).
                 orElseThrow(() -> new ErrorNotFound("Nivel", levelId));
         /** If a level isn't included does anything */
-        if(!classRoom.getLevels().stream().anyMatch(level1 -> level1.getId() == level.getId())) {
+        if (!classRoom.getLevels().stream().anyMatch(level1 -> level1.getId() == level.getId())) {
             return classId;
         }
 
@@ -235,17 +239,17 @@ public class ClassService {
     public Long addStudents(Long classId, List<String> usersId) {
         ClassRoom classRoom = canEdit(classId);
 
-        for(String username : usersId ){
+        for (String username : usersId) {
             User student = userRepository.findByUsername(username);
-            if(student == null) {
+            if (student == null) {
                 throw new RestError("Doesn't exist a user with name " + username);
             }
             /** Verifies user's role */
-            if(!roleHelper.isUser(student)) {
-                throw  new RestError("User " + username + " is not student");
+            if (!roleHelper.isUser(student)) {
+                throw new RestError("User " + username + " is not student");
             }
             /** If it's already part of the class does nothing */
-            if(classRoom.getStudents().stream().anyMatch(level1 -> level1.getId() == student.getId())) {
+            if (classRoom.getStudents().stream().anyMatch(level1 -> level1.getId() == student.getId())) {
                 return classId;
             }
 
@@ -264,7 +268,7 @@ public class ClassService {
         User student = userRepository.findById(userId).
                 orElseThrow(() -> new ErrorNotFound("Estudiante", userId));
         /** If it isn't part of the class does nothing */
-        if(!classRoom.getStudents().stream().anyMatch(level1 -> level1.getId() == student.getId())) {
+        if (!classRoom.getStudents().stream().anyMatch(level1 -> level1.getId() == student.getId())) {
             return classId;
         }
 
@@ -278,19 +282,19 @@ public class ClassService {
     public Long addTeachers(Long classId, List<String> usersId) {
         ClassRoom classRoom = canEdit(classId);
 
-        for(String username : usersId ){
+        for (String username : usersId) {
             User teacher = userRepository.findByUsername(username);
-            if(teacher == null) {
+            if (teacher == null) {
                 throw new RestError("User " + username + " does not exist");
             }
 
             /** Verify its role*/
-            if(!roleHelper.isTeacher(teacher)) {
-                throw  new RestError("The user " + username + " is not a teacher");
+            if (!roleHelper.isTeacher(teacher)) {
+                throw new RestError("The user " + username + " is not a teacher");
             }
 
             /** If it is already part of the class does nothing */
-            if(classRoom.getTeachers().stream().anyMatch(level1 -> level1.getId() == teacher.getId())) {
+            if (classRoom.getTeachers().stream().anyMatch(level1 -> level1.getId() == teacher.getId())) {
                 return classId;
             }
 
@@ -310,7 +314,7 @@ public class ClassService {
                 orElseThrow(() -> new ErrorNotFound("Profesor", userId));
 
         /** If it is not part of the class does nothing */
-        if(!classRoom.getTeachers().stream().anyMatch(level1 -> level1.getId() == teacher.getId())) {
+        if (!classRoom.getTeachers().stream().anyMatch(level1 -> level1.getId() == teacher.getId())) {
             return classId;
         }
 
@@ -324,16 +328,16 @@ public class ClassService {
         return classRoom.getId();
     }
 
-    private ClassRoom canEdit(Long classId){
+    private ClassRoom canEdit(Long classId) {
 
         User actualUser = userService.getActualUser();
 
         /** Gets the original class*/
         ClassRoom classRoom = classRepository.findById(classId).
-                orElseThrow(() -> new ErrorNotFound("clase", classId ));
+                orElseThrow(() -> new ErrorNotFound("clase", classId));
 
         /** Verifies if the actualUser is ROLE_ADMIN or ROLE_TEACHERS */
-        if(!roleHelper.isAdmin(actualUser) && !classRoom.getTeachers().stream().anyMatch(t -> t.getId() == actualUser.getId())) {
+        if (!roleHelper.isAdmin(actualUser) && !classRoom.getTeachers().stream().anyMatch(t -> t.getId() == actualUser.getId())) {
             throw new NotAuthorization("Modificar la clase " + classId);
         }
 

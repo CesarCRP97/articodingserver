@@ -33,7 +33,7 @@ public class RoleHelper {
             roles.add(this.roleRepository.findByName("ROLE_TEACHER"));
             roles.add(this.roleRepository.findByName("ROLE_USER"));
         }
-        if (actualUserRoles.contains("ROLE_USER")){
+        if (actualUserRoles.contains("ROLE_USER")) {
             roles.add(this.roleRepository.findByName("ROLE_USER"));
         }
         return roles;
@@ -42,6 +42,7 @@ public class RoleHelper {
     public boolean isAdmin(User user) {
         return user.getRole().getName().equals("ROLE_ADMIN");
     }
+
     public boolean can(Role roles, String necessaryRoot) {
 
         if (necessaryRoot.equals("ROLE_ADMIN")) {
@@ -54,7 +55,7 @@ public class RoleHelper {
         if (necessaryRoot.equals("ROLE_USER")) {
             return roles.getName().equals("ROLE_ADMIN") ||
                     roles.getName().equals("ROLE_TEACHER") ||
-                    roles.getName().equals("ROLE_USER") ;
+                    roles.getName().equals("ROLE_USER");
         }
         return false;
     }
@@ -70,6 +71,7 @@ public class RoleHelper {
     public Role getAdmin() {
         return roleRepository.findByName("ROLE_ADMIN");
     }
+
     public Role getTeacher() {
         return roleRepository.findByName("ROLE_TEACHER");
     }

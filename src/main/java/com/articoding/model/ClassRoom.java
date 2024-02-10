@@ -1,16 +1,20 @@
 package com.articoding.model;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 import java.util.List;
 
 @Entity
 @Table(name = "class")
 public class ClassRoom {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false)
-    private Long id;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
@@ -21,7 +25,6 @@ public class ClassRoom {
                     name = "teacher_id", referencedColumnName = "id")
     )
     List<User> teachers;
-
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "class_student",
@@ -31,7 +34,6 @@ public class ClassRoom {
                     name = "student_id", referencedColumnName = "id")
     )
     List<User> students;
-
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "class_levels",
@@ -41,11 +43,12 @@ public class ClassRoom {
                     name = "level_id", referencedColumnName = "id")
     )
     List<Level> levels;
-
     String description;
-
     String name;
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id", nullable = false)
+    private Long id;
     @Column
     private boolean enabled = true;
 

@@ -4,7 +4,10 @@ import com.articoding.RoleHelper;
 import com.articoding.error.ErrorNotFound;
 import com.articoding.error.NotAuthorization;
 import com.articoding.error.RestError;
-import com.articoding.model.*;
+import com.articoding.model.ClassRoom;
+import com.articoding.model.Role;
+import com.articoding.model.User;
+import com.articoding.model.UserForm;
 import com.articoding.model.in.IUser;
 import com.articoding.model.in.IUserDetail;
 import com.articoding.model.in.UpdateUserForm;
@@ -19,7 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,8 +49,8 @@ public class UserService {
     public Long save(UserForm user) {
         /** Verifies user is at least ROLE_TEACHER */
         User actualUser = this.getActualUser();
-        if(!roleHelper.can(actualUser.getRole(),"ROLE_TEACHER")) {
-            throw new  NotAuthorization("crear usuarios");
+        if (!roleHelper.can(actualUser.getRole(), "ROLE_TEACHER")) {
+            throw new NotAuthorization("crear usuarios");
         }
 
         User newUser = prepareUser(user, actualUser);
@@ -57,62 +60,62 @@ public class UserService {
         return createdUser.getId();
     }
 
-        private User prepareUser(UserForm user, User actualUser) {
-            User newUser = new User();
-            newUser.setUsername(user.getUsername());
-            newUser.setPassword(bcryptEncoder.encode(user.getPassword()));
-            newUser.setEnabled(true);
+    private User prepareUser(UserForm user, User actualUser) {
+        User newUser = new User();
+        newUser.setUsername(user.getUsername());
+        newUser.setPassword(bcryptEncoder.encode(user.getPassword()));
+        newUser.setEnabled(true);
 
-            /** Comprobamos que no exista un usuario con ese username */
-            if (userRepository.findByUsername(user.getUsername()) != null) {
+        /** Comprobamos que no exista un usuario con ese username */
+        if (userRepository.findByUsername(user.getUsername()) != null) {
             throw new RestError("El usuario con nombre " + user.getUsername() + " ya existe.");
         }
 
         /** Comprobamos que el nombre sea correcto*/
-        if(!user.getUsername().matches("^[a-zA-Z0-9-_]+$")) {
+        if (!user.getUsername().matches("^[a-zA-Z0-9-_]+$")) {
             throw new RestError("El nombre solo puede contener carácteres alfanumericos y '_' .");
         }
 
         /** Añadimos los roles, comprobando que el usuario tiene permisos para asignarlos según su nivel */
-            Role newRole = null;
-            switch (user.getRole()) {
-                case "ROLE_ADMIN": {
-                    if (roleHelper.isAdmin(actualUser)) {
-                        newRole = roleHelper.getAdmin();
-                    } else {
-                        throw new NotAuthorization("crear usuarios ADMIN");
-                    }
+        Role newRole = null;
+        switch (user.getRole()) {
+            case "ROLE_ADMIN": {
+                if (roleHelper.isAdmin(actualUser)) {
+                    newRole = roleHelper.getAdmin();
+                } else {
+                    throw new NotAuthorization("crear usuarios ADMIN");
                 }
-                break;
-
-                case "ROLE_TEACHER": {
-                    if (roleHelper.isAdmin(actualUser)) {
-                        newRole = roleHelper.getTeacher();
-                    } else {
-                        throw new NotAuthorization("crear usuarios PROFESOR");
-                    }
-                }
-                break;
-
-                case "ROLE_USER": {
-                    newRole = roleHelper.getUser();
-                }
-                break;
-
-                default:
-                    throw new RestError("Los posibles roles son: ROLE_USER,ROLE_TEACHER,ROLE_ADMIN");
             }
+            break;
+
+            case "ROLE_TEACHER": {
+                if (roleHelper.isAdmin(actualUser)) {
+                    newRole = roleHelper.getTeacher();
+                } else {
+                    throw new NotAuthorization("crear usuarios PROFESOR");
+                }
+            }
+            break;
+
+            case "ROLE_USER": {
+                newRole = roleHelper.getUser();
+            }
+            break;
+
+            default:
+                throw new RestError("Los posibles roles son: ROLE_USER,ROLE_TEACHER,ROLE_ADMIN");
+        }
         newUser.setRole(newRole);
 
         /** Añadimos las clases, comprobando que el usuario es profesor de ellas*/
         List<ClassRoom> classRoomList = new ArrayList<>();
 
         /** Si hay clases, comprobamos que sea alumno*/
-        if(!user.getClasses().isEmpty() && !roleHelper.isUser(newUser)){
-           throw new RestError("No se puede matricular en clases al alumno " + user.getUsername() + " con role " + user.getRole());
+        if (!user.getClasses().isEmpty() && !roleHelper.isUser(newUser)) {
+            throw new RestError("No se puede matricular en clases al alumno " + user.getUsername() + " con role " + user.getRole());
         }
 
-        for (Long idClass: user.getClasses()) {
+        for (Long idClass : user.getClasses()) {
             ClassRoom classRoom = classRepository.findById(idClass)
                     .orElseThrow(() -> new ErrorNotFound("clase", idClass));
             if (!classRoom.getTeachers().stream().anyMatch(t -> t.getId() == actualUser.getId())) {
@@ -128,8 +131,8 @@ public class UserService {
     public void saveAll(List<UserForm> userFormList) {
         /** Comprobamos que sea, mínimo profesor */
         User actualUser = this.getActualUser();
-        if(!roleHelper.can(actualUser.getRole(),"ROLE_TEACHER")) {
-            throw new  NotAuthorization("crear usuarios");
+        if (!roleHelper.can(actualUser.getRole(), "ROLE_TEACHER")) {
+            throw new NotAuthorization("crear usuarios");
         }
         List<User> usersList = new ArrayList<>();
 
@@ -137,15 +140,16 @@ public class UserService {
 
         userRepository.saveAll(usersList);
     }
+
     public Page<IUser> geAllUser(PageRequest pageable, Optional<Long> clase, boolean teacher, Optional<String> title) {
         User actualUser = this.getActualUser();
         /** Comprobamos que sea, mínimo profesor */
-        if(!roleHelper.can(actualUser.getRole(),"ROLE_TEACHER")) {
-            throw new  NotAuthorization("obtener usuarios");
+        if (!roleHelper.can(actualUser.getRole(), "ROLE_TEACHER")) {
+            throw new NotAuthorization("obtener usuarios");
         }
 
         /** Si quiere todos los usuarios de una clase*/
-        if(clase.isPresent()) {
+        if (clase.isPresent()) {
             /** Comprobamos que exista la clase*/
             ClassRoom classRoom = classRepository.findById(clase.get())
                     .orElseThrow(() -> new ErrorNotFound("clase", clase.get()));
@@ -154,31 +158,31 @@ public class UserService {
             if (!roleHelper.isAdmin(actualUser) && !classRoom.getTeachers().stream().anyMatch(t -> t.getId() == actualUser.getId())) {
                 throw new NotAuthorization("obtener alumnos de la clase " + clase.get());
             }
-            if(teacher) {
-                if(title.isPresent()) {
-                    return userRepository.findByOwnerClassRoomsInAndUsernameContains(pageable, Arrays.asList(classRoom), title.get(), IUser.class);
+            if (teacher) {
+                if (title.isPresent()) {
+                    return userRepository.findByOwnerClassRoomsInAndUsernameContains(pageable, Collections.singletonList(classRoom), title.get(), IUser.class);
                 } else {
-                    return userRepository.findByOwnerClassRoomsIn(pageable, Arrays.asList(classRoom) , IUser.class);
+                    return userRepository.findByOwnerClassRoomsIn(pageable, Collections.singletonList(classRoom), IUser.class);
                 }
             } else {
-                if(title.isPresent()) {
-                    return userRepository.findByClassRoomsInAndUsernameContains(pageable, Arrays.asList(classRoom) , title.get(), IUser.class);
+                if (title.isPresent()) {
+                    return userRepository.findByClassRoomsInAndUsernameContains(pageable, Collections.singletonList(classRoom), title.get(), IUser.class);
                 } else {
-                    return userRepository.findByClassRoomsIn(pageable, Arrays.asList(classRoom) , IUser.class);
+                    return userRepository.findByClassRoomsIn(pageable, Collections.singletonList(classRoom), IUser.class);
                 }
             }
 
         } else {
             /** Si es admin, mostramos todos */
-            if(roleHelper.isAdmin(actualUser)) {
-                if(title.isPresent()) {
+            if (roleHelper.isAdmin(actualUser)) {
+                if (title.isPresent()) {
                     return userRepository.findByUsernameContains(pageable, title.get(), IUser.class);
                 } else {
                     return userRepository.findBy(pageable, IUser.class);
                 }
             } else {
                 /** Si es profesor mostramos solo USER */
-                if(title.isPresent()) {
+                if (title.isPresent()) {
                     return userRepository.findByRoleAndUsernameContains(pageable, roleHelper.getUser(), title.get());
                 } else {
                     return userRepository.findByRole(pageable, roleHelper.getUser());
@@ -190,8 +194,8 @@ public class UserService {
     public IUserDetail getUser(Long userId) {
         User actualUser = this.getActualUser();
         /** Comprobamos que sea, mínimo profesor */
-        if(!roleHelper.can(actualUser.getRole(),"ROLE_TEACHER")) {
-            throw new  NotAuthorization("obtener usuario");
+        if (!roleHelper.can(actualUser.getRole(), "ROLE_TEACHER")) {
+            throw new NotAuthorization("obtener usuario");
         }
 
         /** Comprobamos que existe */
@@ -199,7 +203,7 @@ public class UserService {
                 .orElseThrow(() -> new ErrorNotFound("clase", userId));
 
         /** Si es solo profesor, nos aseguramos de que el usuario es alumno */
-        if(!roleHelper.isAdmin(actualUser)) {
+        if (!roleHelper.isAdmin(actualUser)) {
             if (!roleHelper.isUser(user)) {
                 throw new NotAuthorization("obtener usuario");
             }
@@ -221,10 +225,10 @@ public class UserService {
             throw new NotAuthorization("modificar el usuario " + userId);
         } else {
             /** Podemos modificar */
-            if (updateUserForm.getPassword() != null ) {
+            if (updateUserForm.getPassword() != null) {
                 userOld.setPassword(bcryptEncoder.encode(updateUserForm.getPassword()));
             }
-            if (updateUserForm.isEnabled() != null ) {
+            if (updateUserForm.isEnabled() != null) {
                 userOld.setEnabled(updateUserForm.isEnabled());
             }
 

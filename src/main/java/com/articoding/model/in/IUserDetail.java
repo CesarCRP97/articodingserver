@@ -4,18 +4,18 @@ import java.util.List;
 
 public interface IUserDetail {
 
-    public Integer getId();
+    Integer getId();
 
-    public String getUsername();
+    String getUsername();
 
-    public boolean isEnabled();
+    boolean isEnabled();
 
-    public IRole getRole();
+    IRole getRole();
 
-    public List<ILevel> getCreatedLevels();
+    List<ILevel> getCreatedLevels();
 
-    public List<IClassRoom> getClassRooms();
+    List<IClassRoom> getClassRooms();
 
-    public List<IClassRoom> getOwnerClassRooms();
+    List<IClassRoom> getOwnerClassRooms();
 
 }
