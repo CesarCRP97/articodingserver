@@ -67,7 +67,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .expressionHandler(webCustomSecurityExpressionHandler())
 
                 .antMatchers("/login").permitAll()
-                .antMatchers(HttpMethod.PUT, "/users/students").permitAll()
+                .antMatchers(HttpMethod.POST, "/users/students").permitAll()
                 .antMatchers("/swagger-ui.html").permitAll()
                 // all other requests need to be authenticated and ADMIN
 
