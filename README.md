@@ -53,7 +53,7 @@ El proyecto Maven esta sobre Spring Boot, para su despliegue:
 7. Desplegar el jar generado con: java ```java -jar ```
     - El .jar generado se guarda en la carpeta .\target
     - Para desplegar el jar, abre el terminal en la ubicación del .jar e introducir el comando *java -jar [articodingserver-X.X.X.jar]*
-
+    - El servidor escucha en el puerto 8080
 
 ## Resources
 
