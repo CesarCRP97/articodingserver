@@ -28,6 +28,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     <T> Page<T> findByOwnerClassRoomsInAndUsernameContains(Pageable pageable, List<ClassRoom> classRooms, String username, Class<T> type);
 
+    <T> Page<T> findLikedLevelsByTitleContains(User actualUser, Pageable pageable, Class<T> type, String title);
+
+    <T> Page<T> findLikedLevels(User actualUser, Pageable pageable, Class<T> type);
+
+
     <T> Page<T> findBy(Pageable pageable, Class<T> type);
 
     <T> Page<T> findByUsernameContains(Pageable pageable, String username, Class<T> type);

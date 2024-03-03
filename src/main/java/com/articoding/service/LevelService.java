@@ -17,6 +17,7 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -230,10 +231,10 @@ public class LevelService {
                 return levelRepository.findByPublicLevelTrueLikesTrueAndTitleContains(userService.getActualUser(), pageRequest, ILevel.class, title.get());
             }
             else {
-                return levelRepository.findByPublicLevelTrueAndTitleContains(pageRequest, ILevel.class, title.get());
+                return userService.findLikedLevelsByTitleContains(pageRequest, ILevel.class, title.get());
             }
         }else if(likes.isPresent()){
-            return levelRepository.findByPublicLevelTrueLikesTrue(userService.getActualUser(), pageRequest, ILevel.class);
+            return userService.findByPublicLevelTrueLikesTrue(pageRequest, ILevel.class);
         }
         else {
             return levelRepository.findByPublicLevelTrue(pageRequest, ILevel.class);

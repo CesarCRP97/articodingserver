@@ -8,6 +8,7 @@ import com.articoding.model.ClassRoom;
 import com.articoding.model.Role;
 import com.articoding.model.User;
 import com.articoding.model.UserForm;
+import com.articoding.model.in.ILevel;
 import com.articoding.model.in.IUser;
 import com.articoding.model.in.IUserDetail;
 import com.articoding.model.in.UpdateUserForm;
@@ -262,5 +263,13 @@ public class UserService {
             return userRepository.save(userOld).getId();
 
         }
+    }
+
+    public Page<ILevel> findLikedLevelsByTitleContains(PageRequest pageRequest, Class<ILevel> iLevelClass, String s) {
+        return userRepository.findLikedLevelsByTitleContains(getActualUser(), pageRequest, iLevelClass, s);
+    }
+
+    public Page<ILevel> findByPublicLevelTrueLikesTrue(PageRequest pageRequest, Class<ILevel> iLevelClass) {
+        return  userRepository.findLikedLevels(getActualUser(),pageRequest,iLevelClass);
     }
 }
