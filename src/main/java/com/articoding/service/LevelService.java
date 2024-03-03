@@ -80,10 +80,8 @@ public class LevelService {
 
     public ILevel getLevel(User actualUser, Long levelId) {
         /** Verifies if the classroom exists */
-        Level level = levelRepository.findById(levelId, Level.class);
-        if (level == null) {
-            throw new ErrorNotFound("nivel", levelId);
-        }
+        Level level = levelRepository.findById(levelId)
+                .orElseThrow(() -> new ErrorNotFound("level", levelId));
 
         if (!level.isActive() && !roleHelper.isAdmin(actualUser) && !(roleHelper.isTeacher(actualUser) && level.getOwner().getId() == actualUser.getId())) {
             throw new NotAuthorization("nivel desactivado");
@@ -207,20 +205,30 @@ public class LevelService {
     //Basicamente queremos que suba o baje el marcador de likes. Tambien pedimos el identificador del proximo para anadir
     //una fila con la nueva relacion entre levelId y el usuario a la lista.
     public long likeLevel(LevelForm levelForm, long levelId){
+
+        Level level = levelRepository.findById(levelId)
+                .orElseThrow(() -> new ErrorNotFound("level", levelId));
+        level.incrLikes();
         User actualUser = userService.getActualUser();
-        Optional<Level> l = levelRepository.findById(levelId);
-        l.ifPresent(Level::incrLikes);
+        /*Añadir a lista favoritos_deUsuarios*/
         return levelId;
     }
 
     public long dislikeLevel(LevelForm levelForm, Long levelId) {
+
+        Level level = levelRepository.findById(levelId)
+                .orElseThrow(() -> new ErrorNotFound("level", levelId));
+
+        level.decrLikes();
         User actualUser = userService.getActualUser();
-        Optional<Level> l = levelRepository.findById(levelId);
-        l.ifPresent(Level::decrLikes);
+        /*Eliminar de lista favoritos_deUsuarios*/
         return levelId;
     }
 
     public long playLevel(LevelForm levelForm, Long levelId) {
-        
+        Level level = levelRepository.findById(levelId)
+                .orElseThrow(() -> new ErrorNotFound("level", levelId));
+        level.increaseTimesPlayed();
+        return levelId;
     }
 }
