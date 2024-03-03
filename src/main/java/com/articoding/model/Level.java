@@ -27,6 +27,10 @@ public class Level {
 
     private String description;
 
+    private int likes;
+
+    private int timesPlayed;
+
     /**
      * TODO-Eliminar
      */
@@ -85,6 +89,21 @@ public class Level {
         this.description = description;
     }
 
+    public int getLikes() {
+        return likes;
+    }
+
+    public void setLikes(int likes) {
+        this.likes = likes;
+    }
+
+    public int getTimesPlayed() {
+        return timesPlayed;
+    }
+
+    public void setTimesPlayed(int t) {
+        this.timesPlayed = t;
+    }
     /**
      * TODO - Eliminar
      */

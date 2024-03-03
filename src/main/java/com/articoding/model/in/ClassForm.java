@@ -2,7 +2,7 @@ package com.articoding.model.in;
 
 import java.util.List;
 
-public class ClassForm {
+public class    ClassForm {
 
     List<Long> studentsId;
 
