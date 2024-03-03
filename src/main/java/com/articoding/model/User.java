@@ -53,16 +53,6 @@ public class User {
     )
     private List<Level> likedLevels;
 
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "levels_downloaded",
-            joinColumns = @JoinColumn(
-                    name = "user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(
-                    name = "level_id", referencedColumnName = "id")
-    )
-    private List<Level> downloadedLevels;
     // Hasta aqui
 
 
@@ -120,13 +110,6 @@ public class User {
         this.likedLevels = likedLevels;
     }
 
-    public List<Level> getDownloadedLevels() {
-        return downloadedLevels;
-    }
-
-    public void setDownloadedLevels(List<Level> downloadedLevels) {
-        this.downloadedLevels = downloadedLevels;
-    }
 
     public List<Level> getCreatedLevels() {
         return createdLevels;
