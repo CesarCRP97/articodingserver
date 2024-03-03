@@ -117,7 +117,7 @@ public class LevelService {
 
     //Todo- refactor, too many lanes, this code has to be in private methods.
     public Page<ILevel> getLevels(PageRequest pageRequest, Optional<Long> classId,
-                                  Optional<Long> userId, Optional<Boolean> publicLevels, Optional<String> title) {
+                                  Optional<Long> userId, Optional<Boolean> publicLevels, Optional<Boolean> likes, Optional<String> title) {
         User actualUser = userService.getActualUser();
         /** If there is a classId then returns levels from the classroom */
         if (classId.isPresent()) {
@@ -202,5 +202,25 @@ public class LevelService {
             return levelRepository.save(levelOld).getId();
 
         }
+    }
+
+    //Basicamente queremos que suba o baje el marcador de likes. Tambien pedimos el identificador del proximo para anadir
+    //una fila con la nueva relacion entre levelId y el usuario a la lista.
+    public long likeLevel(LevelForm levelForm, long levelId){
+        User actualUser = userService.getActualUser();
+        Optional<Level> l = levelRepository.findById(levelId);
+        l.ifPresent(Level::incrLikes);
+        return levelId;
+    }
+
+    public long dislikeLevel(LevelForm levelForm, Long levelId) {
+        User actualUser = userService.getActualUser();
+        Optional<Level> l = levelRepository.findById(levelId);
+        l.ifPresent(Level::decrLikes);
+        return levelId;
+    }
+
+    public long playLevel(LevelForm levelForm, Long levelId) {
+        
     }
 }

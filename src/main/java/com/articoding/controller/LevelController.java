@@ -6,6 +6,7 @@ import com.articoding.model.in.UpdateLevelForm;
 import com.articoding.model.rest.CreatedRef;
 import com.articoding.service.LevelService;
 import com.articoding.service.UserService;
+import io.swagger.models.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 
 import java.util.Optional;
 
@@ -49,15 +51,34 @@ public class LevelController {
             @RequestParam(name = "class", required = false) Optional<Long> classId,
             @RequestParam(name = "user", required = false) Optional<Long> userId,
             @RequestParam(name = "publicLevels", required = false) Optional<Boolean> publicLevels,
+            @RequestParam(name = "likes", required = false) Optional<Boolean> likes,
             @RequestParam(name = "title", required = false) Optional<String> title
     ) {
-        return ResponseEntity.ok(levelService.getLevels(PageRequest.of(page, size), classId, userId, publicLevels, title));
+        return ResponseEntity.ok(levelService.getLevels(PageRequest.of(page, size), classId, userId, publicLevels, likes, title));
     }
 
     @PutMapping("/{levelId}")
     public ResponseEntity<CreatedRef> updateLevel(@RequestBody UpdateLevelForm levelForm,
                                                   @PathVariable(value = "levelId") Long levelId) {
         return ResponseEntity.ok(new CreatedRef("levels/" + levelService.updateLevel(levelForm, levelId)));
+    }
+
+    @PostMapping("/{levelId}/increaselikes")
+    public ResponseEntity<CreatedRef> increaseLevelsLikes(@RequestBody LevelForm levelForm,
+                                                          @PathVariable(value = "levelId") Long levelId){
+        return ResponseEntity.ok(new CreatedRef("levels/" + levelService.likeLevel(levelForm, levelId)));
+    }
+
+    @PostMapping("/{levelId}/decreaselikes")
+    public ResponseEntity<CreatedRef> decreaseLevelsLikes(@RequestBody LevelForm levelForm,
+                                                          @PathVariable(value = "levelId") Long levelId) {
+        return ResponseEntity.ok(new CreatedRef("levels/" + levelService.dislikeLevel(levelForm, levelId)));
+    }
+
+    @PostMapping("/{levelId}/play")
+    public ResponseEntity<CreatedRef> playLevel(@RequestBody LevelForm levelForm,
+                                                          @PathVariable(value = "levelId") Long levelId) {
+        return ResponseEntity.ok(new CreatedRef("levels/" + levelService.playLevel(levelForm, levelId)));
     }
 
 }

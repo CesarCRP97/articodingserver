@@ -31,18 +31,6 @@ public class Level {
 
     private int timesPlayed;
 
-    /**
-     * TODO-Eliminar
-     */
-    @OneToMany(mappedBy = "level", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Valoration> valorationList;
-
-    @OneToMany(mappedBy = "level", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comment> commentList;
-    /**
-     *
-     */
-
 
     @ManyToMany(mappedBy = "levels")
     private List<ClassRoom> classRooms;
@@ -93,9 +81,10 @@ public class Level {
         return likes;
     }
 
-    public void setLikes(int likes) {
-        this.likes = likes;
-    }
+    public void setLikes(int likes) { this.likes = likes;}
+
+    public void incrLikes(){this.likes++;}
+    public void decrLikes(){this.likes--;}
 
     public int getTimesPlayed() {
         return timesPlayed;
@@ -104,25 +93,9 @@ public class Level {
     public void setTimesPlayed(int t) {
         this.timesPlayed = t;
     }
-    /**
-     * TODO - Eliminar
-     */
-    public List<Valoration> getValorationList() {
-        return valorationList;
-    }
 
-    public void setValorationList(List<Valoration> valorationList) {
-        this.valorationList = valorationList;
-    }
+    public void increaseTimesPlayed(){this.timesPlayed++;}
 
-    public List<Comment> getCommentList() {
-        return commentList;
-    }
-
-    public void setCommentList(List<Comment> commentList) {
-        this.commentList = commentList;
-    }
-    /**/
 
     public List<ClassRoom> getClassRooms() {
         return classRooms;
