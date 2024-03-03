@@ -6,7 +6,6 @@ import com.articoding.model.in.UpdateLevelForm;
 import com.articoding.model.rest.CreatedRef;
 import com.articoding.service.LevelService;
 import com.articoding.service.UserService;
-import io.swagger.models.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 
 import java.util.Optional;
 
@@ -65,7 +63,7 @@ public class LevelController {
 
     @PostMapping("/{levelId}/increaselikes")
     public ResponseEntity<CreatedRef> increaseLevelsLikes(@RequestBody LevelForm levelForm,
-                                                          @PathVariable(value = "levelId") Long levelId){
+                                                          @PathVariable(value = "levelId") Long levelId) {
         return ResponseEntity.ok(new CreatedRef("levels/" + levelService.likeLevel(levelForm, levelId)));
     }
 
@@ -77,7 +75,7 @@ public class LevelController {
 
     @PostMapping("/{levelId}/play")
     public ResponseEntity<CreatedRef> playLevel(@RequestBody LevelForm levelForm,
-                                                          @PathVariable(value = "levelId") Long levelId) {
+                                                @PathVariable(value = "levelId") Long levelId) {
         return ResponseEntity.ok(new CreatedRef("levels/" + levelService.playLevel(levelForm, levelId)));
     }
 

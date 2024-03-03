@@ -113,7 +113,6 @@ public class LevelService {
 
     }
 
-    //Todo- refactor, too many lanes, this code has to be in private methods.
     public Page<ILevel> getLevels(PageRequest pageRequest, Optional<Long> classId, Optional<Long> userId,
                                   Optional<Boolean> publicLevels, Optional<Boolean> likes, Optional<String> title) {
 
@@ -166,7 +165,7 @@ public class LevelService {
 
     //Basicamente queremos que suba o baje el marcador de likes. Tambien pedimos el identificador del proximo para anadir
     //una fila con la nueva relacion entre levelId y el usuario a la lista.
-    public long likeLevel(LevelForm levelForm, long levelId){
+    public long likeLevel(LevelForm levelForm, long levelId) {
 
         Level level = levelRepository.findById(levelId)
                 .orElseThrow(() -> new ErrorNotFound("level", levelId));
@@ -195,9 +194,7 @@ public class LevelService {
     }
 
 
-
-
-    private Page<ILevel> getLevelsFromClass(PageRequest pageRequest, User actualUser, Optional<Long> classId, Optional<String> title){
+    private Page<ILevel> getLevelsFromClass(PageRequest pageRequest, User actualUser, Optional<Long> classId, Optional<String> title) {
         /** Checks if the classroom exists */
         ClassRoom classRoom = classRepository.findById(classId.get())
                 .orElseThrow(() -> new ErrorNotFound("clase", classId.get()));
@@ -216,7 +213,8 @@ public class LevelService {
 
         }
     }
-    private Page<ILevel> getLevelsFromUserId(PageRequest pageRequest, User actualUser, Optional<Long> userId){
+
+    private Page<ILevel> getLevelsFromUserId(PageRequest pageRequest, User actualUser, Optional<Long> userId) {
         /** If there is a userId it checks if the user is ADMIN or . */
         if (!roleHelper.isAdmin(actualUser)) {
             throw new NotAuthorization("ver niveles del usuario " + userId.get());
@@ -226,14 +224,15 @@ public class LevelService {
     }
 
 
-    private Page<ILevel> getPublicLevels(PageRequest pageRequest, Optional<String> title){
+    private Page<ILevel> getPublicLevels(PageRequest pageRequest, Optional<String> title) {
         if (title.isPresent()) {
             return levelRepository.findByPublicLevelTrueAndTitleContains(pageRequest, ILevel.class, title.get());
         } else {
             return levelRepository.findByPublicLevelTrue(pageRequest, ILevel.class);
         }
     }
-    private Page<ILevel> getOwnedLevels(PageRequest pageRequest, Optional<String> title, User actualUser){
+
+    private Page<ILevel> getOwnedLevels(PageRequest pageRequest, Optional<String> title, User actualUser) {
         /** If it's ADMIN then it returns every level */
         if (roleHelper.isAdmin(actualUser)) {
             if (title.isPresent()) {

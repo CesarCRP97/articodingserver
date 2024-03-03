@@ -1,6 +1,5 @@
 package com.articoding.model;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,7 +7,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.List;
 
@@ -81,10 +79,17 @@ public class Level {
         return likes;
     }
 
-    public void setLikes(int likes) { this.likes = likes;}
+    public void setLikes(int likes) {
+        this.likes = likes;
+    }
 
-    public void incrLikes(){this.likes++;}
-    public void decrLikes(){this.likes--;}
+    public void incrLikes() {
+        this.likes++;
+    }
+
+    public void decrLikes() {
+        this.likes--;
+    }
 
     public int getTimesPlayed() {
         return timesPlayed;
@@ -94,7 +99,9 @@ public class Level {
         this.timesPlayed = t;
     }
 
-    public void increaseTimesPlayed(){this.timesPlayed++;}
+    public void increaseTimesPlayed() {
+        this.timesPlayed++;
+    }
 
 
     public List<ClassRoom> getClassRooms() {

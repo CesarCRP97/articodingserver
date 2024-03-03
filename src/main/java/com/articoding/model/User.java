@@ -111,8 +111,13 @@ public class User {
         this.likedLevels = likedLevels;
     }
 
-    public void addLikedLevel(Level level){ this.likedLevels.add(level);}
-    public void deleteLikedLevel(Level level){ this.likedLevels.remove(level); }
+    public void addLikedLevel(Level level) {
+        this.likedLevels.add(level);
+    }
+
+    public void deleteLikedLevel(Level level) {
+        this.likedLevels.remove(level);
+    }
 
     public List<Level> getCreatedLevels() {
         return createdLevels;
