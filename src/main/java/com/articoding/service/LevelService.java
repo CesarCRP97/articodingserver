@@ -125,7 +125,7 @@ public class LevelService {
         } else {
             if (publicLevels.isPresent()) {
                 /** If publicLevels is true, returns all public levels. */
-                return getPublicLevels(pageRequest, title);
+                return getPublicLevels(pageRequest, title, likes);
             } else {
                 return getOwnedLevels(pageRequest, title, actualUser);
             }
@@ -224,10 +224,18 @@ public class LevelService {
     }
 
 
-    private Page<ILevel> getPublicLevels(PageRequest pageRequest, Optional<String> title) {
+    private Page<ILevel> getPublicLevels(PageRequest pageRequest, Optional<String> title, Optional<Boolean> likes) {
         if (title.isPresent()) {
-            return levelRepository.findByPublicLevelTrueAndTitleContains(pageRequest, ILevel.class, title.get());
-        } else {
+            if(likes.isPresent()){
+                return levelRepository.findByPublicLevelTrueLikesTrueAndTitleContains(userService.getActualUser(), pageRequest, ILevel.class, title.get());
+            }
+            else {
+                return levelRepository.findByPublicLevelTrueAndTitleContains(pageRequest, ILevel.class, title.get());
+            }
+        }else if(likes.isPresent()){
+            return levelRepository.findByPublicLevelTrueLikesTrue(userService.getActualUser(), pageRequest, ILevel.class);
+        }
+        else {
             return levelRepository.findByPublicLevelTrue(pageRequest, ILevel.class);
         }
     }
