@@ -210,7 +210,7 @@ public class LevelService {
                 .orElseThrow(() -> new ErrorNotFound("level", levelId));
         level.incrLikes();
         User actualUser = userService.getActualUser();
-        /*Añadir a lista favoritos_deUsuarios*/
+        actualUser.addLikedLevel(level);
         return levelId;
     }
 
@@ -221,7 +221,7 @@ public class LevelService {
 
         level.decrLikes();
         User actualUser = userService.getActualUser();
-        /*Eliminar de lista favoritos_deUsuarios*/
+        actualUser.deleteLikedLevel(level);
         return levelId;
     }
 
