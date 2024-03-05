@@ -128,27 +128,10 @@ public class LevelService {
         } else {
             if (publicLevels.isPresent()) {
                 /** If publicLevels is true, returns all public levels. */
-                if (title.isPresent()) {
-                    return levelRepository.findByPublicLevelTrueAndTitleContains(pageRequest, ILevel.class, title.get());
-                } else {
-                    return levelRepository.findByPublicLevelTrue(pageRequest, ILevel.class);
-                }
+                return getPublicLevels(pageRequest, title);
             } else {
                 /** If it's ADMIN then it returns every level */
-                if (roleHelper.isAdmin(actualUser)) {
-                    if (title.isPresent()) {
-                        return levelRepository.findByTitleContains(pageRequest, title.get(), ILevel.class);
-                    } else {
-                        return levelRepository.findBy(pageRequest, ILevel.class);
-                    }
-                } else {
-                    /** Otherwise, returns only the levels created by the user */
-                    if (title.isPresent()) {
-                        return levelRepository.findByOwnerAndActiveTrueAndTitleContains(actualUser, title.get(), pageRequest, ILevel.class);
-                    } else {
-                        return levelRepository.findByOwnerAndActiveTrue(actualUser, pageRequest, ILevel.class);
-                    }
-                }
+                return getOwnedLevels(pageRequest, title, actualUser);
             }
 
         }
@@ -233,6 +216,33 @@ public class LevelService {
             throw new NotAuthorization("ver niveles del usuario " + userId.get());
         } else {
             return levelRepository.findByOwnerAndActiveTrue(actualUser, pageRequest, ILevel.class);
+        }
+    }
+
+
+    private Page<ILevel> getPublicLevels(PageRequest pageRequest, Optional<String> title){
+        if (title.isPresent()) {
+            return levelRepository.findByPublicLevelTrueAndTitleContains(pageRequest, ILevel.class, title.get());
+        } else {
+            return levelRepository.findByPublicLevelTrue(pageRequest, ILevel.class);
+        }
+    }
+
+    private Page<ILevel> getOwnedLevels(PageRequest pageRequest, Optional<String> title, User actualUser){
+        /** If it's ADMIN then it returns every level */
+        if (roleHelper.isAdmin(actualUser)) {
+            if (title.isPresent()) {
+                return levelRepository.findByTitleContains(pageRequest, title.get(), ILevel.class);
+            } else {
+                return levelRepository.findBy(pageRequest, ILevel.class);
+            }
+        } else {
+            /** Otherwise, returns only the levels created by the user */
+            if (title.isPresent()) {
+                return levelRepository.findByOwnerAndActiveTrueAndTitleContains(actualUser, title.get(), pageRequest, ILevel.class);
+            } else {
+                return levelRepository.findByOwnerAndActiveTrue(actualUser, pageRequest, ILevel.class);
+            }
         }
     }
 
