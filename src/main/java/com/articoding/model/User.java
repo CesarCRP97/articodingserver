@@ -16,6 +16,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "user")
@@ -42,7 +43,7 @@ public class User {
 
 
     // TODO - createdPlaylists??
-    //Nuevas listas likedLevels y downloadedLevels + getters/setters
+    //Nuevas listas likedLevels + getters/setters
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "levels_liked",
@@ -51,18 +52,8 @@ public class User {
             inverseJoinColumns = @JoinColumn(
                     name = "level_id", referencedColumnName = "id")
     )
-    private List<Level> likedLevels;
+    private Set<Level> likedLevels;
 
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "levels_downloaded",
-            joinColumns = @JoinColumn(
-                    name = "user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(
-                    name = "level_id", referencedColumnName = "id")
-    )
-    private List<Level> downloadedLevels;
     // Hasta aqui
 
 
@@ -112,28 +103,24 @@ public class User {
     //Hasta aqui
 
 
-    public List<Level> getLikedLevels() {
+    public Set<Level> getLikedLevels() {
         return likedLevels;
     }
 
-    public void setLikedLevels(List<Level> likedLevels) {
+    public void setLikedLevels(Set<Level> likedLevels) {
         this.likedLevels = likedLevels;
     }
 
-    public List<Level> getDownloadedLevels() {
-        return downloadedLevels;
+    public void addLikedLevel(Level level) {
+        this.likedLevels.add(level);
     }
 
-    public void setDownloadedLevels(List<Level> downloadedLevels) {
-        this.downloadedLevels = downloadedLevels;
+    public void deleteLikedLevel(Level level) {
+        this.likedLevels.remove(level);
     }
 
     public List<Level> getCreatedLevels() {
         return createdLevels;
-    }
-
-    public void setCreatedLevels(List<Level> createdLevels) {
-        this.createdLevels = createdLevels;
     }
 
     public List<ClassRoom> getClasses() {
