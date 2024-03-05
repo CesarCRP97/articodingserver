@@ -206,23 +206,23 @@ public class LevelService {
 
 
     public long likeLevel(LevelForm levelForm, long levelId){
-        User actualUser = userService.getActualUser();
-        Optional<Level> l = levelRepository.findById(levelId);
-        l.ifPresent(Level::incrLikes);
+        Level level = levelRepository.findById(levelId)
+                .orElseThrow(() -> new ErrorNotFound("level", levelId));
+        level.incrLikes();
         return levelId;
     }
 
     public long dislikeLevel(LevelForm levelForm, Long levelId) {
-        User actualUser = userService.getActualUser();
-        Optional<Level> l = levelRepository.findById(levelId);
-        l.ifPresent(Level::decrLikes);
+        Level level = levelRepository.findById(levelId)
+                .orElseThrow(() -> new ErrorNotFound("level", levelId));
+        level.decrLikes();
         return levelId;
     }
 
     public long playLevel(LevelForm levelForm, Long levelId) {
-        User actualUser = userService.getActualUser();
-        Optional<Level> l = levelRepository.findById(levelId);
-        l.ifPresent(Level::increaseTimesPlayed);
+        Level level = levelRepository.findById(levelId)
+                .orElseThrow(() -> new ErrorNotFound("level", levelId));
+        level.increaseTimesPlayed();
         return levelId;
     }
 }
