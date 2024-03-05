@@ -203,4 +203,26 @@ public class LevelService {
 
         }
     }
+
+
+    public long likeLevel(LevelForm levelForm, long levelId){
+        User actualUser = userService.getActualUser();
+        Optional<Level> l = levelRepository.findById(levelId);
+        l.ifPresent(Level::incrLikes);
+        return levelId;
+    }
+
+    public long dislikeLevel(LevelForm levelForm, Long levelId) {
+        User actualUser = userService.getActualUser();
+        Optional<Level> l = levelRepository.findById(levelId);
+        l.ifPresent(Level::decrLikes);
+        return levelId;
+    }
+
+    public long playLevel(LevelForm levelForm, Long levelId) {
+        User actualUser = userService.getActualUser();
+        Optional<Level> l = levelRepository.findById(levelId);
+        l.ifPresent(Level::increaseTimesPlayed);
+        return levelId;
+    }
 }

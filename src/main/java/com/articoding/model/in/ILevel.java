@@ -15,6 +15,10 @@ public interface ILevel {
 
     String getDescription();
 
+    int getLikes();
+
+    int getTimesPlayed();
+
     boolean isPublicLevel();
 
     @Value("#{target.classRooms.size()}")
