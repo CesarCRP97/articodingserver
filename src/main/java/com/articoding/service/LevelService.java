@@ -65,6 +65,7 @@ public class LevelService {
         }
 
         //Todo description se va
+        level.setActive(true);
         level.setDescription(levelForm.getDescription());
         level.setTitle(levelForm.getTitle());
         level.setPublicLevel(levelForm.isPublicLevel());
