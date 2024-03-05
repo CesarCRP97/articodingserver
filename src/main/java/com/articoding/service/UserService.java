@@ -265,11 +265,4 @@ public class UserService {
         }
     }
 
-    public Page<ILevel> findLikedLevelsByTitleContains(PageRequest pageRequest, Class<ILevel> iLevelClass, String s) {
-        return userRepository.findLikedLevelsByTitleContains(getActualUser(), pageRequest, iLevelClass, s);
-    }
-
-    public Page<ILevel> findByPublicLevelTrueLikesTrue(PageRequest pageRequest, Class<ILevel> iLevelClass) {
-        return  userRepository.findLikedLevels(getActualUser(),pageRequest,iLevelClass);
-    }
 }
