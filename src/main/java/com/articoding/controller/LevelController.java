@@ -60,4 +60,22 @@ public class LevelController {
         return ResponseEntity.ok(new CreatedRef("levels/" + levelService.updateLevel(levelForm, levelId)));
     }
 
+    @PostMapping("/{levelId}/increaselikes")
+    public ResponseEntity<CreatedRef> increaseLevelsLikes(@RequestBody LevelForm levelForm,
+                                                          @PathVariable(value = "levelId") Long levelId){
+        return ResponseEntity.ok(new CreatedRef("levels/" + levelService.likeLevel(levelForm, levelId)));
+    }
+
+    @PostMapping("/{levelId}/decreaselikes")
+    public ResponseEntity<CreatedRef> decreaseLevelsLikes(@RequestBody LevelForm levelForm,
+                                                          @PathVariable(value = "levelId") Long levelId) {
+        return ResponseEntity.ok(new CreatedRef("levels/" + levelService.dislikeLevel(levelForm, levelId)));
+    }
+
+    @PostMapping("/{levelId}/play")
+    public ResponseEntity<CreatedRef> playLevel(@RequestBody LevelForm levelForm,
+                                                @PathVariable(value = "levelId") Long levelId) {
+        return ResponseEntity.ok(new CreatedRef("levels/" + levelService.playLevel(levelForm, levelId)));
+    }
+
 }
