@@ -64,9 +64,7 @@ public class LevelService {
             level.setClassRooms(classRoomList);
         }
 
-        //Todo description se va
         level.setActive(true);
-        level.setDescription(levelForm.getDescription());
         level.setTitle(levelForm.getTitle());
         level.setPublicLevel(levelForm.isPublicLevel());
 
@@ -152,9 +150,6 @@ public class LevelService {
             /** It's editable */
             if (newLevel.getTitle() != null) {
                 levelOld.setTitle(newLevel.getTitle());
-            }
-            if (newLevel.getDescription() != null) {
-                levelOld.setDescription(newLevel.getDescription());
             }
             if (newLevel.isPublicLevel() != null) {
                 levelOld.setPublicLevel(newLevel.isPublicLevel());

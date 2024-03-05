@@ -8,7 +8,6 @@ public class LevelForm {
 
     public boolean active;
     private String title;
-    private String description;
     private List<Long> classes;
     private ACLevel articodingLevel;
     private boolean publicLevel;
@@ -22,14 +21,6 @@ public class LevelForm {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public List<Long> getClasses() {

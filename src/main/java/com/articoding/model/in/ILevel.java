@@ -13,8 +13,6 @@ public interface ILevel {
 
     String getTitle();
 
-    String getDescription();
-
     int getLikes();
 
     int getTimesPlayed();

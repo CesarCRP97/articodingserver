@@ -4,8 +4,6 @@ public class UpdateLevelForm {
 
     private String title;
 
-    private String description;
-
     private Boolean publicLevel;
 
     private Boolean active;
@@ -19,14 +17,6 @@ public class UpdateLevelForm {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public Boolean isPublicLevel() {
