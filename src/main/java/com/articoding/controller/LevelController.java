@@ -62,7 +62,7 @@ public class LevelController {
 
     @PostMapping("/{levelId}/increaselikes")
     public ResponseEntity<CreatedRef> increaseLevelsLikes(@RequestBody LevelForm levelForm,
-                                                          @PathVariable(value = "levelId") Long levelId){
+                                                          @PathVariable(value = "levelId") Long levelId) {
         return ResponseEntity.ok(new CreatedRef("levels/" + levelService.likeLevel(levelForm, levelId)));
     }
 
