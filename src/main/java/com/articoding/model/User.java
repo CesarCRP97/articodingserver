@@ -34,14 +34,6 @@ public class User {
     @Column
     private boolean enabled = true;
 
-    //TODO - Eliminar
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Valoration> valorationList;
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comment> commentList;
-
-
     // TODO - createdPlaylists??
     //Nuevas listas likedLevels + getters/setters
     @ManyToMany(fetch = FetchType.LAZY)
@@ -82,25 +74,6 @@ public class User {
     public void setId(long id) {
         this.id = id;
     }
-
-
-    //TODO - Quitar junto a Valoration & Comment
-    public List<Valoration> getValorationList() {
-        return valorationList;
-    }
-
-    public void setValorationList(List<Valoration> valorationList) {
-        this.valorationList = valorationList;
-    }
-
-    public List<Comment> getCommentList() {
-        return commentList;
-    }
-
-    public void setCommentList(List<Comment> commentList) {
-        this.commentList = commentList;
-    }
-    //Hasta aqui
 
 
     public Set<Level> getLikedLevels() {
