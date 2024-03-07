@@ -19,16 +19,23 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class LevelService {
 
+    public static String uploadDir = "/src/resources/images/levelimages";
     @Autowired
     LevelRepository levelRepository;
-
     @Autowired
     ClassRepository classRepository;
     @Autowired
@@ -70,8 +77,13 @@ public class LevelService {
 
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
         level.setSerializaArticodingLevel(ow.writeValueAsString(levelForm.getArticodingLevel()));
-
         level.setOwner(actualUser);
+
+        if (levelForm.getImage() != null) {
+            byte[] image = levelForm.getImage();
+            String imagePath = this.saveImageForLevel(level, image);
+        }
+
         Level newLevel = levelRepository.save(level);
 
         return newLevel.getId();
@@ -237,6 +249,31 @@ public class LevelService {
             } else {
                 return levelRepository.findByOwnerAndActiveTrue(actualUser, pageRequest, ILevel.class);
             }
+        }
+    }
+
+    //Returns the path of the image
+    private String saveImageForLevel(Level level, byte[] image) {
+        //Se le puede poner un nombre a la imagen?
+        String fileName = UUID.randomUUID() + "_" + level.getTitle();
+        try (ByteArrayInputStream inputStream = new ByteArrayInputStream(image)) {
+            Path filePath = Paths.get(uploadDir + "/" + fileName);
+            Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+            level.setImagePath(fileName);
+            return fileName;
+        } catch (IOException ex) {
+            //Algo tengo que hacer aquí.
+            System.out.println("Error al guardar la imagen");
+        }
+        return null;
+    }
+
+    public byte[] getImageByImagePath(String imageName) throws IOException {
+        Path filePath = Paths.get(uploadDir + "/" + imageName);
+        if (Files.exists(filePath)) {
+            return Files.readAllBytes(filePath);
+        } else {
+            return null;
         }
     }
 

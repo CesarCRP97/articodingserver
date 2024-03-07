@@ -12,6 +12,8 @@ public class LevelForm {
     private ACLevel articodingLevel;
     private boolean publicLevel;
 
+    private byte[] image;
+
     public LevelForm() {
     }
 
@@ -45,5 +47,13 @@ public class LevelForm {
 
     public void setPublicLevel(boolean publicLevel) {
         this.publicLevel = publicLevel;
+    }
+
+    public byte[] getImage() {
+        return this.image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
     }
 }

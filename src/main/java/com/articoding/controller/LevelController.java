@@ -2,6 +2,7 @@ package com.articoding.controller;
 
 import com.articoding.model.in.ILevel;
 import com.articoding.model.in.LevelForm;
+import com.articoding.model.in.LevelWithImageDTO;
 import com.articoding.model.in.UpdateLevelForm;
 import com.articoding.model.rest.CreatedRef;
 import com.articoding.service.LevelService;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.util.Optional;
 
 @RestController
@@ -33,13 +35,22 @@ public class LevelController {
     @PostMapping
     public ResponseEntity<CreatedRef> createLevel(@RequestBody LevelForm levelForm) throws Exception {
         Long id = levelService.createLevel(userService.getActualUser(), levelForm);
+
+
         CreatedRef createdRef = new CreatedRef(String.format("/levels/%d", id));
         return ResponseEntity.ok(createdRef);
     }
 
     @GetMapping("/{levelId}")
-    public ResponseEntity<ILevel> getLevel(@PathVariable(value = "levelId") Long levelId) {
-        return ResponseEntity.ok(levelService.getLevel(userService.getActualUser(), levelId));
+    public ResponseEntity<LevelWithImageDTO> getLevel(@PathVariable(value = "levelId") Long levelId) throws IOException {
+        ILevel level = levelService.getLevel(userService.getActualUser(), levelId);
+        byte[] image = levelService.getImageByImagePath(level.getImagePath());
+
+        LevelWithImageDTO response = new LevelWithImageDTO();
+        response.setImage(image);
+        response.setLevel(level);
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping

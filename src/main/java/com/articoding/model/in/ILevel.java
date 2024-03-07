@@ -19,6 +19,8 @@ public interface ILevel {
 
     boolean isPublicLevel();
 
+    String getImagePath();
+
     @Value("#{target.classRooms.size()}")
     int getClassRooms();
 

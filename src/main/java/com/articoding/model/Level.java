@@ -23,6 +23,8 @@ public class Level {
 
     private String title;
 
+    @Column(name = "image_path")
+    private String imagePath;
 
     private int likes = 0;
 
@@ -64,6 +66,14 @@ public class Level {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getImagePath() {
+        return this.imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 
     public int getLikes() {
