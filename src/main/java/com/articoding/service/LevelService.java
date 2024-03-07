@@ -8,6 +8,7 @@ import com.articoding.model.Level;
 import com.articoding.model.User;
 import com.articoding.model.in.ILevel;
 import com.articoding.model.in.LevelForm;
+import com.articoding.model.in.LevelWithImageDTO;
 import com.articoding.model.in.UpdateLevelForm;
 import com.articoding.repository.ClassRepository;
 import com.articoding.repository.LevelRepository;
@@ -25,15 +26,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.nio.file.attribute.FileAttribute;
+import java.util.*;
 
 @Service
 public class LevelService {
 
-    public static String uploadDir = "/src/resources/images/levelimages";
+    public static String uploadDir = "C:/Users/Oskar/Desktop/_TFG/articodingserver/src/main/resources/levelimages";
     @Autowired
     LevelRepository levelRepository;
     @Autowired
@@ -80,6 +79,7 @@ public class LevelService {
         level.setOwner(actualUser);
 
         if (levelForm.getImage() != null) {
+            System.out.println("getImage != null");
             byte[] image = levelForm.getImage();
             String imagePath = this.saveImageForLevel(level, image);
         }
@@ -142,8 +142,41 @@ public class LevelService {
                 /** If it's ADMIN then it returns every level */
                 return getOwnedLevels(pageRequest, title, actualUser);
             }
-
         }
+    }
+
+    public Page<LevelWithImageDTO> getLevels(PageRequest pageRequest, Optional<Long> classId,
+                                             Optional<Long> userId, Optional<Boolean> publicLevels, Optional<String> title) throws IOException {
+        User actualUser = userService.getActualUser();
+
+        Page<ILevel> pageLevel;
+        Page<LevelWithImageDTO> pageLevelWithImage = new Page<LevelWithImageDTO>();
+
+        /** If there is a classId then returns levels from the classroom */
+        if (classId.isPresent()) {
+            pageLevel = getLevelsFromClass(pageRequest, actualUser, classId, title);
+        } else if (userId.isPresent()) {
+            pageLevel = getLevelsFromUserId(pageRequest, actualUser, userId);
+        } else {
+            if (publicLevels.isPresent()) {
+                /** If publicLevels is true, returns all public levels. */
+                pageLevel = getPublicLevels(pageRequest, title);
+            } else {
+                /** If it's ADMIN then it returns every level */
+                pageLevel = getOwnedLevels(pageRequest, title, actualUser);
+            }
+        }
+
+        int index = 0;
+        for (ILevel level : pageLevel) {
+            LevelWithImageDTO l = new LevelWithImageDTO();
+            l.setLevel(level);
+            l.setImage(getImageByImagePath(level.getImagePath()));
+            pageLevelWithImage.getContent().add(l);
+            System.out.println(level.toString());
+        }
+
+        return pageLevelWithImage;
     }
 
     public long updateLevel(UpdateLevelForm newLevel, Long levelId) {
@@ -169,7 +202,6 @@ public class LevelService {
             }
 
             return levelRepository.save(levelOld).getId();
-
         }
     }
 
@@ -199,7 +231,6 @@ public class LevelService {
         /** Checks if the classroom exists */
         ClassRoom classRoom = classRepository.findById(classId.get())
                 .orElseThrow(() -> new ErrorNotFound("clase", classId.get()));
-
         /** Checks if it is student/teacher or admin */
         if (!roleHelper.isAdmin(actualUser)) {
             if (!classRoom.getStudents().stream().anyMatch(s -> s.getId() == actualUser.getId()) &&
@@ -211,9 +242,7 @@ public class LevelService {
             return levelRepository.findByClassRoomsAndActiveTrueAndTitleContains(classRoom, title.get(), pageRequest, ILevel.class);
         } else {
             return levelRepository.findByClassRoomsAndActiveTrue(classRoom, pageRequest, ILevel.class);
-
         }
-
     }
 
     private Page<ILevel> getLevelsFromUserId(PageRequest pageRequest, User actualUser, Optional<Long> userId) {
@@ -254,16 +283,27 @@ public class LevelService {
 
     //Returns the path of the image
     private String saveImageForLevel(Level level, byte[] image) {
+
+        Path pathToFile = Paths.get(uploadDir);
+
+    // C:\Users\Oskar\Desktop\_TFG\articodingserver\src\main\resources
+
+        System.out.println(pathToFile.toAbsolutePath());
+
+        System.out.println("saveImageForLevel");
+
         //Se le puede poner un nombre a la imagen?
-        String fileName = UUID.randomUUID() + "_" + level.getTitle();
+        String fileName = UUID.randomUUID() + "_" + level.getTitle() + ".png";
+
         try (ByteArrayInputStream inputStream = new ByteArrayInputStream(image)) {
             Path filePath = Paths.get(uploadDir + "/" + fileName);
+            Files.createFile(filePath);
             Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
             level.setImagePath(fileName);
             return fileName;
         } catch (IOException ex) {
             //Algo tengo que hacer aquí.
-            System.out.println("Error al guardar la imagen");
+            System.out.println("Error al guardar la imagen esta" + ex.toString());
         }
         return null;
     }
