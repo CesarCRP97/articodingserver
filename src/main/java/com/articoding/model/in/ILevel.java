@@ -37,11 +37,5 @@ public interface ILevel {
     }
 
 
-    default void setImage(byte[] image) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-
-
-        return mapper.readValue(getSerializaArticodingLevel(), ACLevel.class);
-    }
 
 }
