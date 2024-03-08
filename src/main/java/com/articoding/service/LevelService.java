@@ -32,7 +32,7 @@ import java.util.*;
 @Service
 public class LevelService {
 
-    public static String uploadDir = "C:/Users/Oskar/Desktop/_TFG/articodingserver/src/main/resources/levelimages";
+    public static Path uploadDir = Paths.get("levelimages");
     @Autowired
     LevelRepository levelRepository;
     @Autowired
@@ -126,58 +126,44 @@ public class LevelService {
 
     }
 
-    public Page<ILevel> getLevels(PageRequest pageRequest, Optional<Long> classId,
-                                  Optional<Long> userId, Optional<Boolean> publicLevels, Optional<String> title) {
-        User actualUser = userService.getActualUser();
-        /** If there is a classId then returns levels from the classroom */
-        if (classId.isPresent()) {
-            return getLevelsFromClass(pageRequest, actualUser, classId, title);
-        } else if (userId.isPresent()) {
-            return getLevelsFromUserId(pageRequest, actualUser, userId);
-        } else {
-            if (publicLevels.isPresent()) {
-                /** If publicLevels is true, returns all public levels. */
-                return getPublicLevels(pageRequest, title);
-            } else {
-                /** If it's ADMIN then it returns every level */
-                return getOwnedLevels(pageRequest, title, actualUser);
-            }
-        }
-    }
-
     public Page<LevelWithImageDTO> getLevels(PageRequest pageRequest, Optional<Long> classId,
-                                             Optional<Long> userId, Optional<Boolean> publicLevels, Optional<String> title) throws IOException {
+                                  Optional<Long> userId, Optional<Boolean> publicLevels, Optional<String> title) {
+
+        Page<ILevel> page;
         User actualUser = userService.getActualUser();
-
-        Page<ILevel> pageLevel;
-        Page<LevelWithImageDTO> pageLevelWithImage = new Page<LevelWithImageDTO>();
-
         /** If there is a classId then returns levels from the classroom */
         if (classId.isPresent()) {
-            pageLevel = getLevelsFromClass(pageRequest, actualUser, classId, title);
+            page = getLevelsFromClass(pageRequest, actualUser, classId, title);
         } else if (userId.isPresent()) {
-            pageLevel = getLevelsFromUserId(pageRequest, actualUser, userId);
+            page = getLevelsFromUserId(pageRequest, actualUser, userId);
         } else {
             if (publicLevels.isPresent()) {
                 /** If publicLevels is true, returns all public levels. */
-                pageLevel = getPublicLevels(pageRequest, title);
+                page = getPublicLevels(pageRequest, title);
             } else {
                 /** If it's ADMIN then it returns every level */
-                pageLevel = getOwnedLevels(pageRequest, title, actualUser);
+                page = getOwnedLevels(pageRequest, title, actualUser);
             }
         }
-
-        int index = 0;
-        for (ILevel level : pageLevel) {
-            LevelWithImageDTO l = new LevelWithImageDTO();
-            l.setLevel(level);
-            l.setImage(getImageByImagePath(level.getImagePath()));
-            pageLevelWithImage.getContent().add(l);
-            System.out.println(level.toString());
-        }
-
-        return pageLevelWithImage;
+        return toLevelWithImageDTO(page);
     }
+
+    private Page<LevelWithImageDTO> toLevelWithImageDTO(Page<ILevel> oldPage) {
+
+        return oldPage.map(level -> {
+            LevelWithImageDTO levelWithImageDTO = new LevelWithImageDTO();
+            levelWithImageDTO.setLevel(level);
+            try {
+                String imageName = level.getImagePath();
+                if(imageName != null)
+                    levelWithImageDTO.setImage(this.getImageByImagePath(imageName));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            return levelWithImageDTO;
+        });
+    }
+
 
     public long updateLevel(UpdateLevelForm newLevel, Long levelId) {
         /** Checks if the level exists */
@@ -283,21 +269,11 @@ public class LevelService {
 
     //Returns the path of the image
     private String saveImageForLevel(Level level, byte[] image) {
-
-        Path pathToFile = Paths.get(uploadDir);
-
-    // C:\Users\Oskar\Desktop\_TFG\articodingserver\src\main\resources
-
-        System.out.println(pathToFile.toAbsolutePath());
-
-        System.out.println("saveImageForLevel");
-
-        //Se le puede poner un nombre a la imagen?
         String fileName = UUID.randomUUID() + "_" + level.getTitle() + ".png";
 
         try (ByteArrayInputStream inputStream = new ByteArrayInputStream(image)) {
-            Path filePath = Paths.get(uploadDir + "/" + fileName);
-            Files.createFile(filePath);
+            Files.createDirectories(uploadDir);
+            Path filePath = uploadDir.resolve(fileName);
             Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
             level.setImagePath(fileName);
             return fileName;
@@ -309,7 +285,8 @@ public class LevelService {
     }
 
     public byte[] getImageByImagePath(String imageName) throws IOException {
-        Path filePath = Paths.get(uploadDir + "/" + imageName);
+        Path filePath = uploadDir.resolve(imageName);
+        System.out.println(filePath);
         if (Files.exists(filePath)) {
             return Files.readAllBytes(filePath);
         } else {
