@@ -196,6 +196,7 @@ public class LevelService {
         Level level = levelRepository.findById(levelId)
                 .orElseThrow(() -> new ErrorNotFound("level", levelId));
         level.incrLikes();
+        userService.getActualUser().addLikedLevel(levelId);
         return levelId;
     }
 
@@ -203,6 +204,8 @@ public class LevelService {
         Level level = levelRepository.findById(levelId)
                 .orElseThrow(() -> new ErrorNotFound("level", levelId));
         level.decrLikes();
+        userService.getActualUser().deleteLikedLevel(levelId);
+
         return levelId;
     }
 

@@ -9,8 +9,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -34,18 +32,7 @@ public class User {
     @Column
     private boolean enabled = true;
 
-    // TODO - createdPlaylists??
-    //Nuevas listas likedLevels + getters/setters
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "levels_liked",
-            joinColumns = @JoinColumn(
-                    name = "user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(
-                    name = "level_id", referencedColumnName = "id")
-    )
-    private Set<Level> likedLevels;
-
+    private Set<Long> likedLevels;
     // Hasta aqui
 
 
@@ -72,19 +59,19 @@ public class User {
     }
 
 
-    public Set<Level> getLikedLevels() {
+    public Set<Long> getLikedLevels() {
         return likedLevels;
     }
 
-    public void setLikedLevels(Set<Level> likedLevels) {
+    public void setLikedLevels(Set<Long> likedLevels) {
         this.likedLevels = likedLevels;
     }
 
-    public void addLikedLevel(Level level) {
+    public void addLikedLevel(Long level) {
         this.likedLevels.add(level);
     }
 
-    public void deleteLikedLevel(Level level) {
+    public void deleteLikedLevel(Long level) {
         this.likedLevels.remove(level);
     }
 
