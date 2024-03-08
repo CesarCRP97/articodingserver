@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -32,6 +33,8 @@ public class User {
     @Column
     private boolean enabled = true;
 
+    @Column
+    @ElementCollection(targetClass=Long.class)
     private Set<Long> likedLevels;
     // Hasta aqui
 
@@ -57,6 +60,7 @@ public class User {
     public void setId(long id) {
         this.id = id;
     }
+
 
 
     public Set<Long> getLikedLevels() {
