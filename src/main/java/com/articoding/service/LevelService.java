@@ -127,7 +127,7 @@ public class LevelService {
     }
 
     public Page<LevelWithImageDTO> getLevels(PageRequest pageRequest, Optional<Long> classId,
-                                  Optional<Long> userId, Optional<Boolean> publicLevels, Optional<String> title) {
+                                  Optional<Long> userId, Optional<Boolean> publicLevels, Optional<Boolean> liked, Optional<String> title) {
 
         Page<ILevel> page;
         User actualUser = userService.getActualUser();
@@ -139,7 +139,7 @@ public class LevelService {
         } else {
             if (publicLevels.isPresent()) {
                 /** If publicLevels is true, returns all public levels. */
-                page = getPublicLevels(pageRequest, title);
+                page = getPublicLevels(pageRequest, liked, title);
             } else {
                 /** If it's ADMIN then it returns every level */
                 page = getOwnedLevels(pageRequest, title, actualUser);
@@ -244,12 +244,18 @@ public class LevelService {
     }
 
 
-    private Page<ILevel> getPublicLevels(PageRequest pageRequest, Optional<String> title) {
+    private Page<ILevel> getPublicLevels(PageRequest pageRequest, Optional<Boolean> liked, Optional<String> title) {
+        Page<ILevel> page;
         if (title.isPresent()) {
-            return levelRepository.findByPublicLevelTrueAndTitleContains(pageRequest, ILevel.class, title.get());
+            page = levelRepository.findByPublicLevelTrueAndTitleContains(pageRequest, ILevel.class, title.get());
         } else {
-            return levelRepository.findByPublicLevelTrue(pageRequest, ILevel.class);
+            page = levelRepository.findByPublicLevelTrue(pageRequest, ILevel.class);
         }
+        if(liked.isPresent()){
+            Set<Long> likedId = userService.getActualUser().getLikedLevels();
+            page.filter(level -> likedId.contains(level.getId().longValue()));
+        }
+        return page;
     }
 
     private Page<ILevel> getOwnedLevels(PageRequest pageRequest, Optional<String> title, User actualUser) {
