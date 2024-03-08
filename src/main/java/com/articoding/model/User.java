@@ -61,11 +61,7 @@ public class User {
     @ManyToMany(mappedBy = "teachers")
     private List<ClassRoom> ownerClassRooms;
 
-    //TODO - OneToMany list of students of a teacher.
 
-    /**
-     *
-     */
 
     public long getId() {
         return id;
