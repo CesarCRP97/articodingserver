@@ -61,9 +61,12 @@ public class LevelController {
             @RequestParam(name = "user", required = false) Optional<Long> userId,
             @RequestParam(name = "publicLevels", required = false) Optional<Boolean> publicLevels,
             @RequestParam(name = "liked", required = false) Optional<Boolean> liked,
-            @RequestParam(name = "title", required = false) Optional<String> title
+            @RequestParam(name = "title", required = false) Optional<String> title,
+            @RequestParam(name = "owner", required = false) Optional<String> owner,
+            @RequestParam(name = "levelid", required = false) Optional<Long> levelId
+
     ) {
-        return ResponseEntity.ok(levelService.getLevels(PageRequest.of(page, size), classId, userId, publicLevels, liked, title));
+        return ResponseEntity.ok(levelService.getLevels(PageRequest.of(page, size), classId, userId, publicLevels, liked, title, owner, levelId));
     }
 
     @PutMapping("/{levelId}")

@@ -132,7 +132,7 @@ public class LevelService {
     }
 
     public Page<LevelWithImageDTO> getLevels(PageRequest pageRequest, Optional<Long> classId,
-                                  Optional<Long> userId, Optional<Boolean> publicLevels, Optional<Boolean> liked, Optional<String> title) {
+                                  Optional<Long> userId, Optional<Boolean> publicLevels, Optional<Boolean> liked, Optional<String> title, Optional<String> owner, Optional<Long> levelId) {
 
         Page<ILevel> page;
         User actualUser = userService.getActualUser();
@@ -144,7 +144,7 @@ public class LevelService {
         } else {
             if (publicLevels.isPresent()) {
                 /** If publicLevels is true, returns all public levels. */
-                page = getPublicLevels(pageRequest, liked, title);
+                page = getPublicLevels(pageRequest, liked, title,owner, levelId);
             } else {
                 /** If it's ADMIN then it returns every level */
                 page = getOwnedLevels(pageRequest, title, actualUser);
@@ -203,7 +203,8 @@ public class LevelService {
         level.incrLikes();
         User u = userService.getActualUser();
         u.addLikedLevel(levelId);
-        
+
+        //userService.updateActualUser(u);
         levelRepository.save(level);
         return levelId;
     }
@@ -215,7 +216,7 @@ public class LevelService {
         User u = userService.getActualUser();
         u.deleteLikedLevel(levelId);
 
-        userService.updateActualUser(u);
+        //userService.updateActualUser(u);
         levelRepository.save(level);
         return levelId;
     }
@@ -257,16 +258,39 @@ public class LevelService {
     }
 
 
-    private Page<ILevel> getPublicLevels(PageRequest pageRequest, Optional<Boolean> liked, Optional<String> title) {
+    private Page<ILevel> getPublicLevels(PageRequest pageRequest, Optional<Boolean> liked, Optional<String> title, Optional<String> owner, Optional<Long> levelId) {
         Page<ILevel> page;
         if (title.isPresent()) {
             page = levelRepository.findByPublicLevelTrueAndTitleContains(pageRequest, ILevel.class, title.get());
         } else {
             page = levelRepository.findByPublicLevelTrue(pageRequest, ILevel.class);
         }
+
         if(liked.isPresent()){
-            page = getFilteredLevels(pageRequest,page);
+            Set<Long> likedId = userService.getActualUser().getLikedLevels();
+            List<ILevel> filteredLiked = page.filter(level -> likedId.contains(level.getId().longValue()))
+                                            .stream()
+                                            .collect(Collectors.toList());
+
+            page = filteredLevelsToPage(pageRequest, filteredLiked);
         }
+        if(owner.isPresent()){
+            List<ILevel> filteredLiked = page.filter(level -> Objects.equals(level.getOwner().getUsername(), owner.get()))
+                    .stream()
+                    .collect(Collectors.toList());
+
+            page = filteredLevelsToPage(pageRequest, filteredLiked);
+        }
+
+        if(levelId.isPresent()){
+            List<ILevel> filteredLiked = page.filter(level -> level.getId().longValue() == levelId.get())
+                    .stream()
+                    .collect(Collectors.toList());
+
+            page = filteredLevelsToPage(pageRequest, filteredLiked);
+        }
+
+
         return page;
     }
 
@@ -313,10 +337,7 @@ public class LevelService {
         }
     }
 
-    private Page<ILevel> getFilteredLevels(PageRequest pageRequest, Page<ILevel> page){
-
-        Set<Long> likedId = userService.getActualUser().getLikedLevels();
-        List<ILevel> filteredLiked = page.filter(level -> likedId.contains(level.getId().longValue())).stream().collect(Collectors.toList());
+    private Page<ILevel> filteredLevelsToPage(PageRequest pageRequest, List<ILevel> filteredLiked){
 
         int start = (int) pageRequest.getOffset();
         int end = Math.min((start + pageRequest.getPageSize()), filteredLiked.size());
