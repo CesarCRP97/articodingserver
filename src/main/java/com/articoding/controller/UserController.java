@@ -1,7 +1,6 @@
 package com.articoding.controller;
 
 import com.articoding.model.UserForm;
-import com.articoding.model.in.ILevel;
 import com.articoding.model.in.IUser;
 import com.articoding.model.in.IUserDetail;
 import com.articoding.model.in.UpdateUserForm;
@@ -37,7 +36,7 @@ public class UserController {
     }
 
     @GetMapping("/getliked")
-    public ResponseEntity<IUser>getUser(){
+    public ResponseEntity<IUser> getUser() {
         return ResponseEntity.ok(userService.getActualIUser());
     }
 

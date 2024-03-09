@@ -12,7 +12,6 @@ import com.articoding.model.in.LevelWithImageDTO;
 import com.articoding.model.in.UpdateLevelForm;
 import com.articoding.repository.ClassRepository;
 import com.articoding.repository.LevelRepository;
-import com.articoding.repository.UserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -23,14 +22,17 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.nio.file.attribute.FileAttribute;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -132,7 +134,7 @@ public class LevelService {
     }
 
     public Page<LevelWithImageDTO> getLevels(PageRequest pageRequest, Optional<Long> classId,
-                                  Optional<Long> userId, Optional<Boolean> publicLevels, Optional<Boolean> liked, Optional<String> title, Optional<String> owner, Optional<Long> levelId) {
+                                             Optional<Long> userId, Optional<Boolean> publicLevels, Optional<Boolean> liked, Optional<String> title, Optional<String> owner, Optional<Long> levelId) {
 
         Page<ILevel> page;
         User actualUser = userService.getActualUser();
@@ -144,7 +146,7 @@ public class LevelService {
         } else {
             if (publicLevels.isPresent()) {
                 /** If publicLevels is true, returns all public levels. */
-                page = getPublicLevels(pageRequest, liked, title,owner, levelId);
+                page = getPublicLevels(pageRequest, liked, title, owner, levelId);
             } else {
                 /** If it's ADMIN then it returns every level */
                 page = getOwnedLevels(pageRequest, title, actualUser);
@@ -160,7 +162,7 @@ public class LevelService {
             levelWithImageDTO.setLevel(level);
             try {
                 String imageName = level.getImagePath();
-                if(imageName != null)
+                if (imageName != null)
                     levelWithImageDTO.setImage(this.getImageByImagePath(imageName));
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -257,7 +259,7 @@ public class LevelService {
         }
     }
 
-
+    //Todo - refactorizar filtros chapuceros
     private Page<ILevel> getPublicLevels(PageRequest pageRequest, Optional<Boolean> liked, Optional<String> title, Optional<String> owner, Optional<Long> levelId) {
         Page<ILevel> page;
         if (title.isPresent()) {
@@ -266,15 +268,15 @@ public class LevelService {
             page = levelRepository.findByPublicLevelTrue(pageRequest, ILevel.class);
         }
 
-        if(liked.isPresent()){
+        if (liked.isPresent()) {
             Set<Long> likedId = userService.getActualUser().getLikedLevels();
             List<ILevel> filteredLiked = page.filter(level -> likedId.contains(level.getId().longValue()))
-                                            .stream()
-                                            .collect(Collectors.toList());
+                    .stream()
+                    .collect(Collectors.toList());
 
             page = filteredLevelsToPage(pageRequest, filteredLiked);
         }
-        if(owner.isPresent()){
+        if (owner.isPresent()) {
             List<ILevel> filteredLiked = page.filter(level -> Objects.equals(level.getOwner().getUsername(), owner.get()))
                     .stream()
                     .collect(Collectors.toList());
@@ -282,7 +284,7 @@ public class LevelService {
             page = filteredLevelsToPage(pageRequest, filteredLiked);
         }
 
-        if(levelId.isPresent()){
+        if (levelId.isPresent()) {
             List<ILevel> filteredLiked = page.filter(level -> level.getId().longValue() == levelId.get())
                     .stream()
                     .collect(Collectors.toList());
@@ -337,7 +339,7 @@ public class LevelService {
         }
     }
 
-    private Page<ILevel> filteredLevelsToPage(PageRequest pageRequest, List<ILevel> filteredLiked){
+    private Page<ILevel> filteredLevelsToPage(PageRequest pageRequest, List<ILevel> filteredLiked) {
 
         int start = (int) pageRequest.getOffset();
         int end = Math.min((start + pageRequest.getPageSize()), filteredLiked.size());

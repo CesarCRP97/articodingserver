@@ -1,321 +1,321 @@
 {
-	"info": {
-		"_postman_id": "5bdd25b2-7d71-40fe-adb5-3fb5a93476c7",
-		"name": "ArtiCodingServer",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-	},
-	"item": [
-		{
-			"name": "Login",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"let responseData=pm.response.json();\r",
-							"postman.setEnvironmentVariable(\"token\", responseData.token);"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "noauth"
-				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"username\":\"root\",\r\n    \"password\":\"root\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{server}}/login",
-					"host": [
-						"{{server}}"
-					],
-					"path": [
-						"login"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Crear usuario(SOLO ADMIN Y ROOT)",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{token}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"username\":\"profe10\",\r\n    \"password\":\"profe10\",\r\n    \"roles\":[\"ROLE_TEACHER\"],\r\n    \"classes\": []\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{server}}/users",
-					"host": [
-						"{{server}}"
-					],
-					"path": [
-						"users"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Obtiene usuarios(SOLO ADMIN Y ROOT)",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{token}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{server}}/users?page=0&size=10",
-					"host": [
-						"{{server}}"
-					],
-					"path": [
-						"users"
-					],
-					"query": [
-						{
-							"key": "page",
-							"value": "0"
-						},
-						{
-							"key": "size",
-							"value": "10"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Create Class",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{token}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"name\":\"Y PUES 2 otra prueba de clase\",\r\n    \"description\": \"Esta seria una clase con 3 alumnos\",\r\n    \"studentsId\":[],\r\n    \"teachersId\": []\r\n\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{server}}/classes",
-					"host": [
-						"{{server}}"
-					],
-					"path": [
-						"classes"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Classes(OPCIONAL: user/teacher/level) Copy",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{token}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{server}}/classes?page=0&size=2",
-					"host": [
-						"{{server}}"
-					],
-					"path": [
-						"classes"
-					],
-					"query": [
-						{
-							"key": "page",
-							"value": "0"
-						},
-						{
-							"key": "size",
-							"value": "2"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Clase por Id",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{token}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{server}}/classes/25",
-					"host": [
-						"{{server}}"
-					],
-					"path": [
-						"classes",
-						"25"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Crear nivel",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{token}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"title\": \"Nivel de prueba 2\",\r\n    \"description\": \"Esto es un nivel de prueba 2\",\r\n    \"classes\": [4],\r\n    \"publicLevel\": true,\r\n    \"articodingLevel\": {\r\n    \"boardstate\": {\r\n        \"rows\": 4,\r\n        \"columns\": 4,\r\n        \"cells\": [\r\n            {\r\n                \"id\": 0,\r\n                \"x\": 1,\r\n                \"y\": 1,\r\n                \"args\": []\r\n            },\r\n            {\r\n                \"id\": 0,\r\n                \"x\": 2,\r\n                \"y\": 1,\r\n                \"args\": []\r\n            },\r\n            {\r\n                \"id\": 0,\r\n                \"x\": 3,\r\n                \"y\": 1,\r\n                \"args\": []\r\n            },\r\n            {\r\n                \"id\": 0,\r\n                \"x\": 4,\r\n                \"y\": 1,\r\n                \"args\": []\r\n            },\r\n            {\r\n                \"id\": 0,\r\n                \"x\": 1,\r\n                \"y\": 2,\r\n                \"args\": []\r\n            },\r\n            {\r\n                \"id\": 0,\r\n                \"x\": 2,\r\n                \"y\": 2,\r\n                \"args\": []\r\n            },\r\n            {\r\n                \"id\": 0,\r\n                \"x\": 3,\r\n                \"y\": 2,\r\n                \"args\": []\r\n            },\r\n            {\r\n                \"id\": 0,\r\n                \"x\": 4,\r\n                \"y\": 2,\r\n                \"args\": []\r\n            },\r\n            {\r\n                \"id\": 0,\r\n                \"x\": 1,\r\n                \"y\": 3,\r\n                \"args\": []\r\n            },\r\n            {\r\n                \"id\": 0,\r\n                \"x\": 2,\r\n                \"y\": 3,\r\n                \"args\": []\r\n            },\r\n            {\r\n                \"id\": 0,\r\n                \"x\": 3,\r\n                \"y\": 3,\r\n                \"args\": []\r\n            },\r\n            {\r\n                \"id\": 0,\r\n                \"x\": 4,\r\n                \"y\": 3,\r\n                \"args\": []\r\n            },\r\n            {\r\n                \"id\": 0,\r\n                \"x\": 1,\r\n                \"y\": 4,\r\n                \"args\": []\r\n            },\r\n            {\r\n                \"id\": 0,\r\n                \"x\": 2,\r\n                \"y\": 4,\r\n                \"args\": []\r\n            },\r\n            {\r\n                \"id\": 0,\r\n                \"x\": 3,\r\n                \"y\": 4,\r\n                \"args\": []\r\n            },\r\n            {\r\n                \"id\": 0,\r\n                \"x\": 4,\r\n                \"y\": 4,\r\n                \"args\": []\r\n            }\r\n        ],\r\n        \"boardElements\": [\r\n            {\r\n                \"id\": 1,\r\n                \"orientation\": 0,\r\n                \"x\": 1,\r\n                \"y\": 1,\r\n                \"args\": [\r\n                    \"0\"\r\n                ]\r\n            },\r\n            {\r\n                \"id\": 2,\r\n                \"orientation\": 0,\r\n                \"x\": 4,\r\n                \"y\": 1,\r\n                \"args\": []\r\n            }\r\n        ],\r\n        \"boardHints\": []\r\n    },\r\n    \"activeblocks\": {\r\n        \"categories\": [\r\n            {\r\n                \"categoryName\": \"start\",\r\n                \"blocksInfo\": {\r\n                    \"activate\": true,\r\n                    \"activeBlocks\": [\r\n                        {\r\n                            \"blockName\": \"start_start\",\r\n                            \"maxUses\": 100\r\n                        }\r\n                    ]\r\n                }\r\n            },\r\n            {\r\n                \"categoryName\": \"math\",\r\n                \"blocksInfo\": {\r\n                    \"activate\": true,\r\n                    \"activeBlocks\": [\r\n                        {\r\n                            \"blockName\": \"math_number\",\r\n                            \"maxUses\": 100\r\n                        },\r\n                        {\r\n                            \"blockName\": \"math_arithmetic\",\r\n                            \"maxUses\": 100\r\n                        }\r\n                    ]\r\n                }\r\n            },\r\n            {\r\n                \"categoryName\": \"variable\",\r\n                \"blocksInfo\": {\r\n                    \"activate\": true,\r\n                    \"activeBlocks\": [\r\n                        {\r\n                            \"blockName\": \"variables_get\",\r\n                            \"maxUses\": 100\r\n                        },\r\n                        {\r\n                            \"blockName\": \"variables_set\",\r\n                            \"maxUses\": 100\r\n                        }\r\n                    ]\r\n                }\r\n            },\r\n            {\r\n                \"categoryName\": \"text\",\r\n                \"blocksInfo\": {\r\n                    \"activate\": true,\r\n                    \"activeBlocks\": [\r\n                        {\r\n                            \"blockName\": \"text\",\r\n                            \"maxUses\": 100\r\n                        }\r\n                    ]\r\n                }\r\n            },\r\n            {\r\n                \"categoryName\": \"logic\",\r\n                \"blocksInfo\": {\r\n                    \"activate\": true,\r\n                    \"activeBlocks\": [\r\n                        {\r\n                            \"blockName\": \"logic_negate\",\r\n                            \"maxUses\": 100\r\n                        },\r\n                        {\r\n                            \"blockName\": \"logic_cells_occupied\",\r\n                            \"maxUses\": 100\r\n                        },\r\n                        {\r\n                            \"blockName\": \"logic_compare\",\r\n                            \"maxUses\": 100\r\n                        },\r\n                        {\r\n                            \"blockName\": \"logic_operation\",\r\n                            \"maxUses\": 100\r\n                        },\r\n                        {\r\n                            \"blockName\": \"logic_boolean\",\r\n                            \"maxUses\": 100\r\n                        },\r\n                        {\r\n                            \"blockName\": \"logic_if\",\r\n                            \"maxUses\": 100\r\n                        },\r\n                        {\r\n                            \"blockName\": \"logic_ifelse\",\r\n                            \"maxUses\": 100\r\n                        }\r\n                    ]\r\n                }\r\n            },\r\n            {\r\n                \"categoryName\": \"control\",\r\n                \"blocksInfo\": {\r\n                    \"activate\": true,\r\n                    \"activeBlocks\": [\r\n                        {\r\n                            \"blockName\": \"controls_repeat\",\r\n                            \"maxUses\": 100\r\n                        },\r\n                        {\r\n                            \"blockName\": \"controls_whileUntil\",\r\n                            \"maxUses\": 100\r\n                        }\r\n                    ]\r\n                }\r\n            },\r\n            {\r\n                \"categoryName\": \"movement\",\r\n                \"blocksInfo\": {\r\n                    \"activate\": true,\r\n                    \"activeBlocks\": [\r\n                        {\r\n                            \"blockName\": \"movement_move\",\r\n                            \"maxUses\": 100\r\n                        },\r\n                        {\r\n                            \"blockName\": \"movement_rotate\",\r\n                            \"maxUses\": 100\r\n                        },\r\n                        {\r\n                            \"blockName\": \"movement_activate_door\",\r\n                            \"maxUses\": 100\r\n                        },\r\n                        {\r\n                            \"blockName\": \"movement_laser_change_intensity\",\r\n                            \"maxUses\": 100\r\n                        }\r\n                    ]\r\n                }\r\n            },\r\n            {\r\n                \"categoryName\": \"procedure\",\r\n                \"blocksInfo\": {\r\n                    \"activate\": true,\r\n                    \"activeBlocks\": [\r\n                        {\r\n                            \"blockName\": \"procedures_defnoreturn\",\r\n                            \"maxUses\": 100\r\n                        },\r\n                        {\r\n                            \"blockName\": \"procedures_callnoreturn\",\r\n                            \"maxUses\": 100\r\n                        }\r\n                    ]\r\n                }\r\n            }\r\n        ],\r\n        \"specialBlock\": \"\"\r\n    }\r\n}\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{server}}/levels",
-					"host": [
-						"{{server}}"
-					],
-					"path": [
-						"levels"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Nivel por id",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{token}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{server}}/levels/24",
-					"host": [
-						"{{server}}"
-					],
-					"path": [
-						"levels",
-						"24"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Obtener niveles(OPCIONAL: class/user)",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{token}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{server}}/levels?class=4",
-					"host": [
-						"{{server}}"
-					],
-					"path": [
-						"levels"
-					],
-					"query": [
-						{
-							"key": "class",
-							"value": "4"
-						}
-					]
-				}
-			},
-			"response": []
-		}
-	]
+  "info": {
+    "_postman_id": "5bdd25b2-7d71-40fe-adb5-3fb5a93476c7",
+    "name": "ArtiCodingServer",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Login",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "let responseData=pm.response.json();\r",
+              "postman.setEnvironmentVariable(\"token\", responseData.token);"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"username\":\"root\",\r\n    \"password\":\"root\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{server}}/login",
+          "host": [
+            "{{server}}"
+          ],
+          "path": [
+            "login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Crear usuario(SOLO ADMIN Y ROOT)",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"username\":\"profe10\",\r\n    \"password\":\"profe10\",\r\n    \"roles\":[\"ROLE_TEACHER\"],\r\n    \"classes\": []\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{server}}/users",
+          "host": [
+            "{{server}}"
+          ],
+          "path": [
+            "users"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Obtiene usuarios(SOLO ADMIN Y ROOT)",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{server}}/users?page=0&size=10",
+          "host": [
+            "{{server}}"
+          ],
+          "path": [
+            "users"
+          ],
+          "query": [
+            {
+              "key": "page",
+              "value": "0"
+            },
+            {
+              "key": "size",
+              "value": "10"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create Class",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"name\":\"Y PUES 2 otra prueba de clase\",\r\n    \"description\": \"Esta seria una clase con 3 alumnos\",\r\n    \"studentsId\":[],\r\n    \"teachersId\": []\r\n\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{server}}/classes",
+          "host": [
+            "{{server}}"
+          ],
+          "path": [
+            "classes"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Classes(OPCIONAL: user/teacher/level) Copy",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{server}}/classes?page=0&size=2",
+          "host": [
+            "{{server}}"
+          ],
+          "path": [
+            "classes"
+          ],
+          "query": [
+            {
+              "key": "page",
+              "value": "0"
+            },
+            {
+              "key": "size",
+              "value": "2"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Clase por Id",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{server}}/classes/25",
+          "host": [
+            "{{server}}"
+          ],
+          "path": [
+            "classes",
+            "25"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Crear nivel",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"title\": \"Nivel de prueba 2\",\r\n    \"description\": \"Esto es un nivel de prueba 2\",\r\n    \"classes\": [4],\r\n    \"publicLevel\": true,\r\n    \"articodingLevel\": {\r\n    \"boardstate\": {\r\n        \"rows\": 4,\r\n        \"columns\": 4,\r\n        \"cells\": [\r\n            {\r\n                \"id\": 0,\r\n                \"x\": 1,\r\n                \"y\": 1,\r\n                \"args\": []\r\n            },\r\n            {\r\n                \"id\": 0,\r\n                \"x\": 2,\r\n                \"y\": 1,\r\n                \"args\": []\r\n            },\r\n            {\r\n                \"id\": 0,\r\n                \"x\": 3,\r\n                \"y\": 1,\r\n                \"args\": []\r\n            },\r\n            {\r\n                \"id\": 0,\r\n                \"x\": 4,\r\n                \"y\": 1,\r\n                \"args\": []\r\n            },\r\n            {\r\n                \"id\": 0,\r\n                \"x\": 1,\r\n                \"y\": 2,\r\n                \"args\": []\r\n            },\r\n            {\r\n                \"id\": 0,\r\n                \"x\": 2,\r\n                \"y\": 2,\r\n                \"args\": []\r\n            },\r\n            {\r\n                \"id\": 0,\r\n                \"x\": 3,\r\n                \"y\": 2,\r\n                \"args\": []\r\n            },\r\n            {\r\n                \"id\": 0,\r\n                \"x\": 4,\r\n                \"y\": 2,\r\n                \"args\": []\r\n            },\r\n            {\r\n                \"id\": 0,\r\n                \"x\": 1,\r\n                \"y\": 3,\r\n                \"args\": []\r\n            },\r\n            {\r\n                \"id\": 0,\r\n                \"x\": 2,\r\n                \"y\": 3,\r\n                \"args\": []\r\n            },\r\n            {\r\n                \"id\": 0,\r\n                \"x\": 3,\r\n                \"y\": 3,\r\n                \"args\": []\r\n            },\r\n            {\r\n                \"id\": 0,\r\n                \"x\": 4,\r\n                \"y\": 3,\r\n                \"args\": []\r\n            },\r\n            {\r\n                \"id\": 0,\r\n                \"x\": 1,\r\n                \"y\": 4,\r\n                \"args\": []\r\n            },\r\n            {\r\n                \"id\": 0,\r\n                \"x\": 2,\r\n                \"y\": 4,\r\n                \"args\": []\r\n            },\r\n            {\r\n                \"id\": 0,\r\n                \"x\": 3,\r\n                \"y\": 4,\r\n                \"args\": []\r\n            },\r\n            {\r\n                \"id\": 0,\r\n                \"x\": 4,\r\n                \"y\": 4,\r\n                \"args\": []\r\n            }\r\n        ],\r\n        \"boardElements\": [\r\n            {\r\n                \"id\": 1,\r\n                \"orientation\": 0,\r\n                \"x\": 1,\r\n                \"y\": 1,\r\n                \"args\": [\r\n                    \"0\"\r\n                ]\r\n            },\r\n            {\r\n                \"id\": 2,\r\n                \"orientation\": 0,\r\n                \"x\": 4,\r\n                \"y\": 1,\r\n                \"args\": []\r\n            }\r\n        ],\r\n        \"boardHints\": []\r\n    },\r\n    \"activeblocks\": {\r\n        \"categories\": [\r\n            {\r\n                \"categoryName\": \"start\",\r\n                \"blocksInfo\": {\r\n                    \"activate\": true,\r\n                    \"activeBlocks\": [\r\n                        {\r\n                            \"blockName\": \"start_start\",\r\n                            \"maxUses\": 100\r\n                        }\r\n                    ]\r\n                }\r\n            },\r\n            {\r\n                \"categoryName\": \"math\",\r\n                \"blocksInfo\": {\r\n                    \"activate\": true,\r\n                    \"activeBlocks\": [\r\n                        {\r\n                            \"blockName\": \"math_number\",\r\n                            \"maxUses\": 100\r\n                        },\r\n                        {\r\n                            \"blockName\": \"math_arithmetic\",\r\n                            \"maxUses\": 100\r\n                        }\r\n                    ]\r\n                }\r\n            },\r\n            {\r\n                \"categoryName\": \"variable\",\r\n                \"blocksInfo\": {\r\n                    \"activate\": true,\r\n                    \"activeBlocks\": [\r\n                        {\r\n                            \"blockName\": \"variables_get\",\r\n                            \"maxUses\": 100\r\n                        },\r\n                        {\r\n                            \"blockName\": \"variables_set\",\r\n                            \"maxUses\": 100\r\n                        }\r\n                    ]\r\n                }\r\n            },\r\n            {\r\n                \"categoryName\": \"text\",\r\n                \"blocksInfo\": {\r\n                    \"activate\": true,\r\n                    \"activeBlocks\": [\r\n                        {\r\n                            \"blockName\": \"text\",\r\n                            \"maxUses\": 100\r\n                        }\r\n                    ]\r\n                }\r\n            },\r\n            {\r\n                \"categoryName\": \"logic\",\r\n                \"blocksInfo\": {\r\n                    \"activate\": true,\r\n                    \"activeBlocks\": [\r\n                        {\r\n                            \"blockName\": \"logic_negate\",\r\n                            \"maxUses\": 100\r\n                        },\r\n                        {\r\n                            \"blockName\": \"logic_cells_occupied\",\r\n                            \"maxUses\": 100\r\n                        },\r\n                        {\r\n                            \"blockName\": \"logic_compare\",\r\n                            \"maxUses\": 100\r\n                        },\r\n                        {\r\n                            \"blockName\": \"logic_operation\",\r\n                            \"maxUses\": 100\r\n                        },\r\n                        {\r\n                            \"blockName\": \"logic_boolean\",\r\n                            \"maxUses\": 100\r\n                        },\r\n                        {\r\n                            \"blockName\": \"logic_if\",\r\n                            \"maxUses\": 100\r\n                        },\r\n                        {\r\n                            \"blockName\": \"logic_ifelse\",\r\n                            \"maxUses\": 100\r\n                        }\r\n                    ]\r\n                }\r\n            },\r\n            {\r\n                \"categoryName\": \"control\",\r\n                \"blocksInfo\": {\r\n                    \"activate\": true,\r\n                    \"activeBlocks\": [\r\n                        {\r\n                            \"blockName\": \"controls_repeat\",\r\n                            \"maxUses\": 100\r\n                        },\r\n                        {\r\n                            \"blockName\": \"controls_whileUntil\",\r\n                            \"maxUses\": 100\r\n                        }\r\n                    ]\r\n                }\r\n            },\r\n            {\r\n                \"categoryName\": \"movement\",\r\n                \"blocksInfo\": {\r\n                    \"activate\": true,\r\n                    \"activeBlocks\": [\r\n                        {\r\n                            \"blockName\": \"movement_move\",\r\n                            \"maxUses\": 100\r\n                        },\r\n                        {\r\n                            \"blockName\": \"movement_rotate\",\r\n                            \"maxUses\": 100\r\n                        },\r\n                        {\r\n                            \"blockName\": \"movement_activate_door\",\r\n                            \"maxUses\": 100\r\n                        },\r\n                        {\r\n                            \"blockName\": \"movement_laser_change_intensity\",\r\n                            \"maxUses\": 100\r\n                        }\r\n                    ]\r\n                }\r\n            },\r\n            {\r\n                \"categoryName\": \"procedure\",\r\n                \"blocksInfo\": {\r\n                    \"activate\": true,\r\n                    \"activeBlocks\": [\r\n                        {\r\n                            \"blockName\": \"procedures_defnoreturn\",\r\n                            \"maxUses\": 100\r\n                        },\r\n                        {\r\n                            \"blockName\": \"procedures_callnoreturn\",\r\n                            \"maxUses\": 100\r\n                        }\r\n                    ]\r\n                }\r\n            }\r\n        ],\r\n        \"specialBlock\": \"\"\r\n    }\r\n}\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{server}}/levels",
+          "host": [
+            "{{server}}"
+          ],
+          "path": [
+            "levels"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Nivel por id",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{server}}/levels/24",
+          "host": [
+            "{{server}}"
+          ],
+          "path": [
+            "levels",
+            "24"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Obtener niveles(OPCIONAL: class/user)",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{server}}/levels?class=4",
+          "host": [
+            "{{server}}"
+          ],
+          "path": [
+            "levels"
+          ],
+          "query": [
+            {
+              "key": "class",
+              "value": "4"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
 }

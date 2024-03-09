@@ -34,7 +34,7 @@ public class User {
     private boolean enabled = true;
 
     @Column
-    @ElementCollection(targetClass=Long.class)
+    @ElementCollection(targetClass = Long.class)
     private Set<Long> likedLevels;
     // Hasta aqui
 
@@ -52,7 +52,6 @@ public class User {
     private List<ClassRoom> ownerClassRooms;
 
 
-
     public long getId() {
         return id;
     }
@@ -60,7 +59,6 @@ public class User {
     public void setId(long id) {
         this.id = id;
     }
-
 
 
     public Set<Long> getLikedLevels() {

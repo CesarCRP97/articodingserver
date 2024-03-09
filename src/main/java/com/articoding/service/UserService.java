@@ -263,7 +263,8 @@ public class UserService {
 
         }
     }
-    public void updateActualUser(User u){
+
+    public void updateActualUser(User u) {
         userRepository.save(u);
     }
 
