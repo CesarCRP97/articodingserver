@@ -267,4 +267,9 @@ public class UserService {
         userRepository.save(u);
     }
 
+    public IUser getActualIUser() {
+        User actualUser = this.getActualUser();
+        return userRepository.findById(actualUser.getId(), IUser.class);
+    }
+
 }

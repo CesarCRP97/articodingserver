@@ -4,6 +4,8 @@ import com.articoding.model.Role;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.Set;
+
 public interface IUser {
 
     Integer getId();
@@ -11,6 +13,8 @@ public interface IUser {
     String getUsername();
 
     boolean isEnabled();
+
+    Set<Long> getLikedLevels();
 
     @JsonIgnore
     Role getRole();
