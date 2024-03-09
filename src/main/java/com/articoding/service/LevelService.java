@@ -12,11 +12,13 @@ import com.articoding.model.in.LevelWithImageDTO;
 import com.articoding.model.in.UpdateLevelForm;
 import com.articoding.repository.ClassRepository;
 import com.articoding.repository.LevelRepository;
+import com.articoding.repository.UserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -39,6 +41,7 @@ public class LevelService {
     LevelRepository levelRepository;
     @Autowired
     ClassRepository classRepository;
+
     @Autowired
     UserService userService;
     @Autowired
@@ -198,7 +201,9 @@ public class LevelService {
         Level level = levelRepository.findById(levelId)
                 .orElseThrow(() -> new ErrorNotFound("level", levelId));
         level.incrLikes();
-        userService.getActualUser().addLikedLevel(levelId);
+        User u = userService.getActualUser();
+        u.addLikedLevel(levelId);
+        
         levelRepository.save(level);
         return levelId;
     }
@@ -207,7 +212,10 @@ public class LevelService {
         Level level = levelRepository.findById(levelId)
                 .orElseThrow(() -> new ErrorNotFound("level", levelId));
         level.decrLikes();
-        userService.getActualUser().deleteLikedLevel(levelId);
+        User u = userService.getActualUser();
+        u.deleteLikedLevel(levelId);
+
+        userService.updateActualUser(u);
         levelRepository.save(level);
         return levelId;
     }
@@ -257,10 +265,7 @@ public class LevelService {
             page = levelRepository.findByPublicLevelTrue(pageRequest, ILevel.class);
         }
         if(liked.isPresent()){
-            System.out.println("Get Liked Levels");
-            Set<Long> likedId = userService.getActualUser().getLikedLevels();
-            System.out.println(likedId.toString());
-            page.filter(level -> likedId.contains(level.getId().longValue()));
+            page = getFilteredLevels(pageRequest,page);
         }
         return page;
     }
@@ -306,6 +311,23 @@ public class LevelService {
         } else {
             return null;
         }
+    }
+
+    private Page<ILevel> getFilteredLevels(PageRequest pageRequest, Page<ILevel> page){
+
+        Set<Long> likedId = userService.getActualUser().getLikedLevels();
+        List<ILevel> filteredLiked = page.filter(level -> likedId.contains(level.getId().longValue())).stream().collect(Collectors.toList());
+
+        int start = (int) pageRequest.getOffset();
+        int end = Math.min((start + pageRequest.getPageSize()), filteredLiked.size());
+
+        List<ILevel> pageContent = filteredLiked.subList(start, end);
+
+        System.out.println("Get Liked Levels");
+
+        return new PageImpl<>(pageContent, pageRequest, filteredLiked.size());
+
+
     }
 
 }
