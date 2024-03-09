@@ -104,7 +104,6 @@ public class Level {
         this.timesPlayed++;
     }
 
-
     public List<ClassRoom> getClassRooms() {
         return classRooms;
     }

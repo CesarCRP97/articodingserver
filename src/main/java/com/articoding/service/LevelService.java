@@ -21,6 +21,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -28,6 +29,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.FileAttribute;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class LevelService {
@@ -197,6 +199,7 @@ public class LevelService {
                 .orElseThrow(() -> new ErrorNotFound("level", levelId));
         level.incrLikes();
         userService.getActualUser().addLikedLevel(levelId);
+        levelRepository.save(level);
         return levelId;
     }
 
@@ -205,14 +208,16 @@ public class LevelService {
                 .orElseThrow(() -> new ErrorNotFound("level", levelId));
         level.decrLikes();
         userService.getActualUser().deleteLikedLevel(levelId);
-
+        levelRepository.save(level);
         return levelId;
     }
 
     public long playLevel(LevelForm levelForm, Long levelId) {
+        System.out.println("like level id: " + levelId);
         Level level = levelRepository.findById(levelId)
                 .orElseThrow(() -> new ErrorNotFound("level", levelId));
         level.increaseTimesPlayed();
+        levelRepository.save(level);
         return levelId;
     }
 
@@ -252,7 +257,9 @@ public class LevelService {
             page = levelRepository.findByPublicLevelTrue(pageRequest, ILevel.class);
         }
         if(liked.isPresent()){
+            System.out.println("Get Liked Levels");
             Set<Long> likedId = userService.getActualUser().getLikedLevels();
+            System.out.println(likedId.toString());
             page.filter(level -> likedId.contains(level.getId().longValue()));
         }
         return page;
@@ -279,7 +286,6 @@ public class LevelService {
     //Returns the path of the image
     private String saveImageForLevel(Level level, byte[] image) {
         String fileName = UUID.randomUUID() + "_" + level.getTitle() + ".png";
-
         try (ByteArrayInputStream inputStream = new ByteArrayInputStream(image)) {
             Files.createDirectories(uploadDir);
             Path filePath = uploadDir.resolve(fileName);
@@ -287,8 +293,7 @@ public class LevelService {
             level.setImagePath(fileName);
             return fileName;
         } catch (IOException ex) {
-            //Algo tengo que hacer aquí.
-            System.out.println("Error al guardar la imagen esta" + ex.toString());
+            System.out.println("Error al guardar la imagen " + ex.toString());
         }
         return null;
     }
