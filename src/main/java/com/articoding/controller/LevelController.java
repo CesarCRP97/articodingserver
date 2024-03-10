@@ -10,6 +10,7 @@ import com.articoding.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -63,10 +64,15 @@ public class LevelController {
             @RequestParam(name = "liked", required = false) Optional<Boolean> liked,
             @RequestParam(name = "title", required = false) Optional<String> title,
             @RequestParam(name = "owner", required = false) Optional<String> owner,
-            @RequestParam(name = "levelid", required = false) Optional<Long> levelId
+            @RequestParam(name = "levelid", required = false) Optional<Long> levelId,
+            @RequestParam(name = "orderByLikes", required = false) Optional<Boolean> orderByLikes
 
     ) {
-        return ResponseEntity.ok(levelService.getLevels(PageRequest.of(page, size), classId, userId, publicLevels, liked, title, owner, levelId));
+        String s;
+        if(orderByLikes.isPresent() && orderByLikes.get()) s = "likes";
+        else s = "timesPlayed";
+        Sort sort = Sort.by(Sort.Direction.DESC, s);
+        return ResponseEntity.ok(levelService.getLevels(PageRequest.of(page, size, sort), classId, userId, publicLevels, liked, title, owner, levelId));
     }
 
     @PutMapping("/{levelId}")
