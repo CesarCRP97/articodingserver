@@ -17,6 +17,18 @@ import java.util.List;
 @Table(name = "playlist")
 public class Playlist {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id", nullable = false)
+    private Long id;
+
+    String name;
+
+    @ManyToOne
+    private User owner;
+    @Column
+    private boolean enabled = true;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "playlist_levels",
@@ -27,17 +39,7 @@ public class Playlist {
     )
     List<Level> levels;
 
-    String name;
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false)
-    private Long id;
-
-    //TODO - Tabla de relación autor - playlist??
-    @ManyToOne
-    private User owner;
-    @Column
-    private boolean enabled = true;
+    //Todo - Añadir num_megustas cuando funcione Playlist
 
     public Playlist() {
 
@@ -49,5 +51,37 @@ public class Playlist {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public List<Level> getLevels() {
+        return levels;
+    }
+
+    public void setLevels(List<Level> levels) {
+        this.levels = levels;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public User getOwner() {
+        return owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
     }
 }
