@@ -9,7 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.awt.print.Pageable;
+import org.springframework.data.domain.Pageable;
 
 @Repository
 public interface PlaylistRepository extends JpaRepository<Playlist, Long> {
@@ -19,14 +19,11 @@ public interface PlaylistRepository extends JpaRepository<Playlist, Long> {
     <T> Page<T> findBy(Pageable pageable, Class<T> type);
 
 
-    <T> Page<T> findByOwnerAndActiveTrue(User owner, Pageable pageable, Class<T> type);
+    <T> Page<T> findByOwnerAndEnabledTrue(User owner, Pageable pageable, Class<T> type);
 
 
-    <T> Page<T> findByTitleContains(PageRequest pageRequest, String s, Class<T> iPlaylistClass);
+    <T> Page<T> findByTitleContains(Pageable pageRequest, String s, Class<T> iPlaylistClass);
 
-    <T> Page<T> findByOwnerAndActiveTrueAndTitleContains(User actualUser, String s, PageRequest pageRequest, Class<T> iPlaylistClass);
+    <T> Page<T> findByOwnerAndEnabledTrueAndTitleContains(User actualUser, String s, Pageable pageRequest, Class<T> iPlaylistClass);
 
-    <T> Page<T> findByPublicLevelTrueAndTitleContains(PageRequest pageRequest, Class<T> iLevelClass, String s);
-
-    <T>Page<T> findByPublicLevelTrue(PageRequest pageRequest, Class<T> iLevelClass);
 }

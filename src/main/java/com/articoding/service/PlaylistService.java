@@ -1,6 +1,10 @@
 package com.articoding.service;
 
 import com.articoding.RoleHelper;
+import com.articoding.error.ErrorNotFound;
+import com.articoding.error.NotAuthorization;
+import com.articoding.model.ClassRoom;
+import com.articoding.model.Level;
 import com.articoding.model.Playlist;
 import com.articoding.model.User;
 import com.articoding.model.in.ILevel;
@@ -12,9 +16,15 @@ import com.articoding.repository.PlaylistRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
 
+import org.springframework.data.domain.Pageable;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
+@Service
 public class PlaylistService {
 
 
@@ -32,10 +42,30 @@ public class PlaylistService {
 
 
     public Long createPlaylist(User actualUser, PlaylistForm playlistForm){
-        return null;
+        Playlist playlist = new Playlist();
+        List<Level> levelsList = new ArrayList<>();
+
+        for (Long idLevel : playlistForm.getLevels()) {
+            /** Level exists */
+            Level level = levelRepository.findById(idLevel)
+                    .orElseThrow(() -> new ErrorNotFound("Clase", idLevel));
+
+
+            levelsList.add(level);
+        }
+        playlist.setTitle(playlistForm.getTitle());
+        playlist.setOwner(actualUser);
+        playlist.setEnabled(true);
+
+        Playlist newPlaylist = playlistRepository.save(playlist);
+
+        return newPlaylist.getId();
     }
 
     public IPlaylist getPlaylist(User actualUser, Long playlistID){
+
+        Playlist playlist = playlistRepository.findById(playlistID, Playlist.class);
+
         return null;
     }
 
@@ -59,29 +89,30 @@ public class PlaylistService {
                                                Optional<String> owner, Optional<Long> playlistId) {
         Page<IPlaylist> page;
         if (title.isPresent()) {
-            page = playlistRepository.findByPublicLevelTrueAndTitleContains(pageRequest, IPlaylist.class, title.get());
+            page = playlistRepository.findByTitleContains(pageRequest, title.get(), IPlaylist.class);
         } else {
-            page = playlistRepository.findByPublicLevelTrue(pageRequest, IPlaylist.class);
+            page = playlistRepository.findBy(pageRequest, IPlaylist.class);
         }
         return page;
     }
 
     private Page<IPlaylist> getOwnedLevels(PageRequest pageRequest, Optional<String> title, User actualUser) {
+        Page<IPlaylist> page;
         if (roleHelper.isAdmin(actualUser)) {
             if (title.isPresent()) {
-                return playlistRepository.findByTitleContains(pageRequest, title.get(), IPlaylist.class);
+                page = playlistRepository.findByTitleContains(pageRequest, title.get(), IPlaylist.class);
             } else {
-                return playlistRepository.findBy(pageRequest, IPlaylist.class);
+                page =  playlistRepository.findBy(pageRequest, IPlaylist.class);
             }
         } else {
             /** Otherwise, returns only the levels created by the user */
             if (title.isPresent()) {
-                return playlistRepository.findByOwnerAndActiveTrueAndTitleContains(actualUser, title.get(), pageRequest, IPlaylist.class);
+                page = playlistRepository.findByOwnerAndEnabledTrueAndTitleContains(actualUser, title.get(), pageRequest, IPlaylist.class);
             } else {
-                return playlistRepository.findByOwnerAndActiveTrue(actualUser, pageRequest, IPlaylist.class);
+                page = playlistRepository.findByOwnerAndEnabledTrue(actualUser, pageRequest, IPlaylist.class);
             }
         }
-
+        return page;
     }
 
 
