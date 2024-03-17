@@ -63,10 +63,7 @@ public class PlaylistService {
     }
 
     public IPlaylist getPlaylist(User actualUser, Long playlistID){
-
-        Playlist playlist = playlistRepository.findById(playlistID, Playlist.class);
-
-        return null;
+        return playlistRepository.findById(playlistID, IPlaylist.class);
     }
 
     public Page<IPlaylist> getPlaylists(PageRequest pageRequest, Optional<Long> userId, Optional<String> title,
@@ -115,9 +112,36 @@ public class PlaylistService {
         return page;
     }
 
+    public Long updatePlaylist(PlaylistForm playlistForm, Long playlistId){
 
-    //Todo - Sustituir PlaylistForm por UpdatePlaylistForm
-    public Long updatePlaylist(PlaylistForm playlistForm, Long playlistId){return null;}
+        Playlist playlistOld = playlistRepository.findById(playlistId)
+                .orElseThrow(() -> new ErrorNotFound("Playlist does not exist", playlistId));
+
+        User actualUser = userService.getActualUser();
+        //probar si equals compara correctamente dos usuarios
+        if(!playlistOld.getOwner().equals(actualUser) || !roleHelper.isAdmin(actualUser)){
+            throw new NotAuthorization("modificar el nivel " + playlistId);
+        }
+        else{
+            if(playlistForm.getTitle() != null)
+                playlistOld.setTitle(playlistForm.getTitle());
+            if(playlistForm.getLevels() != null){
+                //If there is a new level not previously contained by the playlist, adds it.
+                List<Level> levelList = playlistOld.getLevels();
+                for (Long idLevel : playlistForm.getLevels()) {
+                    /** Level exists */
+                    Level level = levelRepository.findById(idLevel)
+                            .orElseThrow(() -> new ErrorNotFound("Clase", idLevel));
+                    if(!levelList.contains(level))
+                        levelList.add(level);
+
+                }
+                playlistOld.setLevels(levelList);
+            }
+        }
+
+        return playlistRepository.save(playlistOld).getId();
+    }
 
 
 

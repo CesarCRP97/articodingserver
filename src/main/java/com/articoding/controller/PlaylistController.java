@@ -49,6 +49,7 @@ public class PlaylistController {
     @GetMapping("/{playlistId}")
     public ResponseEntity<IPlaylist> getPlaylist(@PathVariable(value = "playlistId") Long playlistId) throws IOException {
         IPlaylist playlist = playlistService.getPlaylist(userService.getActualUser(), playlistId);
+        playlist.getLevels();
 
         return ResponseEntity.ok(playlist);
     }

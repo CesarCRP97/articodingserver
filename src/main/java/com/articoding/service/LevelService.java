@@ -96,6 +96,8 @@ public class LevelService {
         return newLevel.getId();
     }
 
+    //Todo - Que devuelva LevelWithImageDTO y la lógica crear el DTO se quede en LevelService
+    //       en vez de hacerse en el controller
     public ILevel getLevel(User actualUser, Long levelId) {
         /** Verifies if the classroom exists */
         Level level = levelRepository.findById(levelId, Level.class);

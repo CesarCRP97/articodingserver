@@ -6,7 +6,7 @@ import java.util.List;
 
 public class LevelForm {
 
-    public boolean active;
+    public Boolean active;
     private String title;
     private List<Long> classes;
     private ACLevel articodingLevel;
