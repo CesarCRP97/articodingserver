@@ -6,15 +6,11 @@ public interface IPlaylist {
 
     Long getId();
 
-    String getName();
+    String getTitle();
 
     IUser getOwner();
 
     List<ILevel> getLevels();
-
-    boolean isPublicLevel();
-
-    boolean isActive();
 
     //Todo - añadir me gustas cuando funcionen
 

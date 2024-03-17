@@ -61,7 +61,7 @@ public class PlaylistController {
             @RequestParam(name = "user", required = false) Optional<Long> userId,
             @RequestParam(name = "user", required = false) Optional<Long> playlistId,
             @RequestParam(name = "liked", required = false) Optional<Boolean> liked,
-            @RequestParam(name = "public_playlist", required = false) Optional<Boolean> publicPlaylist,
+            @RequestParam(name = "publicPlaylists", required = false) Optional<Boolean> publicPlaylist,
             @RequestParam(name = "title", required = false) Optional<String> title,
             @RequestParam(name = "owner", required = false) Optional<String> owner
             //@RequestParam(name = "orderByLikes", required = false) Optional<Boolean> orderByLikes
