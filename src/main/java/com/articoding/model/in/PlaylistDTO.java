@@ -4,13 +4,13 @@ import com.articoding.model.User;
 
 import java.util.List;
 
-public class PlaylistWithLevelsWithImages {
+public class PlaylistDTO {
 
     private Long id;
 
     private String title;
 
-    private User owner;
+    private IUser owner;
 
     List<LevelWithImageDTO> levels;
 
@@ -28,11 +28,11 @@ public class PlaylistWithLevelsWithImages {
         this.title = title;
     }
 
-    public User getOwner() {
+    public IUser getOwner() {
         return owner;
     }
 
-    public void setOwner(User owner) {
+    public void setOwner(IUser owner) {
         this.owner = owner;
     }
 

@@ -45,11 +45,8 @@ public class LevelController {
     @GetMapping("/{levelId}")
     public ResponseEntity<LevelWithImageDTO> getLevel(@PathVariable(value = "levelId") Long levelId) throws IOException {
         ILevel level = levelService.getLevel(userService.getActualUser(), levelId);
-        byte[] image = levelService.getImageByImagePath(level.getImagePath());
 
-        LevelWithImageDTO response = new LevelWithImageDTO();
-        response.setImage(image);
-        response.setLevel(level);
+        LevelWithImageDTO response = levelService.toLevelWithImageDTO(level);
 
         return ResponseEntity.ok(response);
     }

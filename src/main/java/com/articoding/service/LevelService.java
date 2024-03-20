@@ -88,7 +88,7 @@ public class LevelService {
         if (levelForm.getImage() != null) {
             System.out.println("getImage != null");
             byte[] image = levelForm.getImage();
-            String imagePath = this.saveImageForLevel(level, image);
+            String imagePath = this.saveImage(level, image);
         }
 
         Level newLevel = levelRepository.save(level);
@@ -159,20 +159,30 @@ public class LevelService {
     }
 
     private Page<LevelWithImageDTO> toLevelWithImageDTO(Page<ILevel> oldPage) {
-
-        return oldPage.map(level -> {
-            LevelWithImageDTO levelWithImageDTO = new LevelWithImageDTO();
-            levelWithImageDTO.setLevel(level);
-            try {
-                String imageName = level.getImagePath();
-                if (imageName != null)
-                    levelWithImageDTO.setImage(this.getImageByImagePath(imageName));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            return levelWithImageDTO;
-        });
+        return oldPage.map(this::toLevelWithImageDTO);
     }
+
+    public List<LevelWithImageDTO> toLevelWithImageDTO(List<ILevel> levelList){
+        List<LevelWithImageDTO> newList = new ArrayList<>();
+        for(ILevel level : levelList){
+            newList.add(toLevelWithImageDTO(level));
+        }
+        return newList;
+    }
+
+    public LevelWithImageDTO toLevelWithImageDTO(ILevel level){
+        LevelWithImageDTO levelWithImageDTO = new LevelWithImageDTO();
+        levelWithImageDTO.setLevel(level);
+        try {
+            String imageName = level.getImagePath();
+            if (imageName != null)
+                levelWithImageDTO.setImage(this.getImage(imageName));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return levelWithImageDTO;
+    }
+
 
 
     public long updateLevel(UpdateLevelForm newLevel, Long levelId) {
@@ -318,7 +328,7 @@ public class LevelService {
     }
 
     //Returns the path of the image
-    private String saveImageForLevel(Level level, byte[] image) {
+    private String saveImage(Level level, byte[] image) {
         String fileName = UUID.randomUUID() + "_" + level.getTitle() + ".png";
         try (ByteArrayInputStream inputStream = new ByteArrayInputStream(image)) {
             Files.createDirectories(uploadDir);
@@ -332,7 +342,7 @@ public class LevelService {
         return null;
     }
 
-    public byte[] getImageByImagePath(String imageName) throws IOException {
+    public byte[] getImage(String imageName) throws IOException {
         Path filePath = uploadDir.resolve(imageName);
         System.out.println(filePath);
         if (Files.exists(filePath)) {

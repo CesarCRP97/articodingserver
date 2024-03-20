@@ -4,6 +4,7 @@ import com.articoding.model.Level;
 import com.articoding.model.in.ILevel;
 import com.articoding.model.in.IPlaylist;
 import com.articoding.model.in.LevelWithImageDTO;
+import com.articoding.model.in.PlaylistDTO;
 import com.articoding.model.in.PlaylistForm;
 import com.articoding.model.in.UpdateLevelForm;
 import com.articoding.model.rest.CreatedRef;
@@ -55,7 +56,7 @@ public class PlaylistController {
     }
 
     @GetMapping
-        public ResponseEntity<Page<IPlaylist>> getPlaylists(
+        public ResponseEntity<Page<PlaylistDTO>> getPlaylists(
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "10") int size,
             @RequestParam(name = "user", required = false) Optional<Long> userId,

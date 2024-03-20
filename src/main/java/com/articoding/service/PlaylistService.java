@@ -3,14 +3,14 @@ package com.articoding.service;
 import com.articoding.RoleHelper;
 import com.articoding.error.ErrorNotFound;
 import com.articoding.error.NotAuthorization;
-import com.articoding.model.ClassRoom;
 import com.articoding.model.Level;
 import com.articoding.model.Playlist;
 import com.articoding.model.User;
 import com.articoding.model.in.ILevel;
 import com.articoding.model.in.IPlaylist;
+import com.articoding.model.in.LevelWithImageDTO;
 import com.articoding.model.in.PlaylistForm;
-import com.articoding.repository.ClassRepository;
+import com.articoding.model.in.PlaylistDTO;
 import com.articoding.repository.LevelRepository;
 import com.articoding.repository.PlaylistRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import org.springframework.data.domain.Pageable;
-
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -66,7 +65,7 @@ public class PlaylistService {
         return playlistRepository.findById(playlistID, IPlaylist.class);
     }
 
-    public Page<IPlaylist> getPlaylists(PageRequest pageRequest, Optional<Long> userId, Optional<String> title,
+    public Page<PlaylistDTO> getPlaylists(PageRequest pageRequest, Optional<Long> userId, Optional<String> title,
                                        Optional<String> owner, Optional<Long> playlistId, Optional<Boolean>publicPlaylists){
         Page<IPlaylist> page;
         User actualUser = userService.getActualUser();
@@ -78,7 +77,7 @@ public class PlaylistService {
             page = getOwnedLevels(pageRequest, title, actualUser);
         }
 
-        return page;
+        return toPlaylistDTO(page);
     }
 
 
@@ -141,6 +140,26 @@ public class PlaylistService {
         }
 
         return playlistRepository.save(playlistOld).getId();
+    }
+
+    private Page<PlaylistDTO> toPlaylistDTO(Page<IPlaylist> playlists){
+        return playlists.map(this::toPlaylistDTO);
+    }
+
+    public PlaylistDTO toPlaylistDTO(IPlaylist playlist){
+
+        PlaylistDTO newPlaylist = new PlaylistDTO();
+        newPlaylist.setId(playlist.getId());
+        newPlaylist.setTitle(playlist.getTitle());
+        newPlaylist.setOwner(playlist.getOwner());
+
+        ArrayList<LevelWithImageDTO> newLevels = new ArrayList<>();
+
+        for(ILevel level : playlist.getLevels()){
+            newLevels.add(levelService.toLevelWithImageDTO(level));
+        }
+        newPlaylist.setLevels(newLevels);
+        return newPlaylist;
     }
 
 
