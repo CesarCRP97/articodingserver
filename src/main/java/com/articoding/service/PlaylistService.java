@@ -18,7 +18,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -142,8 +141,36 @@ public class PlaylistService {
         return playlistRepository.save(playlistOld).getId();
     }
 
-    private Page<PlaylistDTO> toPlaylistDTO(Page<IPlaylist> playlists){
-        return playlists.map(this::toPlaylistDTO);
+
+    public long likePlaylist(PlaylistForm playlistForm, long playlistId) {
+        Playlist playlist = playlistRepository.findById(playlistId)
+                .orElseThrow(() -> new ErrorNotFound("level", playlistId));
+        playlist.incrLikes();
+        User u = userService.getActualUser();
+        u.addLikedPlaylist(playlistId);
+
+        playlistRepository.save(playlist);
+        return playlistId;
+    }
+
+    public long dislikePlaylist(PlaylistForm playlistForm, long playlistId) {
+        Playlist playlist = playlistRepository.findById(playlistId)
+                .orElseThrow(() -> new ErrorNotFound("level", playlistId));
+        playlist.decrLikes();
+        User u = userService.getActualUser();
+        u.deleteLikedLevel(playlistId);
+
+        playlistRepository.save(playlist);
+        return playlistId;
+    }
+
+    public long playPlaylist(PlaylistForm playlistForm, long playlistId) {
+        System.out.println("like level id: " + playlistId);
+        Playlist playlist = playlistRepository.findById(playlistId)
+                .orElseThrow(() -> new ErrorNotFound("level", playlistId));
+        playlist.increaseTimesPlayed();
+        playlistRepository.save(playlist);
+        return playlistId;
     }
 
     public PlaylistDTO toPlaylistDTO(IPlaylist playlist){
@@ -162,8 +189,8 @@ public class PlaylistService {
         return newPlaylist;
     }
 
-
-
-
+    private Page<PlaylistDTO> toPlaylistDTO(Page<IPlaylist> playlists){
+        return playlists.map(this::toPlaylistDTO);
+    }
 
 }

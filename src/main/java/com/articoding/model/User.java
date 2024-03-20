@@ -37,6 +37,9 @@ public class User {
     @ElementCollection(targetClass = Long.class)
     private Set<Long> likedLevels;
     // Hasta aqui
+    @Column
+    @ElementCollection(targetClass = Long.class)
+    private Set<Long> likedPlaylists;
 
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -80,6 +83,22 @@ public class User {
 
     public void deleteLikedLevel(Long level) {
         this.likedLevels.remove(level);
+    }
+
+    public Set<Long> getLikedPlaylists() {
+        return likedLevels;
+    }
+
+    public void setLikedPlaylists(Set<Long> likedPlaylists) {
+        this.likedPlaylists = likedPlaylists;
+    }
+
+    public void addLikedPlaylist(Long playlist) {
+        this.likedPlaylists.add(playlist);
+    }
+
+    public void deleteLikedPlaylist(Long playlist) {
+        this.likedPlaylists.remove(playlist);
     }
 
     public List<Level> getCreatedLevels() {

@@ -12,6 +12,11 @@ public interface IPlaylist {
 
     List<ILevel> getLevels();
 
+    int getLikes();
+
+    int getTimesPlayed();
+
+
     //Todo - añadir me gustas cuando funcionen
 
 }

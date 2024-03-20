@@ -39,6 +39,11 @@ public class Playlist {
     )
     List<Level> levels;
 
+    private int likes = 0;
+
+    private int timesPlayed = 0;
+
+
     //Todo - Añadir num_megustas cuando funcione Playlist
 
     public Playlist() {
@@ -83,5 +88,33 @@ public class Playlist {
 
     public void setOwner(User owner) {
         this.owner = owner;
+    }
+
+    public int getLikes() {
+        return likes;
+    }
+
+    public void setLikes(int likes) {
+        this.likes = likes;
+    }
+
+    public void incrLikes() {
+        this.likes++;
+    }
+
+    public void decrLikes() {
+        this.likes--;
+    }
+
+    public int getTimesPlayed() {
+        return timesPlayed;
+    }
+
+    public void setTimesPlayed(int t) {
+        this.timesPlayed = t;
+    }
+
+    public void increaseTimesPlayed() {
+        this.timesPlayed++;
     }
 }

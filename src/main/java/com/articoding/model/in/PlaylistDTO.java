@@ -12,6 +12,10 @@ public class PlaylistDTO {
 
     private IUser owner;
 
+    private int likes;
+
+    private int timesPlayed;
+
     List<LevelWithImageDTO> levels;
 
     public Long getId(){return id;}
@@ -35,6 +39,15 @@ public class PlaylistDTO {
     public void setOwner(IUser owner) {
         this.owner = owner;
     }
+
+    public int getLikes(){return this.likes;}
+
+    public void setLikes(int likes){ this.likes = likes;}
+
+    public int getTimesPlayed(){return this.timesPlayed;}
+
+    public void setTimesPlayed(int timesPlayed){ this.timesPlayed = timesPlayed;}
+
 
     public List<LevelWithImageDTO> getLevels() {
         return levels;

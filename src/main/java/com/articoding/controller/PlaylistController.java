@@ -1,21 +1,14 @@
 package com.articoding.controller;
 
-import com.articoding.model.Level;
-import com.articoding.model.in.ILevel;
 import com.articoding.model.in.IPlaylist;
-import com.articoding.model.in.LevelWithImageDTO;
 import com.articoding.model.in.PlaylistDTO;
 import com.articoding.model.in.PlaylistForm;
-import com.articoding.model.in.UpdateLevelForm;
 import com.articoding.model.rest.CreatedRef;
-import com.articoding.service.LevelService;
 import com.articoding.service.PlaylistService;
 import com.articoding.service.UserService;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -78,7 +71,25 @@ public class PlaylistController {
     @PutMapping("/{playlistId}")
     public ResponseEntity<CreatedRef> updateLevel(@RequestBody PlaylistForm playlistForm,
                                                   @PathVariable(value = "playlistId") Long playlistId) {
-        return ResponseEntity.ok(new CreatedRef("levels/" + playlistService.updatePlaylist(playlistForm, playlistId)));
+        return ResponseEntity.ok(new CreatedRef("playlists/" + playlistService.updatePlaylist(playlistForm, playlistId)));
+    }
+
+    @PostMapping("/{playlistId}/increaselikes")
+    public ResponseEntity<CreatedRef> increaseLevelsLikes(@RequestBody PlaylistForm playlistForm,
+                                                          @PathVariable(value = "playlistId") Long playlistId) {
+        return ResponseEntity.ok(new CreatedRef("playlists/" + playlistService.likePlaylist(playlistForm, playlistId)));
+    }
+
+    @PostMapping("/{levelId}/decreaselikes")
+    public ResponseEntity<CreatedRef> decreaseLevelsLikes(@RequestBody PlaylistForm playlistForm,
+                                                          @PathVariable(value = "playlistId") Long playlistId) {
+        return ResponseEntity.ok(new CreatedRef("playlists/" + playlistService.dislikePlaylist(playlistForm, playlistId)));
+    }
+
+    @PostMapping("/{levelId}/play")
+    public ResponseEntity<CreatedRef> playLevel(@RequestBody PlaylistForm playlistForm,
+                                                @PathVariable(value = "playlistId") Long playlistId) {
+        return ResponseEntity.ok(new CreatedRef("playlists/" + playlistService.playPlaylist(playlistForm, playlistId)));
     }
 
 
