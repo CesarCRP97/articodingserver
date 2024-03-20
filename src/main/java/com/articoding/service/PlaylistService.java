@@ -9,8 +9,8 @@ import com.articoding.model.User;
 import com.articoding.model.in.ILevel;
 import com.articoding.model.in.IPlaylist;
 import com.articoding.model.in.LevelWithImageDTO;
-import com.articoding.model.in.PlaylistForm;
 import com.articoding.model.in.PlaylistDTO;
+import com.articoding.model.in.PlaylistForm;
 import com.articoding.repository.LevelRepository;
 import com.articoding.repository.PlaylistRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +39,7 @@ public class PlaylistService {
     RoleHelper roleHelper;
 
 
-    public Long createPlaylist(User actualUser, PlaylistForm playlistForm){
+    public Long createPlaylist(User actualUser, PlaylistForm playlistForm) {
         Playlist playlist = new Playlist();
         List<Level> levelsList = new ArrayList<>();
 
@@ -60,19 +60,18 @@ public class PlaylistService {
         return newPlaylist.getId();
     }
 
-    public IPlaylist getPlaylist(User actualUser, Long playlistID){
+    public IPlaylist getPlaylist(User actualUser, Long playlistID) {
         return playlistRepository.findById(playlistID, IPlaylist.class);
     }
 
     public Page<PlaylistDTO> getPlaylists(PageRequest pageRequest, Optional<Long> userId, Optional<String> title,
-                                       Optional<String> owner, Optional<Long> playlistId, Optional<Boolean>publicPlaylists){
+                                          Optional<String> owner, Optional<Long> playlistId, Optional<Boolean> publicPlaylists) {
         Page<IPlaylist> page;
         User actualUser = userService.getActualUser();
 
-        if(publicPlaylists.isPresent()){
+        if (publicPlaylists.isPresent()) {
             page = getPublicPlaylists(pageRequest, userId, title, owner, playlistId);
-        }
-        else{
+        } else {
             page = getOwnedLevels(pageRequest, title, actualUser);
         }
 
@@ -97,7 +96,7 @@ public class PlaylistService {
             if (title.isPresent()) {
                 page = playlistRepository.findByTitleContains(pageRequest, title.get(), IPlaylist.class);
             } else {
-                page =  playlistRepository.findBy(pageRequest, IPlaylist.class);
+                page = playlistRepository.findBy(pageRequest, IPlaylist.class);
             }
         } else {
             /** Otherwise, returns only the levels created by the user */
@@ -110,27 +109,26 @@ public class PlaylistService {
         return page;
     }
 
-    public Long updatePlaylist(PlaylistForm playlistForm, Long playlistId){
+    public Long updatePlaylist(PlaylistForm playlistForm, Long playlistId) {
 
         Playlist playlistOld = playlistRepository.findById(playlistId)
                 .orElseThrow(() -> new ErrorNotFound("Playlist does not exist", playlistId));
 
         User actualUser = userService.getActualUser();
         //probar si equals compara correctamente dos usuarios
-        if(!playlistOld.getOwner().equals(actualUser) || !roleHelper.isAdmin(actualUser)){
+        if (!playlistOld.getOwner().equals(actualUser) || !roleHelper.isAdmin(actualUser)) {
             throw new NotAuthorization("modificar el nivel " + playlistId);
-        }
-        else{
-            if(playlistForm.getTitle() != null)
+        } else {
+            if (playlistForm.getTitle() != null)
                 playlistOld.setTitle(playlistForm.getTitle());
-            if(playlistForm.getLevels() != null){
+            if (playlistForm.getLevels() != null) {
                 //If there is a new level not previously contained by the playlist, adds it.
                 List<Level> levelList = playlistOld.getLevels();
                 for (Long idLevel : playlistForm.getLevels()) {
                     /** Level exists */
                     Level level = levelRepository.findById(idLevel)
                             .orElseThrow(() -> new ErrorNotFound("Clase", idLevel));
-                    if(!levelList.contains(level))
+                    if (!levelList.contains(level))
                         levelList.add(level);
 
                 }
@@ -173,7 +171,7 @@ public class PlaylistService {
         return playlistId;
     }
 
-    public PlaylistDTO toPlaylistDTO(IPlaylist playlist){
+    public PlaylistDTO toPlaylistDTO(IPlaylist playlist) {
 
         PlaylistDTO newPlaylist = new PlaylistDTO();
         newPlaylist.setId(playlist.getId());
@@ -182,14 +180,14 @@ public class PlaylistService {
 
         ArrayList<LevelWithImageDTO> newLevels = new ArrayList<>();
 
-        for(ILevel level : playlist.getLevels()){
+        for (ILevel level : playlist.getLevels()) {
             newLevels.add(levelService.toLevelWithImageDTO(level));
         }
         newPlaylist.setLevels(newLevels);
         return newPlaylist;
     }
 
-    private Page<PlaylistDTO> toPlaylistDTO(Page<IPlaylist> playlists){
+    private Page<PlaylistDTO> toPlaylistDTO(Page<IPlaylist> playlists) {
         return playlists.map(this::toPlaylistDTO);
     }
 

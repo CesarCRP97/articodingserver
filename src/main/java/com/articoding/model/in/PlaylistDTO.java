@@ -1,24 +1,19 @@
 package com.articoding.model.in;
 
-import com.articoding.model.User;
-
 import java.util.List;
 
 public class PlaylistDTO {
 
+    List<LevelWithImageDTO> levels;
     private Long id;
-
     private String title;
-
     private IUser owner;
-
     private int likes;
-
     private int timesPlayed;
 
-    List<LevelWithImageDTO> levels;
-
-    public Long getId(){return id;}
+    public Long getId() {
+        return id;
+    }
 
     public void setId(Long id) {
         this.id = id;
@@ -40,13 +35,21 @@ public class PlaylistDTO {
         this.owner = owner;
     }
 
-    public int getLikes(){return this.likes;}
+    public int getLikes() {
+        return this.likes;
+    }
 
-    public void setLikes(int likes){ this.likes = likes;}
+    public void setLikes(int likes) {
+        this.likes = likes;
+    }
 
-    public int getTimesPlayed(){return this.timesPlayed;}
+    public int getTimesPlayed() {
+        return this.timesPlayed;
+    }
 
-    public void setTimesPlayed(int timesPlayed){ this.timesPlayed = timesPlayed;}
+    public void setTimesPlayed(int timesPlayed) {
+        this.timesPlayed = timesPlayed;
+    }
 
 
     public List<LevelWithImageDTO> getLevels() {

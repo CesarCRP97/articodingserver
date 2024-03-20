@@ -33,7 +33,7 @@ public class PlaylistController {
 
 
     @PostMapping
-    public ResponseEntity<CreatedRef> createPlaylist(@RequestBody PlaylistForm playlistForm) throws Exception{
+    public ResponseEntity<CreatedRef> createPlaylist(@RequestBody PlaylistForm playlistForm) throws Exception {
         Long id = playlistService.createPlaylist(userService.getActualUser(), playlistForm);
 
         CreatedRef createdRef = new CreatedRef(String.format("/playlists/%d", id));
@@ -49,7 +49,7 @@ public class PlaylistController {
     }
 
     @GetMapping
-        public ResponseEntity<Page<PlaylistDTO>> getPlaylists(
+    public ResponseEntity<Page<PlaylistDTO>> getPlaylists(
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "10") int size,
             @RequestParam(name = "user", required = false) Optional<Long> userId,

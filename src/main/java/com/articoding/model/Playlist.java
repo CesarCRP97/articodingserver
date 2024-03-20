@@ -17,18 +17,7 @@ import java.util.List;
 @Table(name = "playlist")
 public class Playlist {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false)
-    private Long id;
-
     String title;
-
-    @ManyToOne
-    private User owner;
-    @Column
-    private boolean enabled = true;
-
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "playlist_levels",
@@ -38,7 +27,14 @@ public class Playlist {
                     name = "level_id", referencedColumnName = "id")
     )
     List<Level> levels;
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id", nullable = false)
+    private Long id;
+    @ManyToOne
+    private User owner;
+    @Column
+    private boolean enabled = true;
     private int likes = 0;
 
     private int timesPlayed = 0;

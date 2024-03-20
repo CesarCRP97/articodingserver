@@ -66,7 +66,7 @@ public class LevelController {
 
     ) {
         String s;
-        if(orderByLikes.isPresent() && orderByLikes.get()) s = "likes";
+        if (orderByLikes.isPresent() && orderByLikes.get()) s = "likes";
         else s = "timesPlayed";
         Sort sort = Sort.by(Sort.Direction.DESC, s);
         return ResponseEntity.ok(levelService.getLevels(PageRequest.of(page, size, sort), classId, userId, publicLevels, liked, title, owner, levelId));

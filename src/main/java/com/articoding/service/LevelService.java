@@ -162,15 +162,15 @@ public class LevelService {
         return oldPage.map(this::toLevelWithImageDTO);
     }
 
-    public List<LevelWithImageDTO> toLevelWithImageDTO(List<ILevel> levelList){
+    public List<LevelWithImageDTO> toLevelWithImageDTO(List<ILevel> levelList) {
         List<LevelWithImageDTO> newList = new ArrayList<>();
-        for(ILevel level : levelList){
+        for (ILevel level : levelList) {
             newList.add(toLevelWithImageDTO(level));
         }
         return newList;
     }
 
-    public LevelWithImageDTO toLevelWithImageDTO(ILevel level){
+    public LevelWithImageDTO toLevelWithImageDTO(ILevel level) {
         LevelWithImageDTO levelWithImageDTO = new LevelWithImageDTO();
         levelWithImageDTO.setLevel(level);
         try {
@@ -182,7 +182,6 @@ public class LevelService {
         }
         return levelWithImageDTO;
     }
-
 
 
     public long updateLevel(UpdateLevelForm newLevel, Long levelId) {

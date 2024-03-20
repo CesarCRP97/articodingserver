@@ -1,8 +1,5 @@
 package com.articoding.model.in;
 
-import com.articoding.model.Playlist;
-import com.articoding.model.articodingLevel.ACLevel;
-
 import java.util.List;
 
 public class PlaylistForm {
@@ -11,7 +8,8 @@ public class PlaylistForm {
     private String title;
     private List<Long> levels;
 
-    public PlaylistForm(){}
+    public PlaylistForm() {
+    }
 
     public List<Long> getLevels() {
         return levels;
@@ -25,7 +23,7 @@ public class PlaylistForm {
         return active;
     }
 
-    public void setActive(boolean active){
+    public void setActive(boolean active) {
         this.active = active;
     }
 
