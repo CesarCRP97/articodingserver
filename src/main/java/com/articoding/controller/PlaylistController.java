@@ -34,6 +34,7 @@ public class PlaylistController {
 
     @PostMapping
     public ResponseEntity<CreatedRef> createPlaylist(@RequestBody PlaylistForm playlistForm) throws Exception {
+        System.out.print("Create playlist");
         Long id = playlistService.createPlaylist(userService.getActualUser(), playlistForm);
 
         CreatedRef createdRef = new CreatedRef(String.format("/playlists/%d", id));

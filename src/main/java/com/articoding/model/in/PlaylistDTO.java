@@ -4,7 +4,7 @@ import java.util.List;
 
 public class PlaylistDTO {
 
-    List<LevelWithImageDTO> levels;
+    List<LevelWithImageDTO> levelsWithImage;
     private Long id;
     private String title;
     private IUser owner;
@@ -52,11 +52,11 @@ public class PlaylistDTO {
     }
 
 
-    public List<LevelWithImageDTO> getLevels() {
-        return levels;
+    public List<LevelWithImageDTO> getLevelsWithImage() {
+        return levelsWithImage;
     }
 
-    public void setLevels(List<LevelWithImageDTO> levels) {
-        this.levels = levels;
+    public void setLevelsWithImage(List<LevelWithImageDTO> levelsWithImage) {
+        this.levelsWithImage = levelsWithImage;
     }
 }

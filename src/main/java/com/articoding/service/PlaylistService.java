@@ -54,6 +54,7 @@ public class PlaylistService {
         playlist.setTitle(playlistForm.getTitle());
         playlist.setOwner(actualUser);
         playlist.setEnabled(true);
+        playlist.setLevels(levelsList);
 
         Playlist newPlaylist = playlistRepository.save(playlist);
 
@@ -183,7 +184,7 @@ public class PlaylistService {
         for (ILevel level : playlist.getLevels()) {
             newLevels.add(levelService.toLevelWithImageDTO(level));
         }
-        newPlaylist.setLevels(newLevels);
+        newPlaylist.setLevelsWithImage(newLevels);
         return newPlaylist;
     }
 
