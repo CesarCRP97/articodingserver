@@ -163,21 +163,13 @@ public class PlaylistService {
         return playlistId;
     }
 
-    public long playPlaylist(PlaylistForm playlistForm, long playlistId) {
-        System.out.println("like level id: " + playlistId);
-        Playlist playlist = playlistRepository.findById(playlistId)
-                .orElseThrow(() -> new ErrorNotFound("level", playlistId));
-        playlist.increaseTimesPlayed();
-        playlistRepository.save(playlist);
-        return playlistId;
-    }
-
     public PlaylistDTO toPlaylistDTO(IPlaylist playlist) {
 
         PlaylistDTO newPlaylist = new PlaylistDTO();
         newPlaylist.setId(playlist.getId());
         newPlaylist.setTitle(playlist.getTitle());
         newPlaylist.setOwner(playlist.getOwner());
+        newPlaylist.setLikes(playlist.getLikes());
 
         ArrayList<LevelWithImageDTO> newLevels = new ArrayList<>();
 

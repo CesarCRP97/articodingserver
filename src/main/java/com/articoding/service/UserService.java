@@ -167,7 +167,7 @@ public class UserService {
         userRepository.saveAll(usersList);
     }
 
-    public Page<IUser> geAllUser(PageRequest pageable, Optional<Long> clase, boolean teacher, Optional<String> title) {
+    public Page<IUser> getAllUser(PageRequest pageable, Optional<Long> clase, boolean teacher, Optional<String> title) {
         User actualUser = this.getActualUser();
         /** Comprobamos que sea, mínimo profesor */
         if (!roleHelper.can(actualUser.getRole(), "ROLE_TEACHER")) {
@@ -264,9 +264,6 @@ public class UserService {
         }
     }
 
-    public void updateActualUser(User u) {
-        userRepository.save(u);
-    }
 
     public IUser getActualIUser() {
         User actualUser = this.getActualUser();

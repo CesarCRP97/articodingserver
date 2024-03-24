@@ -14,8 +14,6 @@ public interface IPlaylist {
 
     int getLikes();
 
-    int getTimesPlayed();
-
 
     //Todo - añadir me gustas cuando funcionen
 
