@@ -48,7 +48,7 @@ public class UserController {
             @RequestParam(name = "teacher", defaultValue = "false") boolean teacher,
             @RequestParam(name = "title", required = false) Optional<String> title) {
 
-        return ResponseEntity.ok(userService.geAllUser(PageRequest.of(page, size), clase, teacher, title));
+        return ResponseEntity.ok(userService.getAllUser(PageRequest.of(page, size), clase, teacher, title));
 
     }
 
