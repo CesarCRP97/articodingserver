@@ -276,7 +276,6 @@ public class LevelService {
         }
     }
 
-    //Todo - refactorizar filtros chapuceros
     private List<ILevel> getPublicLevels(Optional<Boolean> liked, Optional<String> title, Optional<String> owner, Optional<Long> levelId) {
         Streamable<ILevel> levels;
 
