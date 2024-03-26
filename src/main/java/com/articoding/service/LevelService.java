@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.util.Streamable;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
@@ -34,6 +35,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class LevelService {
@@ -138,25 +140,28 @@ public class LevelService {
     public Page<LevelWithImageDTO> getLevels(PageRequest pageRequest, Optional<Long> classId,
                                              Optional<Long> userId, Optional<Boolean> publicLevels, Optional<Boolean> liked,
                                              Optional<String> title, Optional<String> owner, Optional<Long> levelId) {
-
-        Page<ILevel> page;
+        List<ILevel> levels;
         User actualUser = userService.getActualUser();
         /** If there is a classId then returns levels from the classroom */
         if (classId.isPresent()) {
-            page = getLevelsFromClass(pageRequest, actualUser, classId, title);
+            levels = getLevelsFromClass(pageRequest, actualUser, classId, title);
         } else if (userId.isPresent()) {
-            page = getLevelsFromUserId(pageRequest, actualUser, userId);
+            levels = getLevelsFromUserId(actualUser, userId);
         } else {
             if (publicLevels.isPresent()) {
                 /** If publicLevels is true, returns all public levels. */
-                page = getPublicLevels(pageRequest, liked, title, owner, levelId);
+                levels = getPublicLevels(liked, title, owner, levelId);
             } else {
                 /** If it's ADMIN then it returns every level */
-                page = getOwnedLevels(pageRequest, title, actualUser);
+                levels = getOwnedLevels(title, actualUser);
             }
         }
+
+        //Converts the list of levels to a Page given PageRequest
+        Page<ILevel> page = filteredLevelsToPage(pageRequest, levels);
         return toLevelWithImageDTO(page);
     }
+
 
     private Page<LevelWithImageDTO> toLevelWithImageDTO(Page<ILevel> oldPage) {
         return oldPage.map(this::toLevelWithImageDTO);
@@ -244,7 +249,7 @@ public class LevelService {
         return levelId;
     }
 
-    private Page<ILevel> getLevelsFromClass(PageRequest pageRequest, User actualUser, Optional<Long> classId, Optional<String> title) {
+    private List<ILevel> getLevelsFromClass(PageRequest pageRequest, User actualUser, Optional<Long> classId, Optional<String> title) {
         /** Checks if the classroom exists */
         ClassRoom classRoom = classRepository.findById(classId.get())
                 .orElseThrow(() -> new ErrorNotFound("clase", classId.get()));
@@ -256,72 +261,63 @@ public class LevelService {
             }
         }
         if (title.isPresent()) {
-            return levelRepository.findByClassRoomsAndActiveTrueAndTitleContains(classRoom, title.get(), pageRequest, ILevel.class);
+            return levelRepository.findByClassRoomsAndActiveTrueAndTitleContains(classRoom, title.get(), ILevel.class);
         } else {
-            return levelRepository.findByClassRoomsAndActiveTrue(classRoom, pageRequest, ILevel.class);
+            return levelRepository.findByClassRoomsAndActiveTrue(classRoom, ILevel.class);
         }
     }
 
-    private Page<ILevel> getLevelsFromUserId(PageRequest pageRequest, User actualUser, Optional<Long> userId) {
+    private List<ILevel> getLevelsFromUserId(User actualUser, Optional<Long> userId) {
         /** If there is a userId it checks if the user is ADMIN or . */
         if (!roleHelper.isAdmin(actualUser)) {
             throw new NotAuthorization("ver niveles del usuario " + userId.get());
         } else {
-            return levelRepository.findByOwnerAndActiveTrue(actualUser, pageRequest, ILevel.class);
+            return levelRepository.findByOwnerAndActiveTrue(actualUser, ILevel.class);
         }
     }
 
     //Todo - refactorizar filtros chapuceros
-    private Page<ILevel> getPublicLevels(PageRequest pageRequest, Optional<Boolean> liked, Optional<String> title, Optional<String> owner, Optional<Long> levelId) {
-        Page<ILevel> page;
+    private List<ILevel> getPublicLevels(Optional<Boolean> liked, Optional<String> title, Optional<String> owner, Optional<Long> levelId) {
+        Streamable<ILevel> levels;
+
+        //Big query, return a potentially giant list
+        if(liked.isPresent() && liked.get()){
+            Set<Long> likedIds = userService.getActualUser().getLikedLevels();
+            levels = levelRepository.findByIdInAndPublicLevelTrue(likedIds, ILevel.class);
+        }
+        else levels = levelRepository.findByPublicLevelTrue(ILevel.class);
+
+
         if (title.isPresent()) {
-            page = levelRepository.findByPublicLevelTrueAndTitleContains(pageRequest, ILevel.class, title.get());
-        } else {
-            page = levelRepository.findByPublicLevelTrue(pageRequest, ILevel.class);
+            levels = levels.and(levelRepository.findByTitleContains(title.get(), ILevel.class));
+        }
+        if (levelId.isPresent()){
+            levels = levels.filter(level -> level.getId().longValue() == levelId.get());
+        }
+        //It uses a filter because we need direct access to the name of the owner
+        if (owner.isPresent()){
+            levels = levels.filter(level -> Objects.equals(level.getOwner().getUsername(), owner.get()));
         }
 
-        if (liked.isPresent()) {
-            Set<Long> likedId = userService.getActualUser().getLikedLevels();
-            List<ILevel> filteredLiked = page.filter(level -> likedId.contains(level.getId().longValue()))
-                    .stream()
-                    .collect(Collectors.toList());
-
-            page = filteredLevelsToPage(pageRequest, filteredLiked);
-        }
-        if (owner.isPresent()) {
-            List<ILevel> filteredLiked = page.filter(level -> Objects.equals(level.getOwner().getUsername(), owner.get()))
-                    .stream()
-                    .collect(Collectors.toList());
-
-            page = filteredLevelsToPage(pageRequest, filteredLiked);
-        }
-
-        if (levelId.isPresent()) {
-            List<ILevel> filteredLiked = page.filter(level -> level.getId().longValue() == levelId.get())
-                    .stream()
-                    .collect(Collectors.toList());
-
-            page = filteredLevelsToPage(pageRequest, filteredLiked);
-        }
-
-
-        return page;
+        return levels.stream().collect(Collectors.toList());
     }
 
-    private Page<ILevel> getOwnedLevels(PageRequest pageRequest, Optional<String> title, User actualUser) {
+
+    // todo - refactor
+    private List<ILevel> getOwnedLevels(Optional<String> title, User actualUser) {
         /** If it's ADMIN then it returns every level */
         if (roleHelper.isAdmin(actualUser)) {
             if (title.isPresent()) {
-                return levelRepository.findByTitleContains(pageRequest, title.get(), ILevel.class);
+                return levelRepository.findByTitleContains(title.get(), ILevel.class).stream().collect(Collectors.toList());
             } else {
-                return levelRepository.findBy(pageRequest, ILevel.class);
+                return levelRepository.findBy(ILevel.class);
             }
         } else {
             /** Otherwise, returns only the levels created by the user */
             if (title.isPresent()) {
-                return levelRepository.findByOwnerAndActiveTrueAndTitleContains(actualUser, title.get(), pageRequest, ILevel.class);
+                return levelRepository.findByOwnerAndActiveTrueAndTitleContains(actualUser, title.get(),ILevel.class);
             } else {
-                return levelRepository.findByOwnerAndActiveTrue(actualUser, pageRequest, ILevel.class);
+                return levelRepository.findByOwnerAndActiveTrue(actualUser, ILevel.class);
             }
         }
     }
@@ -357,8 +353,6 @@ public class LevelService {
         int end = Math.min((start + pageRequest.getPageSize()), filteredLiked.size());
 
         List<ILevel> pageContent = filteredLiked.subList(start, end);
-
-        System.out.println("Get Liked Levels");
 
         return new PageImpl<>(pageContent, pageRequest, filteredLiked.size());
 
