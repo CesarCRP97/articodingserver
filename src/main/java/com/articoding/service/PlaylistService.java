@@ -20,7 +20,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.util.Streamable;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -94,9 +93,9 @@ public class PlaylistService {
 
         if(liked.isPresent() && liked.get()){
             Set<Long> likedIds = userService.getActualUser().getLikedPlaylists();
-            playlists = playlistRepository.findByIdInAndPublicLevelTrue(likedIds, IPlaylist.class);
+            playlists = playlistRepository.findByIdIn(likedIds, IPlaylist.class);
         }
-        else playlists = playlistRepository.findByPublicLevelTrue(IPlaylist.class);
+        else playlists = playlistRepository.findBy(IPlaylist.class);
 
         if (title.isPresent()) {
             playlists = playlists.and(playlistRepository.findByTitleContains(title.get(), IPlaylist.class));
