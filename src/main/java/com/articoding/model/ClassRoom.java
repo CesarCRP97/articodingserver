@@ -45,6 +45,9 @@ public class ClassRoom {
     List<Level> levels;
     String description;
     String name;
+    
+    @Column
+    private String classKey;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
@@ -110,6 +113,14 @@ public class ClassRoom {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public String getKey(){
+        return this.classKey;
+    }
+
+    public void setKey(String key){
+        this.classKey = key;
     }
 }
 

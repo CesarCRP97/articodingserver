@@ -15,6 +15,7 @@ import com.articoding.model.in.UpdateClassRoomForm;
 import com.articoding.repository.ClassRepository;
 import com.articoding.repository.LevelRepository;
 import com.articoding.repository.UserRepository;
+import com.sun.jna.platform.win32.Netapi32Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -54,6 +56,11 @@ public class ClassService {
         ClassRoom newClassRoom = new ClassRoom();
         newClassRoom.setDescription(classForm.getDescription());
         newClassRoom.setName(classForm.getName());
+
+        UUID uuid = UUID.randomUUID();
+        String formatKey = uuid.toString().replace("-", "");
+        newClassRoom.setKey(formatKey.substring(0,7));
+
         List<User> students = new ArrayList<>();
         classForm.getStudentsId().forEach(studentId -> {
             Optional<User> userOptional = userRepository.findById(studentId);
@@ -238,7 +245,7 @@ public class ClassService {
     }
 
     public Long addStudents(Long classId, List<String> usersId) {
-        ClassRoom classRoom = canEdit(classId);
+        ClassRoom classroom = canEdit(classId);
 
         for (String username : usersId) {
             User student = userRepository.findByUsername(username);
@@ -250,17 +257,29 @@ public class ClassService {
                 throw new RestError("User " + username + " is not student");
             }
             /** If it's already part of the class does nothing */
-            if (classRoom.getStudents().stream().anyMatch(level1 -> level1.getId() == student.getId())) {
+            if (classroom.getStudents().stream().anyMatch(level1 -> level1.getId() == student.getId())) {
                 return classId;
             }
 
-            student.getClasses().add(classRoom);
-            classRoom.getStudents().add(student);
+            student.getClasses().add(classroom);
+            classroom.getStudents().add(student);
         }
 
-        classRepository.save(classRoom);
+        classRepository.save(classroom);
 
-        return classRoom.getId();
+        return classroom.getId();
+    }
+
+    //Add a student it was not part of the classroom previously
+    public Long addStudent(ClassRoom classroom, User user){
+        if (classroom.getStudents().stream().anyMatch(cUser -> user.getId() == cUser.getId())) {
+            return classroom.getId();
+        }
+        user.getClasses().add(classroom);
+        classroom.getStudents().add(user);
+
+        classRepository.save(classroom);
+        return classroom.getId();
     }
 
     public Long deleteStudent(Long classId, Long userId) {
@@ -346,4 +365,13 @@ public class ClassService {
     }
 
 
+    public Long enterClass(String classKey) {
+        User actualUser = userService.getActualUser();
+
+        ClassRoom classRoom = (ClassRoom) classRepository.findByClassKey(classKey).
+                orElseThrow(() -> new ErrorNotFound("key", actualUser.getId()));
+
+        return addStudent(classRoom, actualUser);
+
+    }
 }

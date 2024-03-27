@@ -57,6 +57,11 @@ public class ClassController {
         return ResponseEntity.ok(new CreatedRef("classes/" + classService.updateClassRoom(classId, updateClassRoomForm)));
     }
 
+    @PostMapping("/enterclass/{classKey}")
+    public ResponseEntity<CreatedRef> enterClass(@PathVariable(value = "classKey") String classKey){
+        return ResponseEntity.ok(new CreatedRef("classes/" + classService.enterClass(classKey)));
+    }
+
 
     @PostMapping("/{classId}/levels")
     public ResponseEntity<CreatedRef> addLevelToClass(@PathVariable(value = "classId") Long classId,
