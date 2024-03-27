@@ -31,6 +31,9 @@ public class User {
     private String password;
 
     @Column
+    private Integer imageIndex = 0;
+
+    @Column
     private boolean enabled = true;
 
     @Column
@@ -62,6 +65,14 @@ public class User {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public Integer getImageIndex() {
+        return imageIndex;
+    }
+
+    public void setImageIndex(Integer imageIndex) {
+        this.imageIndex = imageIndex;
     }
 
 
@@ -164,4 +175,6 @@ public class User {
     public void setOwnerClassRooms(List<ClassRoom> ownerClassRooms) {
         this.ownerClassRooms = ownerClassRooms;
     }
+
+
 }

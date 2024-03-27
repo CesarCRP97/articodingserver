@@ -258,6 +258,9 @@ public class UserService {
             if (updateUserForm.isEnabled() != null) {
                 userOld.setEnabled(updateUserForm.isEnabled());
             }
+            if(updateUserForm.getImageIndex() != null){
+                userOld.setImageIndex(updateUserForm.getImageIndex());
+            }
 
             return userRepository.save(userOld).getId();
 
