@@ -15,12 +15,18 @@ import com.articoding.repository.LevelRepository;
 import com.articoding.repository.PlaylistRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.util.Streamable;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class PlaylistService {
@@ -65,49 +71,64 @@ public class PlaylistService {
         return playlistRepository.findById(playlistID, IPlaylist.class);
     }
 
-    public Page<PlaylistDTO> getPlaylists(PageRequest pageRequest, Optional<Long> userId, Optional<String> title,
-                                          Optional<String> owner, Optional<Long> playlistId, Optional<Boolean> publicPlaylists) {
-        Page<IPlaylist> page;
+    public Page<PlaylistDTO> getPlaylists(PageRequest pageRequest, Optional<Long> userId, Optional<Long> playlistId,
+                                          Optional<Boolean> liked, Optional<Boolean> publicPlaylists, Optional<String> title,
+                                          Optional<String> owner) {
+        List<IPlaylist> playlists;
         User actualUser = userService.getActualUser();
 
-        if (publicPlaylists.isPresent()) {
-            page = getPublicPlaylists(pageRequest, userId, title, owner, playlistId);
+        if (publicPlaylists.isPresent() && publicPlaylists.get()) {
+            playlists = getPublicPlaylists(userId, title, owner, playlistId, liked);
         } else {
-            page = getOwnedLevels(pageRequest, title, actualUser);
+            playlists = getOwnedLevels(title, actualUser);
         }
 
+        Page<IPlaylist> page = filteredPlaylistsToPage(pageRequest, playlists);
         return toPlaylistDTO(page);
     }
 
 
-    private Page<IPlaylist> getPublicPlaylists(PageRequest pageRequest, Optional<Long> userId, Optional<String> title,
-                                               Optional<String> owner, Optional<Long> playlistId) {
-        Page<IPlaylist> page;
-        if (title.isPresent()) {
-            page = playlistRepository.findByTitleContains(pageRequest, title.get(), IPlaylist.class);
-        } else {
-            page = playlistRepository.findBy(pageRequest, IPlaylist.class);
+    private List<IPlaylist> getPublicPlaylists(Optional<Long> userId, Optional<String> title, Optional<String> owner,
+                                               Optional<Long> playlistId, Optional<Boolean> liked) {
+        Streamable<IPlaylist> playlists;
+
+        if(liked.isPresent() && liked.get()){
+            Set<Long> likedIds = userService.getActualUser().getLikedPlaylists();
+            playlists = playlistRepository.findByIdInAndPublicLevelTrue(likedIds, IPlaylist.class);
         }
-        return page;
+        else playlists = playlistRepository.findByPublicLevelTrue(IPlaylist.class);
+
+        if (title.isPresent()) {
+            playlists = playlists.and(playlistRepository.findByTitleContains(title.get(), IPlaylist.class));
+        }
+        if (playlistId.isPresent()){
+            playlists = playlists.filter(level -> level.getId().longValue() == playlistId.get());
+        }
+        //It uses a filter because we need direct access to the name of the owner
+        if (owner.isPresent()){
+            playlists = playlists.filter(playlist -> Objects.equals(playlist.getOwner().getUsername(), owner.get()));
+        }
+
+        return playlists.stream().collect(Collectors.toList());
     }
 
-    private Page<IPlaylist> getOwnedLevels(PageRequest pageRequest, Optional<String> title, User actualUser) {
-        Page<IPlaylist> page;
+    private List<IPlaylist> getOwnedLevels(Optional<String> title, User actualUser) {
+        Streamable<IPlaylist> playlists;
         if (roleHelper.isAdmin(actualUser)) {
             if (title.isPresent()) {
-                page = playlistRepository.findByTitleContains(pageRequest, title.get(), IPlaylist.class);
+                playlists = playlistRepository.findByTitleContains(title.get(), IPlaylist.class);
             } else {
-                page = playlistRepository.findBy(pageRequest, IPlaylist.class);
+                playlists = playlistRepository.findBy(IPlaylist.class);
             }
         } else {
             /** Otherwise, returns only the levels created by the user */
             if (title.isPresent()) {
-                page = playlistRepository.findByOwnerAndEnabledTrueAndTitleContains(actualUser, title.get(), pageRequest, IPlaylist.class);
+                playlists = playlistRepository.findByOwnerAndEnabledTrueAndTitleContains(actualUser, title.get(), IPlaylist.class);
             } else {
-                page = playlistRepository.findByOwnerAndEnabledTrue(actualUser, pageRequest, IPlaylist.class);
+                playlists = playlistRepository.findByOwnerAndEnabledTrue(actualUser, IPlaylist.class);
             }
         }
-        return page;
+        return playlists.stream().collect(Collectors.toList());
     }
 
     public Long updatePlaylist(PlaylistForm playlistForm, Long playlistId) {
@@ -184,4 +205,13 @@ public class PlaylistService {
         return playlists.map(this::toPlaylistDTO);
     }
 
+    private Page<IPlaylist> filteredPlaylistsToPage(PageRequest pageRequest, List<IPlaylist> filteredLiked) {
+
+        int start = (int) pageRequest.getOffset();
+        int end = Math.min((start + pageRequest.getPageSize()), filteredLiked.size());
+
+        List<IPlaylist> pageContent = filteredLiked.subList(start, end);
+
+        return new PageImpl<>(pageContent, pageRequest, filteredLiked.size());
+    }
 }

@@ -54,7 +54,7 @@ public class PlaylistController {
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "10") int size,
             @RequestParam(name = "user", required = false) Optional<Long> userId,
-            @RequestParam(name = "user", required = false) Optional<Long> playlistId,
+            @RequestParam(name = "playlist", required = false) Optional<Long> playlistId,
             @RequestParam(name = "liked", required = false) Optional<Boolean> liked,
             @RequestParam(name = "publicPlaylists", required = false) Optional<Boolean> publicPlaylist,
             @RequestParam(name = "title", required = false) Optional<String> title,
@@ -66,7 +66,7 @@ public class PlaylistController {
         //if(orderByLikes.isPresent() && orderByLikes.get()) s = "likes";
         //else s = "timesPlayed";
         //Sort sort = Sort.by(Sort.Direction.DESC, s);
-        return ResponseEntity.ok(playlistService.getPlaylists(PageRequest.of(page, size), userId, title, owner, playlistId, publicPlaylist));
+        return ResponseEntity.ok(playlistService.getPlaylists(PageRequest.of(page, size), userId, playlistId, liked, publicPlaylist,  title, owner));
     }
 
     @PutMapping("/{playlistId}")

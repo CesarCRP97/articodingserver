@@ -45,10 +45,6 @@ public class User {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Level> createdLevels;
 
-    /*
-        @OneToMany(fetch = FetchType.LAZY, mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
-        private List<Playlist> createdPlaylists
-    * */
 
     @ManyToOne()
     private Role role;
