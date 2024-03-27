@@ -183,6 +183,16 @@ public class PlaylistService {
         return playlistId;
     }
 
+    public long playPlaylist(PlaylistForm playlistForm, long playlistId){
+        Playlist playlist = playlistRepository.findById(playlistId)
+                .orElseThrow(() -> new ErrorNotFound("level", playlistId));
+
+        playlist.incrTimesPlayed();
+
+        playlistRepository.save(playlist);
+        return playlistId;
+    }
+
     public PlaylistDTO toPlaylistDTO(IPlaylist playlist) {
 
         PlaylistDTO newPlaylist = new PlaylistDTO();
@@ -190,6 +200,7 @@ public class PlaylistService {
         newPlaylist.setTitle(playlist.getTitle());
         newPlaylist.setOwner(playlist.getOwner());
         newPlaylist.setLikes(playlist.getLikes());
+        newPlaylist.setTimesPlayed(playlist.getTimesPlayed());
 
         ArrayList<LevelWithImageDTO> newLevels = new ArrayList<>();
 

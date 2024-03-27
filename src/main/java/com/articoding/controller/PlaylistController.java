@@ -76,15 +76,21 @@ public class PlaylistController {
     }
 
     @PostMapping("/{playlistId}/increaselikes")
-    public ResponseEntity<CreatedRef> increaseLevelsLikes(@RequestBody PlaylistForm playlistForm,
+    public ResponseEntity<CreatedRef> increasePlaylistLikes(@RequestBody PlaylistForm playlistForm,
                                                           @PathVariable(value = "playlistId") Long playlistId) {
         return ResponseEntity.ok(new CreatedRef("playlists/" + playlistService.likePlaylist(playlistForm, playlistId)));
     }
 
     @PostMapping("/{levelId}/decreaselikes")
-    public ResponseEntity<CreatedRef> decreaseLevelsLikes(@RequestBody PlaylistForm playlistForm,
+    public ResponseEntity<CreatedRef> decreasePlaylistLikes(@RequestBody PlaylistForm playlistForm,
                                                           @PathVariable(value = "playlistId") Long playlistId) {
         return ResponseEntity.ok(new CreatedRef("playlists/" + playlistService.dislikePlaylist(playlistForm, playlistId)));
+    }
+
+    @PostMapping("/{levelId}/play")
+    public ResponseEntity<CreatedRef> playPlaylist(@RequestBody PlaylistForm playlistForm,
+                                                          @PathVariable(value = "playlistId") Long playlistId) {
+        return ResponseEntity.ok(new CreatedRef("playlists/" + playlistService.playPlaylist(playlistForm, playlistId)));
     }
 
 

@@ -37,6 +37,8 @@ public class Playlist {
     private boolean enabled = true;
     private int likes = 0;
 
+    private int timesPlayed = 0;
+
 
 
     //Todo - Añadir num_megustas cuando funcione Playlist
@@ -101,4 +103,11 @@ public class Playlist {
         this.likes--;
     }
 
+    public int getTimesPlayed() {
+        return timesPlayed;
+    }
+
+    public void incrTimesPlayed() {
+        this.timesPlayed++;
+    }
 }

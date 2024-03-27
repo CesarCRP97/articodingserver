@@ -10,6 +10,8 @@ public class PlaylistDTO {
     private IUser owner;
     private int likes;
 
+    private int timesPlayed;
+
     public Long getId() {
         return id;
     }
@@ -41,6 +43,9 @@ public class PlaylistDTO {
     public void setLikes(int likes) {
         this.likes = likes;
     }
+
+    public int getTimesPlayed(){return this.timesPlayed;}
+    public void setTimesPlayed(int timesPlayed){this.timesPlayed = timesPlayed;}
 
 
 
