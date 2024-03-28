@@ -9,9 +9,13 @@ public class JwtResponse implements Serializable {
 
     private final String role;
 
-    public JwtResponse(String jwttoken, String role) {
+    //Temporal
+    private Integer imageIndex = 0;
+
+    public JwtResponse(String jwttoken, String role, Integer imageIndex) {
         this.role = role;
         this.jwttoken = jwttoken;
+        this.imageIndex = imageIndex;
     }
 
     public String getToken() {
@@ -21,4 +25,6 @@ public class JwtResponse implements Serializable {
     public String getRole() {
         return role;
     }
+
+    public Integer getImageIndex(){return imageIndex;}
 }

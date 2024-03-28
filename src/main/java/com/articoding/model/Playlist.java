@@ -41,7 +41,6 @@ public class Playlist {
 
 
 
-    //Todo - Añadir num_megustas cuando funcione Playlist
 
     public Playlist() {
 

@@ -41,8 +41,11 @@ public class JwtAuthenticationController {
 
         final String token = jwtTokenUtil.generateToken(userDetails);
 
+        Integer imageIndex = userDetailsService.getImageIndex(userDetails.getUsername());
+
         return ResponseEntity.ok(new JwtResponse(token,
-                userDetails.getAuthorities().stream().collect(Collectors.toList()).get(0).toString()
+                userDetails.getAuthorities().stream().collect(Collectors.toList()).get(0).toString(),
+                imageIndex
         ));
     }
 
