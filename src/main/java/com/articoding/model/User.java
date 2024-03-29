@@ -58,6 +58,8 @@ public class User {
     @ManyToMany(mappedBy = "teachers")
     private List<ClassRoom> ownerClassRooms;
 
+    @OneToMany
+    private List<ClassRoomLevelCompleted> levelsCompletedInClassRoom;
 
     public long getId() {
         return id;
@@ -176,5 +178,11 @@ public class User {
         this.ownerClassRooms = ownerClassRooms;
     }
 
+    public List<ClassRoomLevelCompleted> getLevelsCompletedInClassRoom() {
+        return levelsCompletedInClassRoom;
+    }
 
+    public void setLevelsCompletedInClassRoom(List<ClassRoomLevelCompleted> levelsCompletedInClassRoom) {
+        this.levelsCompletedInClassRoom = levelsCompletedInClassRoom;
+    }
 }

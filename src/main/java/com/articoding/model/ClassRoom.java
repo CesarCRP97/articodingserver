@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.List;
 
@@ -45,7 +46,10 @@ public class ClassRoom {
     List<Level> levels;
     String description;
     String name;
-    
+
+    @OneToMany
+    List<ClassRoomLevelCompleted> levelsCompletedByUsers;
+
     @Column
     private String classKey;
     @Id
@@ -115,12 +119,20 @@ public class ClassRoom {
         this.enabled = enabled;
     }
 
-    public String getKey(){
+    public String getKey() {
         return this.classKey;
     }
 
-    public void setKey(String key){
+    public void setKey(String key) {
         this.classKey = key;
+    }
+
+    public List<ClassRoomLevelCompleted> getLevelsCompletedByUsers() {
+        return levelsCompletedByUsers;
+    }
+
+    public void setLevelsCompletedByUsers(List<ClassRoomLevelCompleted> levelsCompletedByUsers) {
+        this.levelsCompletedByUsers = levelsCompletedByUsers;
     }
 }
 
