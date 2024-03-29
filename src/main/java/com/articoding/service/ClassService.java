@@ -15,7 +15,6 @@ import com.articoding.model.in.UpdateClassRoomForm;
 import com.articoding.repository.ClassRepository;
 import com.articoding.repository.LevelRepository;
 import com.articoding.repository.UserRepository;
-import com.sun.jna.platform.win32.Netapi32Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -59,7 +58,7 @@ public class ClassService {
 
         UUID uuid = UUID.randomUUID();
         String formatKey = uuid.toString().replace("-", "");
-        newClassRoom.setKey(formatKey.substring(0,7));
+        newClassRoom.setKey(formatKey.substring(0, 7));
 
         List<User> students = new ArrayList<>();
         classForm.getStudentsId().forEach(studentId -> {
@@ -271,7 +270,7 @@ public class ClassService {
     }
 
     //Add a student it was not part of the classroom previously
-    public Long addStudent(ClassRoom classroom, User user){
+    public Long addStudent(ClassRoom classroom, User user) {
         if (classroom.getStudents().stream().anyMatch(cUser -> user.getId() == cUser.getId())) {
             return classroom.getId();
         }

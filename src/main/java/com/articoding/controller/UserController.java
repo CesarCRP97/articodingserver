@@ -76,7 +76,7 @@ public class UserController {
 
     @PostMapping("/{userId}")
     public ResponseEntity<CreatedRef> postUpdateUser(@PathVariable(value = "userId") Long userId,
-                                                 @RequestBody UpdateUserForm updateUserForm) {
+                                                     @RequestBody UpdateUserForm updateUserForm) {
         return ResponseEntity.ok(new CreatedRef("users/" + userService.update(userId, updateUserForm)));
     }
 

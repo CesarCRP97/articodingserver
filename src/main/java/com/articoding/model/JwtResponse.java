@@ -26,5 +26,7 @@ public class JwtResponse implements Serializable {
         return role;
     }
 
-    public Integer getImageIndex(){return imageIndex;}
+    public Integer getImageIndex() {
+        return imageIndex;
+    }
 }

@@ -17,5 +17,4 @@ public interface IPlaylist {
     int getTimesPlayed();
 
 
-
 }

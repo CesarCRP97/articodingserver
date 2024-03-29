@@ -7,7 +7,7 @@ public interface IUserDetail {
     Integer getId();
 
     String getUsername();
-    
+
     Integer getImageIndex();
 
     boolean isEnabled();

@@ -44,9 +44,13 @@ public class PlaylistDTO {
         this.likes = likes;
     }
 
-    public int getTimesPlayed(){return this.timesPlayed;}
-    public void setTimesPlayed(int timesPlayed){this.timesPlayed = timesPlayed;}
+    public int getTimesPlayed() {
+        return this.timesPlayed;
+    }
 
+    public void setTimesPlayed(int timesPlayed) {
+        this.timesPlayed = timesPlayed;
+    }
 
 
     public List<LevelWithImageDTO> getLevelsWithImage() {

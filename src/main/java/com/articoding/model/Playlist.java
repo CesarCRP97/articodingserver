@@ -40,8 +40,6 @@ public class Playlist {
     private int timesPlayed = 0;
 
 
-
-
     public Playlist() {
 
     }

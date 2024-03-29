@@ -58,7 +58,7 @@ public class ClassController {
     }
 
     @PostMapping("/enterclass/{classKey}")
-    public ResponseEntity<CreatedRef> enterClass(@PathVariable(value = "classKey") String classKey){
+    public ResponseEntity<CreatedRef> enterClass(@PathVariable(value = "classKey") String classKey) {
         return ResponseEntity.ok(new CreatedRef("classes/" + classService.enterClass(classKey)));
     }
 

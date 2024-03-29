@@ -35,7 +35,7 @@ public class JwtUserDetailsService implements UserDetailsService {
                 true, getAuthorities(user.getRole()));
     }
 
-    public Integer getImageIndex(String username){
+    public Integer getImageIndex(String username) {
         return userRepository.findByUsername(username).getImageIndex();
     }
 

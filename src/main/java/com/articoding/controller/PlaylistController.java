@@ -1,8 +1,6 @@
 package com.articoding.controller;
 
-import com.articoding.model.in.ILevel;
 import com.articoding.model.in.IPlaylist;
-import com.articoding.model.in.LevelComparator;
 import com.articoding.model.in.PlaylistComparator;
 import com.articoding.model.in.PlaylistDTO;
 import com.articoding.model.in.PlaylistForm;
@@ -70,7 +68,7 @@ public class PlaylistController {
         boolean byLikes = orderByLikes.isPresent() && orderByLikes.get();
         Comparator<IPlaylist> comparator = new PlaylistComparator(byLikes);
 
-        return ResponseEntity.ok(playlistService.getPlaylists(PageRequest.of(page, size), comparator, userId, playlistId, liked, publicPlaylist,  title, owner));
+        return ResponseEntity.ok(playlistService.getPlaylists(PageRequest.of(page, size), comparator, userId, playlistId, liked, publicPlaylist, title, owner));
     }
 
     @PutMapping("/{playlistId}")
@@ -81,19 +79,19 @@ public class PlaylistController {
 
     @PostMapping("/{playlistId}/increaselikes")
     public ResponseEntity<CreatedRef> increasePlaylistLikes(@RequestBody PlaylistForm playlistForm,
-                                                          @PathVariable(value = "playlistId") Long playlistId) {
+                                                            @PathVariable(value = "playlistId") Long playlistId) {
         return ResponseEntity.ok(new CreatedRef("playlists/" + playlistService.likePlaylist(playlistForm, playlistId)));
     }
 
     @PostMapping("/{playlistId}/decreaselikes")
     public ResponseEntity<CreatedRef> decreasePlaylistLikes(@RequestBody PlaylistForm playlistForm,
-                                                          @PathVariable(value = "playlistId") Long playlistId) {
+                                                            @PathVariable(value = "playlistId") Long playlistId) {
         return ResponseEntity.ok(new CreatedRef("playlists/" + playlistService.dislikePlaylist(playlistForm, playlistId)));
     }
 
     @PostMapping("/{playlistId}/play")
     public ResponseEntity<CreatedRef> playPlaylist(@RequestBody PlaylistForm playlistForm,
-                                                          @PathVariable(value = "playlistId") Long playlistId) {
+                                                   @PathVariable(value = "playlistId") Long playlistId) {
         return ResponseEntity.ok(new CreatedRef("playlists/" + playlistService.playPlaylist(playlistForm, playlistId)));
     }
 }

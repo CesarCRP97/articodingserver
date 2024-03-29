@@ -29,7 +29,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -37,7 +36,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class LevelService {
@@ -160,7 +158,7 @@ public class LevelService {
         }
 
         //Converts the list of levels to a Page given PageRequest
-        Page<ILevel> page = filteredLevelsToPage(pageRequest, comparator,levels);
+        Page<ILevel> page = filteredLevelsToPage(pageRequest, comparator, levels);
         return toLevelWithImageDTO(page);
     }
 
@@ -282,21 +280,20 @@ public class LevelService {
         Streamable<ILevel> levels;
 
         //Big query, return a potentially giant list
-        if(liked.isPresent() && liked.get()){
+        if (liked.isPresent() && liked.get()) {
             Set<Long> likedIds = userService.getActualUser().getLikedLevels();
             levels = levelRepository.findByIdInAndPublicLevelTrue(likedIds, ILevel.class);
-        }
-        else levels = levelRepository.findByPublicLevelTrue(ILevel.class);
+        } else levels = levelRepository.findByPublicLevelTrue(ILevel.class);
 
 
         if (title.isPresent()) {
             levels = levels.and(levelRepository.findByTitleContains(title.get(), ILevel.class));
         }
-        if (levelId.isPresent()){
+        if (levelId.isPresent()) {
             levels = levels.filter(level -> level.getId().longValue() == levelId.get());
         }
         //It uses a filter because we need direct access to the name of the owner
-        if (owner.isPresent()){
+        if (owner.isPresent()) {
             levels = levels.filter(level -> Objects.equals(level.getOwner().getUsername(), owner.get()));
         }
 
@@ -316,7 +313,7 @@ public class LevelService {
         } else {
             /** Otherwise, returns only the levels created by the user */
             if (title.isPresent()) {
-                return levelRepository.findByOwnerAndActiveTrueAndTitleContains(actualUser, title.get(),ILevel.class);
+                return levelRepository.findByOwnerAndActiveTrueAndTitleContains(actualUser, title.get(), ILevel.class);
             } else {
                 return levelRepository.findByOwnerAndActiveTrue(actualUser, ILevel.class);
             }

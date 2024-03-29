@@ -19,8 +19,13 @@ public class UpdateUserForm {
         this.password = password;
     }
 
-    public Integer getImageIndex(){return imageIndex;}
-    public void setImageIndex(Integer imageIndex){this.imageIndex = imageIndex;}
+    public Integer getImageIndex() {
+        return imageIndex;
+    }
+
+    public void setImageIndex(Integer imageIndex) {
+        this.imageIndex = imageIndex;
+    }
 
     public Boolean isEnabled() {
         return enabled;

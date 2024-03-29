@@ -92,20 +92,19 @@ public class PlaylistService {
                                                Optional<Long> playlistId, Optional<Boolean> liked) {
         Streamable<IPlaylist> playlists;
 
-        if(liked.isPresent() && liked.get()){
+        if (liked.isPresent() && liked.get()) {
             Set<Long> likedIds = userService.getActualUser().getLikedPlaylists();
             playlists = playlistRepository.findByIdIn(likedIds, IPlaylist.class);
-        }
-        else playlists = playlistRepository.findBy(IPlaylist.class);
+        } else playlists = playlistRepository.findBy(IPlaylist.class);
 
         if (title.isPresent()) {
             playlists = playlists.and(playlistRepository.findByTitleContains(title.get(), IPlaylist.class));
         }
-        if (playlistId.isPresent()){
+        if (playlistId.isPresent()) {
             playlists = playlists.filter(level -> level.getId().longValue() == playlistId.get());
         }
         //It uses a filter because we need direct access to the name of the owner
-        if (owner.isPresent()){
+        if (owner.isPresent()) {
             playlists = playlists.filter(playlist -> Objects.equals(playlist.getOwner().getUsername(), owner.get()));
         }
 
@@ -184,7 +183,7 @@ public class PlaylistService {
         return playlistId;
     }
 
-    public long playPlaylist(PlaylistForm playlistForm, long playlistId){
+    public long playPlaylist(PlaylistForm playlistForm, long playlistId) {
         Playlist playlist = playlistRepository.findById(playlistId)
                 .orElseThrow(() -> new ErrorNotFound("level", playlistId));
 
