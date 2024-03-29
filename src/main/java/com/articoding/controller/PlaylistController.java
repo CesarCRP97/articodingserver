@@ -1,6 +1,9 @@
 package com.articoding.controller;
 
+import com.articoding.model.in.ILevel;
 import com.articoding.model.in.IPlaylist;
+import com.articoding.model.in.LevelComparator;
+import com.articoding.model.in.PlaylistComparator;
 import com.articoding.model.in.PlaylistDTO;
 import com.articoding.model.in.PlaylistForm;
 import com.articoding.model.rest.CreatedRef;
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.Optional;
 
 @RestController
@@ -58,15 +62,15 @@ public class PlaylistController {
             @RequestParam(name = "liked", required = false) Optional<Boolean> liked,
             @RequestParam(name = "publicPlaylists", required = false) Optional<Boolean> publicPlaylist,
             @RequestParam(name = "title", required = false) Optional<String> title,
-            @RequestParam(name = "owner", required = false) Optional<String> owner
-            //@RequestParam(name = "orderByLikes", required = false) Optional<Boolean> orderByLikes
+            @RequestParam(name = "owner", required = false) Optional<String> owner,
+            @RequestParam(name = "orderByLikes", required = false) Optional<Boolean> orderByLikes
 
     ) {
         String s;
-        //if(orderByLikes.isPresent() && orderByLikes.get()) s = "likes";
-        //else s = "timesPlayed";
-        //Sort sort = Sort.by(Sort.Direction.DESC, s);
-        return ResponseEntity.ok(playlistService.getPlaylists(PageRequest.of(page, size), userId, playlistId, liked, publicPlaylist,  title, owner));
+        boolean byLikes = orderByLikes.isPresent() && orderByLikes.get();
+        Comparator<IPlaylist> comparator = new PlaylistComparator(byLikes);
+
+        return ResponseEntity.ok(playlistService.getPlaylists(PageRequest.of(page, size), comparator, userId, playlistId, liked, publicPlaylist,  title, owner));
     }
 
     @PutMapping("/{playlistId}")

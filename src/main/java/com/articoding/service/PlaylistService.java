@@ -21,6 +21,7 @@ import org.springframework.data.util.Streamable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -70,7 +71,7 @@ public class PlaylistService {
         return playlistRepository.findById(playlistID, IPlaylist.class);
     }
 
-    public Page<PlaylistDTO> getPlaylists(PageRequest pageRequest, Optional<Long> userId, Optional<Long> playlistId,
+    public Page<PlaylistDTO> getPlaylists(PageRequest pageRequest, Comparator<IPlaylist> comparator, Optional<Long> userId, Optional<Long> playlistId,
                                           Optional<Boolean> liked, Optional<Boolean> publicPlaylists, Optional<String> title,
                                           Optional<String> owner) {
         List<IPlaylist> playlists;
@@ -82,7 +83,7 @@ public class PlaylistService {
             playlists = getOwnedLevels(title, actualUser);
         }
 
-        Page<IPlaylist> page = filteredPlaylistsToPage(pageRequest, playlists);
+        Page<IPlaylist> page = filteredPlaylistsToPage(pageRequest, comparator, playlists);
         return toPlaylistDTO(page);
     }
 
@@ -215,10 +216,12 @@ public class PlaylistService {
         return playlists.map(this::toPlaylistDTO);
     }
 
-    private Page<IPlaylist> filteredPlaylistsToPage(PageRequest pageRequest, List<IPlaylist> filteredLiked) {
+    private Page<IPlaylist> filteredPlaylistsToPage(PageRequest pageRequest, Comparator<IPlaylist> comparator, List<IPlaylist> filteredLiked) {
 
         int start = (int) pageRequest.getOffset();
         int end = Math.min((start + pageRequest.getPageSize()), filteredLiked.size());
+
+        filteredLiked.sort(comparator);
 
         List<IPlaylist> pageContent = filteredLiked.subList(start, end);
 

@@ -1,6 +1,7 @@
 package com.articoding.controller;
 
 import com.articoding.model.in.ILevel;
+import com.articoding.model.in.LevelComparator;
 import com.articoding.model.in.LevelForm;
 import com.articoding.model.in.LevelWithImageDTO;
 import com.articoding.model.in.UpdateLevelForm;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.Optional;
 
 @RestController
@@ -65,11 +67,10 @@ public class LevelController {
             @RequestParam(name = "orderByLikes", required = false) Optional<Boolean> orderByLikes
 
     ) {
-        String s;
-        if (orderByLikes.isPresent() && orderByLikes.get()) s = "likes";
-        else s = "timesPlayed";
-        Sort sort = Sort.by(Sort.Direction.DESC, s);
-        return ResponseEntity.ok(levelService.getLevels(PageRequest.of(page, size, sort), classId, userId, publicLevels, liked, title, owner, levelId));
+        boolean byLikes = orderByLikes.isPresent() && orderByLikes.get();
+        Comparator<ILevel> comparator = new LevelComparator(byLikes);
+
+        return ResponseEntity.ok(levelService.getLevels(PageRequest.of(page, size), comparator, classId, userId, publicLevels, liked, title, owner, levelId));
     }
 
     @PutMapping("/{levelId}")

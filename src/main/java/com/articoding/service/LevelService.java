@@ -29,6 +29,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -137,7 +139,7 @@ public class LevelService {
 
     }
 
-    public Page<LevelWithImageDTO> getLevels(PageRequest pageRequest, Optional<Long> classId,
+    public Page<LevelWithImageDTO> getLevels(PageRequest pageRequest, Comparator<ILevel> comparator, Optional<Long> classId,
                                              Optional<Long> userId, Optional<Boolean> publicLevels, Optional<Boolean> liked,
                                              Optional<String> title, Optional<String> owner, Optional<Long> levelId) {
         List<ILevel> levels;
@@ -158,7 +160,7 @@ public class LevelService {
         }
 
         //Converts the list of levels to a Page given PageRequest
-        Page<ILevel> page = filteredLevelsToPage(pageRequest, levels);
+        Page<ILevel> page = filteredLevelsToPage(pageRequest, comparator,levels);
         return toLevelWithImageDTO(page);
     }
 
@@ -346,12 +348,15 @@ public class LevelService {
         }
     }
 
-    private Page<ILevel> filteredLevelsToPage(PageRequest pageRequest, List<ILevel> filteredLiked) {
+    private Page<ILevel> filteredLevelsToPage(PageRequest pageRequest, Comparator<ILevel> comparator, List<ILevel> filteredLiked) {
 
         int start = (int) pageRequest.getOffset();
         int end = Math.min((start + pageRequest.getPageSize()), filteredLiked.size());
 
+        filteredLiked.sort(comparator);
+
         List<ILevel> pageContent = filteredLiked.subList(start, end);
+
 
         return new PageImpl<>(pageContent, pageRequest, filteredLiked.size());
 
