@@ -1,5 +1,6 @@
 package com.articoding.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -47,7 +48,7 @@ public class ClassRoom {
     String description;
     String name;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "classRoom", cascade = CascadeType.ALL, orphanRemoval = true)
     List<ClassRoomLevelCompleted> levelsCompletedByUsers;
 
     @Column

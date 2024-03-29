@@ -27,6 +27,14 @@ public class ClassRoomLevelCompleted implements Serializable {
     private Level level;
 
 
+    public ClassRoomLevelCompleted() {
+    }
+    public ClassRoomLevelCompleted(User user, ClassRoom classRoom, Level level) {
+        this.user = user;
+        this.classRoom = classRoom;
+        this.level = level;
+    }
+
     public User getUser() {
         return user;
     }

@@ -330,7 +330,7 @@ public class LevelService {
             level.setImagePath(fileName);
             return fileName;
         } catch (IOException ex) {
-            System.out.println("Error al guardar la imagen " + ex.toString());
+            System.out.println("Error al guardar la imagen " + ex);
         }
         return null;
     }
@@ -356,8 +356,6 @@ public class LevelService {
 
 
         return new PageImpl<>(pageContent, pageRequest, filteredLiked.size());
-
-
     }
 
 }

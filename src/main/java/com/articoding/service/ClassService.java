@@ -5,9 +5,11 @@ import com.articoding.error.ErrorNotFound;
 import com.articoding.error.NotAuthorization;
 import com.articoding.error.RestError;
 import com.articoding.model.ClassRoom;
+import com.articoding.model.ClassRoomLevelCompleted;
 import com.articoding.model.Level;
 import com.articoding.model.User;
 import com.articoding.model.in.ClassForm;
+import com.articoding.model.in.CompletedLevelsDTO;
 import com.articoding.model.in.IClassRoom;
 import com.articoding.model.in.IClassRoomDetail;
 import com.articoding.model.in.IUid;
@@ -372,5 +374,27 @@ public class ClassService {
 
         return addStudent(classRoom, actualUser);
 
+    }
+
+    public void completeLevel(Long classId, Long levelId) {
+        User actualUser = userService.getActualUser();
+        ClassRoom classRoom = classRepository.findById(classId, ClassRoom.class);
+        Level level = levelRepository.findById(levelId).get();
+
+        ClassRoomLevelCompleted newCompleted = new ClassRoomLevelCompleted(actualUser, classRoom, level);
+
+        classRoom.getLevelsCompletedByUsers().add(newCompleted);
+
+    }
+
+    public CompletedLevelsDTO getCompletedLevels(Long classId) {
+        User actualUser = userService.getActualUser();
+
+        return new CompletedLevelsDTO(classRepository.findById(classId, ClassRoom.class)
+                .getLevelsCompletedByUsers().stream()
+                .filter(object -> object.getUser().getId() == actualUser.getId())
+                .map(ClassRoomLevelCompleted::getLevel)
+                .map(Level::getId)
+                .collect(Collectors.toList()));
     }
 }

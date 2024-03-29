@@ -1,6 +1,7 @@
 package com.articoding.controller;
 
 import com.articoding.model.in.ClassForm;
+import com.articoding.model.in.CompletedLevelsDTO;
 import com.articoding.model.in.IClassRoom;
 import com.articoding.model.in.IClassRoomDetail;
 import com.articoding.model.in.IUid;
@@ -97,5 +98,17 @@ public class ClassController {
     public ResponseEntity<CreatedRef> deleteTeacherOfClass(@PathVariable(value = "classId") Long classId,
                                                            @PathVariable(value = "teacherId") Long teacherId) {
         return ResponseEntity.ok(new CreatedRef("classes/" + classService.deleteTeacher(classId, teacherId)));
+    }
+
+    @PostMapping("/{classId}/levels_completed/{levelId}")
+    public ResponseEntity<Void> completeLevel(@PathVariable(value = "classId") Long classId,
+                                              @PathVariable(value = "levelId") Long levelId) {
+        classService.completeLevel(classId, levelId);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{classId}/completed_levels")
+    public ResponseEntity<CompletedLevelsDTO> getCompletedLevels(@PathVariable(value = "classId") Long classId) {
+        return ResponseEntity.ok(classService.getCompletedLevels(classId));
     }
 }
