@@ -45,8 +45,8 @@ public class JwtAuthenticationController {
 
         return ResponseEntity.ok(new JwtResponse(token,
                 userDetails.getAuthorities().stream().collect(Collectors.toList()).get(0).toString(),
-                imageIndex
-        ));
+                imageIndex)
+        );
     }
 
 

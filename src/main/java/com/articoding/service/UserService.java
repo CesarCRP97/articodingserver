@@ -267,23 +267,23 @@ public class UserService {
         }
     }
 
-    public String changeImage(String username, UpdateUserForm updateUserForm){
+    public String changeImage(String username, UpdateUserForm updateUserForm) {
         User actualUser = getActualUser();
         /** Comprobamos que existe el usuario */
         User userOld = userRepository.findByUsername(username);
-        if(userOld == null) throw new ErrorNotFound("usuario", actualUser.getId());
+        if (userOld == null) throw new ErrorNotFound("usuario", actualUser.getId());
 
         /** Comprobamos que sea el propio usuario o usuario ADMIN */
         if (!(actualUser.getId() == userOld.getId()) &&
                 !roleHelper.isAdmin(actualUser)) {
             throw new NotAuthorization("modificar el usuario " + userOld.getId());
-        }else {
-                if (updateUserForm.getImageIndex() != null) {
-                    userOld.setImageIndex(updateUserForm.getImageIndex());
-                }
-                userRepository.save(userOld);
-                return username;
+        } else {
+            if (updateUserForm.getImageIndex() != null) {
+                userOld.setImageIndex(updateUserForm.getImageIndex());
             }
+            userRepository.save(userOld);
+            return username;
+        }
     }
 
 
