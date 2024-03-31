@@ -95,7 +95,7 @@ public class User {
     }
 
     public Set<Long> getLikedPlaylists() {
-        return likedLevels;
+        return likedPlaylists;
     }
 
     public void setLikedPlaylists(Set<Long> likedPlaylists) {

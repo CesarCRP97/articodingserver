@@ -11,6 +11,6 @@ public class LevelComparator implements Comparator<ILevel> {
 
     @Override
     public int compare(ILevel o1, ILevel o2) {
-        return orderByLikes ? Integer.compare(o1.getLikes(), o2.getLikes()) : Integer.compare(o1.getTimesPlayed(), o2.getTimesPlayed());
+        return orderByLikes ? -(Integer.compare(o1.getLikes(), o2.getLikes())) : -(Integer.compare(o1.getTimesPlayed(), o2.getTimesPlayed()));
     }
 }

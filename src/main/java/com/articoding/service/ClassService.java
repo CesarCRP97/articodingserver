@@ -384,7 +384,8 @@ public class ClassService {
         ClassRoomLevelCompleted newCompleted = new ClassRoomLevelCompleted(actualUser, classRoom, level);
 
         classRoom.getLevelsCompletedByUsers().add(newCompleted);
-
+        
+        classRepository.save(classRoom);
     }
 
     public CompletedLevelsDTO getCompletedLevels(Long classId) {

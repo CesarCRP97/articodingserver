@@ -177,7 +177,7 @@ public class PlaylistService {
                 .orElseThrow(() -> new ErrorNotFound("level", playlistId));
         playlist.decrLikes();
         User u = userService.getActualUser();
-        u.deleteLikedLevel(playlistId);
+        u.deleteLikedPlaylist(playlistId);
 
         playlistRepository.save(playlist);
         return playlistId;
