@@ -238,7 +238,7 @@ public class UserService {
         return userRepository.findById(userId, IUserDetail.class);
     }
 
-    //Todo - Si es el profesor que lo haya creado.
+
     public Long update(Long userId, UpdateUserForm updateUserForm) {
 
         /** Comprobamos que existe el usuario */
@@ -261,10 +261,29 @@ public class UserService {
             if (updateUserForm.getImageIndex() != null) {
                 userOld.setImageIndex(updateUserForm.getImageIndex());
             }
-
-            return userRepository.save(userOld).getId();
+            userRepository.save(userOld);
+            return userId;
 
         }
+    }
+
+    public String changeImage(String username, UpdateUserForm updateUserForm){
+        User actualUser = getActualUser();
+        /** Comprobamos que existe el usuario */
+        User userOld = userRepository.findByUsername(username);
+        if(userOld == null) throw new ErrorNotFound("usuario", actualUser.getId());
+
+        /** Comprobamos que sea el propio usuario o usuario ADMIN */
+        if (!(actualUser.getId() == userOld.getId()) &&
+                !roleHelper.isAdmin(actualUser)) {
+            throw new NotAuthorization("modificar el usuario " + userOld.getId());
+        }else {
+                if (updateUserForm.getImageIndex() != null) {
+                    userOld.setImageIndex(updateUserForm.getImageIndex());
+                }
+                userRepository.save(userOld);
+                return username;
+            }
     }
 
 

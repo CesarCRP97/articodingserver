@@ -74,10 +74,10 @@ public class UserController {
         return ResponseEntity.ok(new CreatedRef("users/" + userService.update(userId, updateUserForm)));
     }
 
-    @PostMapping("/{userId}")
-    public ResponseEntity<CreatedRef> postUpdateUser(@PathVariable(value = "userId") Long userId,
+    @PostMapping("/changeimage/{userName}")
+    public ResponseEntity<CreatedRef> postUpdateUser(@PathVariable(value = "userName") String userName,
                                                      @RequestBody UpdateUserForm updateUserForm) {
-        return ResponseEntity.ok(new CreatedRef("users/" + userService.update(userId, updateUserForm)));
+        return ResponseEntity.ok(new CreatedRef("users/" + userService.changeImage(userName, updateUserForm)));
     }
 
 

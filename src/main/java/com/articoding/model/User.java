@@ -39,7 +39,7 @@ public class User {
     @Column
     @ElementCollection(targetClass = Long.class)
     private Set<Long> likedLevels;
-    // Hasta aqui
+
     @Column
     @ElementCollection(targetClass = Long.class)
     private Set<Long> likedPlaylists;
