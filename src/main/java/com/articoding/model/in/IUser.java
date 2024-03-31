@@ -16,6 +16,8 @@ public interface IUser {
 
     Set<Long> getLikedLevels();
 
+    Set<Long> getLikedPlaylists();
+
     @JsonIgnore
     Role getRole();
 
