@@ -30,12 +30,14 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class LevelService {
@@ -287,7 +289,7 @@ public class LevelService {
 
 
         if (title.isPresent()) {
-            levels = levels.and(levelRepository.findByTitleContains(title.get(), ILevel.class));
+            levels = filterStreamable(levels, levelRepository.findByTitleContains(title.get(), ILevel.class));
         }
         if (levelId.isPresent()) {
             levels = levels.filter(level -> level.getId().longValue() == levelId.get());
@@ -301,7 +303,6 @@ public class LevelService {
     }
 
 
-    // todo - refactor
     private List<ILevel> getOwnedLevels(Optional<String> title, User actualUser) {
         /** If it's ADMIN then it returns every level */
         if (roleHelper.isAdmin(actualUser)) {
@@ -344,6 +345,12 @@ public class LevelService {
             return null;
         }
     }
+
+     private Streamable<ILevel> filterStreamable(Streamable<ILevel> s1, Streamable<ILevel> s2){
+        Set<ILevel> set2 = new HashSet<>();
+        s2.forEach(set2::add);
+        return s1.filter(set2::contains);
+     }
 
     private Page<ILevel> filteredLevelsToPage(PageRequest pageRequest, Comparator<ILevel> comparator, List<ILevel> filteredLiked) {
 

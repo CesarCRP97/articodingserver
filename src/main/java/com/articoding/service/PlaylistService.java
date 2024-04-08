@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -98,7 +99,7 @@ public class PlaylistService {
         } else playlists = playlistRepository.findBy(IPlaylist.class);
 
         if (title.isPresent()) {
-            playlists = playlists.and(playlistRepository.findByTitleContains(title.get(), IPlaylist.class));
+            playlists = filterStreamable(playlists, playlistRepository.findByTitleContains(title.get(), IPlaylist.class));
         }
         if (playlistId.isPresent()) {
             playlists = playlists.filter(level -> level.getId().longValue() == playlistId.get());
@@ -213,6 +214,12 @@ public class PlaylistService {
 
     private Page<PlaylistDTO> toPlaylistDTO(Page<IPlaylist> playlists) {
         return playlists.map(this::toPlaylistDTO);
+    }
+
+    private Streamable<IPlaylist> filterStreamable(Streamable<IPlaylist> s1, Streamable<IPlaylist> s2){
+        Set<IPlaylist> set2 = new HashSet<>();
+        s2.forEach(set2::add);
+        return s1.filter(set2::contains);
     }
 
     private Page<IPlaylist> filteredPlaylistsToPage(PageRequest pageRequest, Comparator<IPlaylist> comparator, List<IPlaylist> filteredLiked) {
