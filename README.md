@@ -43,6 +43,9 @@ El proyecto Maven esta sobre Spring Boot, para su despliegue:
 
 6. Empaquetar la solución ```mvn package```.
 
+Al empaquetar el proyecto se genera un <articodingserver-X.X.X.jar>. Si se quiere utilizar una base de datos previa, 
+es importante copiar la carpeta *"levelimages"* a la ubicación del jar. En esta carpeta se guardan las imágenes de los niveles.
+
 7. Desplegar el jar generado con: java ```java -jar ```.
     - El .jar generado se guarda en la carpeta .\target
     - Para desplegar el jar, hay que abrir el terminal en la ubicación del .jar e introducir el comando *java
