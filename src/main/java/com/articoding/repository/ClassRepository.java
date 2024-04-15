@@ -47,6 +47,6 @@ public interface ClassRepository extends JpaRepository<ClassRoom, Long> {
 
     <T> T findById(Long id, Class<T> type);
 
-    <T> Optional<T> findByClassKey(String key);
+    <T> Optional<T> findByKey(String key);
 
 }

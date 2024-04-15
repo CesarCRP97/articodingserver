@@ -369,7 +369,7 @@ public class ClassService {
     public Long enterClass(String classKey) {
         User actualUser = userService.getActualUser();
 
-        ClassRoom classRoom = (ClassRoom) classRepository.findByClassKey(classKey).
+        ClassRoom classRoom = (ClassRoom) classRepository.findByKey(classKey).
                 orElseThrow(() -> new ErrorNotFound("key", actualUser.getId()));
 
         return addStudent(classRoom, actualUser);
