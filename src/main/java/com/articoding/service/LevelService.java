@@ -344,9 +344,10 @@ public class LevelService {
     }
 
      private Streamable<ILevel> filterStreamable(Streamable<ILevel> s1, Streamable<ILevel> s2){
-        Set<ILevel> set2 = new HashSet<>();
-        s2.forEach(set2::add);
-        return s1.filter(set2::contains);
+        Set<Integer> set2 = new HashSet<>();
+        s2.forEach(element -> set2.add(element.getId())); //set2 contains all the ids of s2
+
+        return s1.filter(element -> set2.contains(element.getId()));
      }
 
     private Page<ILevel> filteredLevelsToPage(PageRequest pageRequest, Comparator<ILevel> comparator, List<ILevel> filteredLiked) {

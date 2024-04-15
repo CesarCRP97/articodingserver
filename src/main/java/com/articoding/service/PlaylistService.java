@@ -217,9 +217,10 @@ public class PlaylistService {
     }
 
     private Streamable<IPlaylist> filterStreamable(Streamable<IPlaylist> s1, Streamable<IPlaylist> s2){
-        Set<IPlaylist> set2 = new HashSet<>();
-        s2.forEach(set2::add);
-        return s1.filter(set2::contains);
+        Set<Long> set2 = new HashSet<>();
+        s2.forEach(element -> set2.add(element.getId())); //set2 contains all the ids of s2
+
+        return s1.filter(element -> set2.contains(element.getId()));
     }
 
     private Page<IPlaylist> filteredPlaylistsToPage(PageRequest pageRequest, Comparator<IPlaylist> comparator, List<IPlaylist> filteredLiked) {
