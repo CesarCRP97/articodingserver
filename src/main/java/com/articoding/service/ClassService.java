@@ -60,7 +60,7 @@ public class ClassService {
 
         UUID uuid = UUID.randomUUID();
         String formatKey = uuid.toString().replace("-", "");
-        newClassRoom.setKey(formatKey.substring(0, 7));
+        newClassRoom.setClassKey(formatKey.substring(0, 7));
 
         List<User> students = new ArrayList<>();
         classForm.getStudentsId().forEach(studentId -> {
@@ -369,7 +369,7 @@ public class ClassService {
     public Long enterClass(String classKey) {
         User actualUser = userService.getActualUser();
 
-        ClassRoom classRoom = (ClassRoom) classRepository.findByKey(classKey).
+        ClassRoom classRoom = (ClassRoom) classRepository.findByClassKey(classKey).
                 orElseThrow(() -> new ErrorNotFound("key", actualUser.getId()));
 
         return addStudent(classRoom, actualUser);

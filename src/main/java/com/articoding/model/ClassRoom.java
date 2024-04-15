@@ -52,7 +52,8 @@ public class ClassRoom {
     List<ClassRoomLevelCompleted> levelsCompletedByUsers;
 
     @Column
-    private String key;
+    private String classKey;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
@@ -120,12 +121,12 @@ public class ClassRoom {
         this.enabled = enabled;
     }
 
-    public String getKey() {
-        return this.key;
+    public String getClassKey() {
+        return this.classKey;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public void setClassKey(String key) {
+        this.classKey = key;
     }
 
     public List<ClassRoomLevelCompleted> getLevelsCompletedByUsers() {
