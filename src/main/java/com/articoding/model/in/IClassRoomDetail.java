@@ -16,7 +16,7 @@ public interface IClassRoomDetail {
 
     List<ILevel> getLevels();
 
-    String getKey();
+    String getClassKey();
 
     boolean isEnabled();
 }

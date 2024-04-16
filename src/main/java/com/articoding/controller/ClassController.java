@@ -49,7 +49,8 @@ public class ClassController {
 
     @GetMapping("/{classId}")
     public ResponseEntity<IClassRoomDetail> getById(@PathVariable(value = "classId") Long classId) {
-        return ResponseEntity.ok(classService.getById(classId));
+        IClassRoomDetail iClassRoomDetail = classService.getById(classId);
+        return ResponseEntity.ok(iClassRoomDetail);
     }
 
     @PutMapping("/{classId}")

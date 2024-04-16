@@ -20,7 +20,7 @@ public interface IClassRoom {
     @Value("#{target.levels.size()}")
     String getLevels();
 
-    String getKey();
+    String getClassKey();
 
     boolean isEnabled();
 }
