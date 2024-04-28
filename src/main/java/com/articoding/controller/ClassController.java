@@ -3,7 +3,7 @@ package com.articoding.controller;
 import com.articoding.model.in.ClassForm;
 import com.articoding.model.in.CompletedLevelsDTO;
 import com.articoding.model.in.IClassRoom;
-import com.articoding.model.in.IClassRoomDetail;
+import com.articoding.model.in.ClassRoomDetailResponse;
 import com.articoding.model.in.IUid;
 import com.articoding.model.in.UpdateClassRoomForm;
 import com.articoding.model.rest.CreatedRef;
@@ -48,8 +48,8 @@ public class ClassController {
     }
 
     @GetMapping("/{classId}")
-    public ResponseEntity<IClassRoomDetail> getById(@PathVariable(value = "classId") Long classId) {
-        IClassRoomDetail iClassRoomDetail = classService.getById(classId);
+    public ResponseEntity<ClassRoomDetailResponse> getById(@PathVariable(value = "classId") Long classId) {
+        ClassRoomDetailResponse iClassRoomDetail = classService.getById(classId);
         return ResponseEntity.ok(iClassRoomDetail);
     }
 

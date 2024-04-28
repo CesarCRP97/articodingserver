@@ -11,7 +11,7 @@ import com.articoding.model.User;
 import com.articoding.model.in.ClassForm;
 import com.articoding.model.in.CompletedLevelsDTO;
 import com.articoding.model.in.IClassRoom;
-import com.articoding.model.in.IClassRoomDetail;
+import com.articoding.model.in.ClassRoomDetailResponse;
 import com.articoding.model.in.IUid;
 import com.articoding.model.in.UpdateClassRoomForm;
 import com.articoding.repository.ClassRepository;
@@ -95,7 +95,7 @@ public class ClassService {
 
     }
 
-    public IClassRoomDetail getById(Long classId) {
+    public ClassRoomDetailResponse getById(Long classId) {
 
         User actualUser = userService.getActualUser();
         /** Checks if class exists */
@@ -106,7 +106,7 @@ public class ClassService {
                 !classRoom.getTeachers().stream().anyMatch(t -> t.getId() == actualUser.getId())) {
             throw new NotAuthorization("access to the class with id " + classId);
         }
-        return classRepository.findById(classId, IClassRoomDetail.class);
+        return new ClassRoomDetailResponse(classRoom);
     }
 
     public Page<IClassRoom> getClasses(PageRequest pageRequest, Optional<Long> userId, Optional<Long> teachId, Optional<Long> levelId, Optional<String> title) {
