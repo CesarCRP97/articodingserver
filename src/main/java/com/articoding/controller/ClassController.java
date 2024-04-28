@@ -108,6 +108,8 @@ public class ClassController {
         return ResponseEntity.ok().build();
     }
 
+
+    //Returns a list with the levels that the user has completed
     @GetMapping("/{classId}/completed_levels")
     public ResponseEntity<CompletedLevelsDTO> getCompletedLevels(@PathVariable(value = "classId") Long classId) {
         return ResponseEntity.ok(classService.getCompletedLevels(classId));

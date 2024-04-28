@@ -72,7 +72,7 @@ public class PlaylistController {
     }
 
     @PutMapping("/{playlistId}")
-    public ResponseEntity<CreatedRef> updateLevel(@RequestBody PlaylistForm playlistForm,
+    public ResponseEntity<CreatedRef> updatePlaylist(@RequestBody PlaylistForm playlistForm,
                                                   @PathVariable(value = "playlistId") Long playlistId) {
         return ResponseEntity.ok(new CreatedRef("playlists/" + playlistService.updatePlaylist(playlistForm, playlistId)));
     }

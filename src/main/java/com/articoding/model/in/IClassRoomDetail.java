@@ -1,5 +1,7 @@
 package com.articoding.model.in;
 
+import com.articoding.model.ClassRoomLevelCompleted;
+
 import java.util.List;
 
 public interface IClassRoomDetail {
@@ -17,6 +19,9 @@ public interface IClassRoomDetail {
     List<ILevel> getLevels();
 
     String getClassKey();
+
+    List<ClassRoomLevelCompleted> getLevelsCompletedByUsers();
+
 
     boolean isEnabled();
 }
