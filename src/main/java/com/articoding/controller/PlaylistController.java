@@ -1,6 +1,7 @@
 package com.articoding.controller;
 
 import com.articoding.model.in.IPlaylist;
+import com.articoding.model.in.IUid;
 import com.articoding.model.in.PlaylistComparator;
 import com.articoding.model.in.PlaylistDTO;
 import com.articoding.model.in.PlaylistForm;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -63,6 +66,7 @@ public class PlaylistController {
             @RequestParam(name = "owner", required = false) Optional<String> owner,
             @RequestParam(name = "orderByLikes", required = false) Optional<Boolean> orderByLikes
 
+
     ) {
         String s;
         boolean byLikes = orderByLikes.isPresent() && orderByLikes.get();
@@ -76,6 +80,22 @@ public class PlaylistController {
                                                   @PathVariable(value = "playlistId") Long playlistId) {
         return ResponseEntity.ok(new CreatedRef("playlists/" + playlistService.updatePlaylist(playlistForm, playlistId)));
     }
+
+
+    @PostMapping("/{playlistId}/levels")
+    public ResponseEntity<CreatedRef> addLevelToPlaylist(@PathVariable(value = "playlistId") Long playlistId,
+                                                      @RequestBody List<IUid> levelId) {
+        return ResponseEntity.ok(new CreatedRef("playlists/" + playlistService.addLevel(playlistId, levelId)));
+    }
+
+    @DeleteMapping("/{playlistId}/levels/{levelId}")
+    public ResponseEntity<CreatedRef> deleteLevelOfPlaylist(@PathVariable(value = "playlistId") Long playlistId,
+                                                         @PathVariable(value = "levelId") Long levelId) {
+        return ResponseEntity.ok(new CreatedRef("playlists/" + playlistService.deleteLevel(playlistId, levelId)));
+    }
+
+
+
 
     @PostMapping("/{playlistId}/increaselikes")
     public ResponseEntity<CreatedRef> increasePlaylistLikes(@RequestBody PlaylistForm playlistForm,

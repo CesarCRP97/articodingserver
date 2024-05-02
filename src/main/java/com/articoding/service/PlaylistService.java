@@ -3,11 +3,13 @@ package com.articoding.service;
 import com.articoding.RoleHelper;
 import com.articoding.error.ErrorNotFound;
 import com.articoding.error.NotAuthorization;
+import com.articoding.model.ClassRoom;
 import com.articoding.model.Level;
 import com.articoding.model.Playlist;
 import com.articoding.model.User;
 import com.articoding.model.in.ILevel;
 import com.articoding.model.in.IPlaylist;
+import com.articoding.model.in.IUid;
 import com.articoding.model.in.LevelWithImageDTO;
 import com.articoding.model.in.PlaylistDTO;
 import com.articoding.model.in.PlaylistForm;
@@ -137,8 +139,7 @@ public class PlaylistService {
                 .orElseThrow(() -> new ErrorNotFound("Playlist does not exist", playlistId));
 
         User actualUser = userService.getActualUser();
-        //probar si equals compara correctamente dos usuarios
-        if (!playlistOld.getOwner().equals(actualUser) || !roleHelper.isAdmin(actualUser)) {
+        if (playlistOld.getOwner().getId() != actualUser.getId() && !roleHelper.isAdmin(actualUser)) {
             throw new NotAuthorization("modificar el nivel " + playlistId);
         } else {
             if (playlistForm.getTitle() != null)
@@ -234,4 +235,56 @@ public class PlaylistService {
 
         return new PageImpl<>(pageContent, pageRequest, filteredLiked.size());
     }
+
+    public Long addLevel(Long playlistId, List<IUid> levelsId) {
+        Playlist playlist = canEdit(playlistId);
+
+        for (IUid levelId : levelsId) {
+            Level level = levelRepository.findById(levelId.getId()).
+                    orElseThrow(() -> new ErrorNotFound("Nivel", levelId.getId()));
+            /** If a level is already included does nothing */
+            if (playlist.getLevels().stream().anyMatch(level1 -> level1.getId() == level.getId())) {
+                return playlistId;
+            }
+
+            playlist.getLevels().add(level);
+        }
+
+        playlistRepository.save(playlist);
+
+        return playlist.getId();
+    }
+
+    public Long deleteLevel(Long playlistId, Long levelId) {
+        Playlist playlist = canEdit(playlistId);
+        Level level = levelRepository.findById(levelId).
+                orElseThrow(() -> new ErrorNotFound("Nivel", levelId));
+        /** If a level isn't included does anything */
+        if (!playlist.getLevels().stream().anyMatch(level1 -> level1.getId() == level.getId())) {
+            return playlistId;
+        }
+
+        List<Level> actualLevels = playlist.getLevels().stream().filter(level1 -> level1.getId() != level.getId()).collect(Collectors.toList());
+        playlist.setLevels(actualLevels);
+        playlistRepository.save(playlist);
+        return playlist.getId();
+    }
+
+
+    private Playlist canEdit(Long playlistId) {
+
+        User actualUser = userService.getActualUser();
+
+        /** Gets the original class*/
+        Playlist playlist = playlistRepository.findById(playlistId).
+                orElseThrow(() -> new ErrorNotFound("clase", playlistId));
+
+        /** Verifies if the actualUser is ROLE_ADMIN or ROLE_TEACHERS */
+        if (!roleHelper.isAdmin(actualUser) && playlist.getOwner().getId() != actualUser.getId()) {
+            throw new NotAuthorization("Modificar la clase " + playlistId);
+        }
+
+        return playlist;
+    }
+
 }
