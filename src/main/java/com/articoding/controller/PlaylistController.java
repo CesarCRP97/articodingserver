@@ -84,8 +84,8 @@ public class PlaylistController {
 
     @PostMapping("/{playlistId}/levels")
     public ResponseEntity<CreatedRef> addLevelToPlaylist(@PathVariable(value = "playlistId") Long playlistId,
-                                                      @RequestBody List<IUid> levelId) {
-        return ResponseEntity.ok(new CreatedRef("playlists/" + playlistService.addLevel(playlistId, levelId)));
+                                                      @RequestBody List<IUid> levelsId) {
+        return ResponseEntity.ok(new CreatedRef("playlists/" + playlistService.addLevels(playlistId, levelsId)));
     }
 
     @DeleteMapping("/{playlistId}/levels/{levelId}")

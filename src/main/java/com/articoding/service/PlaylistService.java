@@ -3,7 +3,6 @@ package com.articoding.service;
 import com.articoding.RoleHelper;
 import com.articoding.error.ErrorNotFound;
 import com.articoding.error.NotAuthorization;
-import com.articoding.model.ClassRoom;
 import com.articoding.model.Level;
 import com.articoding.model.Playlist;
 import com.articoding.model.User;
@@ -236,7 +235,7 @@ public class PlaylistService {
         return new PageImpl<>(pageContent, pageRequest, filteredLiked.size());
     }
 
-    public Long addLevel(Long playlistId, List<IUid> levelsId) {
+    public Long addLevels(Long playlistId, List<IUid> levelsId) {
         Playlist playlist = canEdit(playlistId);
 
         for (IUid levelId : levelsId) {
