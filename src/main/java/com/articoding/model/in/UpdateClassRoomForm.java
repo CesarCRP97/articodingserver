@@ -1,11 +1,15 @@
 package com.articoding.model.in;
 
 
+import java.util.List;
+
 public class UpdateClassRoomForm {
 
     private String name;
     private String description;
     private Boolean enabled;
+    private List<Long> levels;
+
 
     public String getName() {
         return name;
@@ -29,5 +33,13 @@ public class UpdateClassRoomForm {
 
     public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public List<Long> getLevels() {
+        return levels;
+    }
+
+    public void setLevels(List<Long> levels) {
+        this.levels = levels;
     }
 }

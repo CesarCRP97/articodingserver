@@ -64,11 +64,10 @@ public class ClassController {
         return ResponseEntity.ok(new CreatedRef("classes/" + classService.enterClass(classKey)));
     }
 
-
     @PostMapping("/{classId}/levels")
-    public ResponseEntity<CreatedRef> addLevelToClass(@PathVariable(value = "classId") Long classId,
-                                                      @RequestBody List<IUid> levelId) {
-        return ResponseEntity.ok(new CreatedRef("classes/" + classService.addLevel(classId, levelId)));
+    public ResponseEntity<CreatedRef> addLevelsToClass(@PathVariable(value = "classId") Long classId,
+                                                      @RequestBody List<IUid> levelsId) {
+        return ResponseEntity.ok(new CreatedRef("classes/" + classService.addLevels(classId, levelsId)));
     }
 
     @DeleteMapping("/{classId}/levels/{levelId}")

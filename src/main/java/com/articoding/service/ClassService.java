@@ -203,12 +203,24 @@ public class ClassService {
         if (updateClassRoomForm.isEnabled() != null) {
             classRoom.setEnabled(updateClassRoomForm.isEnabled());
         }
+        if(updateClassRoomForm.getLevels() != null){
+            List<Level> levelList = classRoom.getLevels();
+            for (Long idLevel : updateClassRoomForm.getLevels()) {
+                /** Levels exists */
+                Level level = levelRepository.findById(idLevel)
+                        .orElseThrow(() -> new ErrorNotFound("Clase", idLevel));
+                if (!levelList.contains(level))
+                    levelList.add(level);
+
+            }
+            classRoom.setLevels(levelList);
+        }
 
         classRepository.save(classRoom);
         return classRoom.getId();
     }
 
-    public Long addLevel(Long classId, List<IUid> levelsId) {
+    public Long addLevels(Long classId, List<IUid> levelsId) {
         ClassRoom classRoom = canEdit(classId);
 
         for (IUid levelId : levelsId) {
