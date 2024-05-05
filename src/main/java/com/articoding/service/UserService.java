@@ -217,6 +217,7 @@ public class UserService {
         }
     }
 
+
     public IUserDetail getUser(Long userId) {
         User actualUser = this.getActualUser();
         /** Comprobamos que sea, mínimo profesor */
@@ -236,6 +237,23 @@ public class UserService {
         }
 
         return userRepository.findById(userId, IUserDetail.class);
+    }
+
+    public Page<IUser> getTeachers(PageRequest pageable) {
+        User actualUser = this.getActualUser();
+        /** Comprobamos que sea, mínimo profesor */
+        if (!roleHelper.can(actualUser.getRole(), "ROLE_TEACHER")) {
+            throw new NotAuthorization("obtener usuario");
+        }
+        //Si quien solicita los usuarios es Teacher, entonces devolvemos solo los Teachers
+        List<Role> roles = new ArrayList<>();
+        roles.add(roleHelper.getTeacher());
+        //En caso de ser ADMIN, tambien devuelve los ADMIN.
+        if (roleHelper.isAdmin(actualUser)) {
+            roles.add(roleHelper.getAdmin());
+        }
+
+        return userRepository.findByRoleIn(pageable, roles);
     }
 
 

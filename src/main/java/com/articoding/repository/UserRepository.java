@@ -11,13 +11,14 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-// Todo - Refactorizar
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
     User findByUsername(String username);
 
     Page<IUser> findByRole(Pageable pageable, Role role);
+    Page<IUser> findByRoleIn(Pageable pageable, List<Role> roles);
+
 
     Page<IUser> findByRoleAndUsernameContains(Pageable pageable, Role role, String username);
 

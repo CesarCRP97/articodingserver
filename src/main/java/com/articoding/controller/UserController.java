@@ -52,6 +52,14 @@ public class UserController {
 
     }
 
+    @GetMapping("/teachers")
+    public ResponseEntity<Page<IUser>> getTeachers(
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size
+    ){
+        return ResponseEntity.ok(userService.getTeachers(PageRequest.of(page, size)));
+    }
+
     @PostMapping("/students")
     public ResponseEntity<CreatedRef> registerStudent(@RequestBody UserForm user) {
         return ResponseEntity.ok(new CreatedRef("users/" + userService.registerStudent(user)));
