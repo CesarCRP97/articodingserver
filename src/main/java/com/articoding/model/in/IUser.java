@@ -22,8 +22,7 @@ public interface IUser {
     Role getRole();
 
 
-    //TODO-Aclarar si hace algo, getRol->getRole
-    @JsonProperty("role")
+    @JsonProperty("rol")
     default String getRol() {
         return getRole().getName();
     }
