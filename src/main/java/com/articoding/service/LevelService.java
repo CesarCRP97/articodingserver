@@ -139,8 +139,9 @@ public class LevelService {
 
     }
 
-    public Page<LevelWithImageDTO> getLevels(PageRequest pageRequest, Comparator<ILevel> comparator, Optional<Long> classId,
-                                             Optional<Long> userId, Optional<Boolean> publicLevels, Optional<Boolean> liked,
+    public Page<LevelWithImageDTO> getLevels(PageRequest pageRequest, Comparator<ILevel> comparator,
+                                             Optional<Long> classId, Optional<Long> userId,
+                                             Optional<Boolean> publicLevels, Optional<Boolean> liked,
                                              Optional<String> title, Optional<String> owner, Optional<Long> levelId) {
         List<ILevel> levels;
         User actualUser = userService.getActualUser();
