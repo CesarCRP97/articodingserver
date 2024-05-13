@@ -245,17 +245,8 @@ public class UserService {
         if (!roleHelper.can(actualUser.getRole(), "ROLE_TEACHER")) {
             throw new NotAuthorization("obtener usuario");
         }
-        //Si quien solicita los usuarios es Teacher, entonces devolvemos solo los Teachers
-        List<Role> roles = new ArrayList<>();
-        roles.add(roleHelper.getTeacher());
-        //En caso de ser ADMIN, tambien devuelve los ADMIN.
-        if (roleHelper.isAdmin(actualUser)) {
-            roles.add(roleHelper.getAdmin());
-        }
-
-        return userRepository.findByRoleIn(pageable, roles);
+        return userRepository.findByRole(pageable, roleHelper.getTeacher());
     }
-
 
     public Long update(Long userId, UpdateUserForm updateUserForm) {
 

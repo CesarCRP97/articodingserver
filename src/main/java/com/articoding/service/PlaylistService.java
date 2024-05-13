@@ -73,9 +73,10 @@ public class PlaylistService {
         return playlistRepository.findById(playlistID, IPlaylist.class);
     }
 
-    public Page<PlaylistDTO> getPlaylists(PageRequest pageRequest, Comparator<IPlaylist> comparator, Optional<Long> userId, Optional<Long> playlistId,
-                                          Optional<Boolean> liked, Optional<Boolean> publicPlaylists, Optional<String> title,
-                                          Optional<String> owner) {
+    public Page<PlaylistDTO> getPlaylists(PageRequest pageRequest, Comparator<IPlaylist> comparator,
+                                          Optional<Long> userId, Optional<Long> playlistId,
+                                          Optional<Boolean> liked, Optional<Boolean> publicPlaylists,
+                                          Optional<String> title, Optional<String> owner) {
         List<IPlaylist> playlists;
         User actualUser = userService.getActualUser();
 
