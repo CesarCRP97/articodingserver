@@ -52,6 +52,13 @@ es importante copiar la carpeta *"levelimages"* a la ubicación del jar. En esta
       -jar <articodingserver-X.X.X.jar>*
     - El servidor escucha en el puerto 8080
 
+### NOTAS ###
+- El usuario Administrador estándar tiene los datos:
+
+    - Username : "root"
+
+    - Contraseña : "root01"
+
 
 
 ----   
