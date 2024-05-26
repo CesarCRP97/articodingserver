@@ -165,10 +165,6 @@ public class LevelService {
         return toLevelWithImageDTO(page);
     }
 
-
-
-    //Todo - To optimize the speed of new petitions, the game should only return needed info for displaying the
-    // page of lists -> Change LevelWithImageDTO so it doesn't have ACLevel attached.
     private Page<LevelWithImageDTO> toLevelWithImageDTO(Page<ILevel> oldPage) {
         return oldPage.map(this::toLevelWithImageDTO);
     }
